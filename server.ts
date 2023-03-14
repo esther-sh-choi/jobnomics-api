@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+import { Request, Response } from "express";
 const morgan = require("morgan");
 
 const PORT = process.env.PORT || 8080;
@@ -15,10 +16,6 @@ const autoRoutes = require("./routes/auto");
 
 app.use("/api/v1/job/", jobRoutes);
 app.use("/api/v1/auto/", autoRoutes);
-
-type jsonType = {
-  message: string;
-};
 
 app.get("*", (req: Request, res: Response) => {
   res.status(200).json({ message: "Invalid" });
