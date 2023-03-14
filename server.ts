@@ -10,14 +10,18 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const restaurantApiRoutes = require("./routes/restaurant-api");
-const customerApiRoutes = require("./routes/customer-api");
+const jobRoutes = require("./routes/job");
+const autoRoutes = require("./routes/auto");
 
-app.use("/api/restaurant", restaurantApiRoutes);
-app.use("/api/customer", customerApiRoutes);
+app.use("/api/v1/job/", jobRoutes);
+app.use("/api/v1/auto/", autoRoutes);
 
-app.get("/", (req, res) => {
-  res.render("index");
+type jsonType = {
+  message: string;
+};
+
+app.get("*", (req: Request, res: Response) => {
+  res.status(200).json({ message: "Invalid" });
 });
 
 app.listen(PORT, () => {
