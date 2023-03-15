@@ -8,6 +8,24 @@ const prisma = new PrismaClient();
 async function seed() {
   // prisma.job.deleteMany({});
 
+  await prisma.skill.createMany({
+    data: [
+      {
+        name: "javascript",
+      },
+      {
+        name: "react",
+      },
+    ],
+  });
+
+  const skillsArray = await prisma.skill.findMany();
+  // console.log(
+  //   skillsArray.map((skill) => {
+  //     return { skill: { connect: { id: skill.id } } };
+  //   })
+  // );
+
   await prisma.job.create({
     data: {
       title: "Webflow Developer",
@@ -31,12 +49,56 @@ async function seed() {
       logo: "https://media.licdn.com/dms/image/C560BAQFT0TgSqjoVlw/company-logo_100_100/0/1660000334094?e=1686787200&v=beta&t=yHRQVVuYe3UMdPIAhCEZlpG7awmxAknrG62RZxvOgGI",
       platform: "LinkedIn",
       skills: {
-        create: [
-          { name: "javascript" },
-          { name: "react" },
-          { name: "node.js" },
-        ],
+        connect: [{ id: 1 }, { id: 2 }],
       },
+    },
+    include: {
+      skills: true,
+    },
+  });
+
+  await prisma.job.create({
+    data: {
+      title: "React Hybrid Developer",
+      company: "WallOps",
+      description: `Job Title: React Hybrid Developer (Contract)
+
+  Job Summary: We are seeking a React Hybrid Developer with experience in Material UI and Ionic Capacitor to join us on a contract basis. The successful candidate will be responsible for helping to develop web and mobile applications over a minimum 4 to 8 month period.
+
+  Responsibilities:
+
+  Develop applications using Ionic Capacitor and other hybrid or web development frameworks.
+  Collaborate with cross-functional teams to define, design, and ship new features.
+  Ensure the performance, quality, and responsiveness of applications.
+  Identify and correct bottlenecks and fix bugs.
+  Help maintain code quality, organization, and automation.
+  Stay up-to-date with emerging trends and technologies in web and mobile development.
+
+  Requirements:
+
+  At least 2 years of experience in React development.
+  Comfort programming in TypeScript.
+  Experience with Material UI or similar.
+  Experience with Ionic Capacitor or similar.
+  Understanding of RESTful APIs and experience with API integration.
+  Familiarity with Git and Agile development methodologies.
+  Excellent problem-solving skills and ability to work independently.
+  Strong written and verbal communication skills.
+
+  Bonus:
+
+  Experience with Redux or similar state management libraries.
+  Experience with automated testing frameworks such as Jest or Vitest.
+  Knowledge of native iOS and Android development (Swift, Objective-C, Java, Kotlin).
+  `,
+      location: "Halifax, NS (Remote)",
+      platform: "LinkedIn",
+      skills: {
+        connect: [{ id: 1 }, { id: 2 }],
+      },
+    },
+    include: {
+      skills: true,
     },
   });
 
@@ -46,13 +108,6 @@ async function seed() {
     },
   });
   console.dir(allJobs, { depth: null });
-
-  // await prisma.skill.create({
-  //   data: {
-  //     name: "javascript",
-  //     jobs: { connect: { id: 1 } },
-  //   },
-  // });
 
   await prisma.category.createMany({
     data: [
@@ -85,43 +140,6 @@ async function seed() {
 
   const checklistArray = await prisma.checklist.findMany();
 
-  // const catetoryCreate = [
-  //   {
-  //     checklist: {
-  //       create: { description: "Celebrate your accomplishments" },
-  //     },
-  //   },
-  //   {
-  //     checklist: {
-  //       create: {
-  //         description:
-  //           "Record your interview experience, questions, and your response",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     checklist: {
-  //       create: {
-  //         description:
-  //           "Send a thank you note to the hiring manager/interviewers",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     checklist: {
-  //       create: {
-  //         description:
-  //           "Remind your references to expect a call or email from the employer",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     checklist: {
-  //       create: { description: "Update your interview prep notes" },
-  //     },
-  //   },
-  // ];
-
   await prisma.user.create({
     data: {
       givenName: "Esther",
@@ -129,7 +147,9 @@ async function seed() {
       name: "Esther Choi",
       email: "esther@email.com",
       checklists: {
-        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        create: checklistArray.map((checklist) => {
+          return { checklist: { connect: { id: checklist.id } } };
+        }),
       },
     },
     include: {
@@ -143,21 +163,23 @@ async function seed() {
       familyName: "Tran",
       name: "Viet Tran",
       email: "viet@email.com",
-      // checklists: {
-      //   create: categoryCreate,
-      // },
+      checklists: {
+        create: checklistArray.map((checklist) => {
+          return { checklist: { connect: { id: checklist.id } } };
+        }),
+      },
+    },
+    include: {
+      checklists: true,
     },
   });
 
-  // const ids = [1, 2, 3, 4, 5];
-  // for (const id of ids) {
-  //   await prisma.usersOnChecklists.create({
-  //     data: {
-  //       user: { connect: { id: 1 } },
-  //       checklist: { connect: { id: id } },
-  //     },
-  //   });
-  // }
+  const allUsers = await prisma.user.findMany({
+    include: {
+      checklists: true,
+    },
+  });
+  console.dir(allUsers, { depth: null });
 
   await prisma.usersOnJobs.create({
     data: {
@@ -178,42 +200,6 @@ seed()
     process.exit(1);
   });
 
-// {
-//   title: "React Hybrid Developer",
-//   company: "WallOps",
-//   description: `Job Title: React Hybrid Developer (Contract)
-
-//   Job Summary: We are seeking a React Hybrid Developer with experience in Material UI and Ionic Capacitor to join us on a contract basis. The successful candidate will be responsible for helping to develop web and mobile applications over a minimum 4 to 8 month period.
-
-//   Responsibilities:
-
-//   Develop applications using Ionic Capacitor and other hybrid or web development frameworks.
-//   Collaborate with cross-functional teams to define, design, and ship new features.
-//   Ensure the performance, quality, and responsiveness of applications.
-//   Identify and correct bottlenecks and fix bugs.
-//   Help maintain code quality, organization, and automation.
-//   Stay up-to-date with emerging trends and technologies in web and mobile development.
-
-//   Requirements:
-
-//   At least 2 years of experience in React development.
-//   Comfort programming in TypeScript.
-//   Experience with Material UI or similar.
-//   Experience with Ionic Capacitor or similar.
-//   Understanding of RESTful APIs and experience with API integration.
-//   Familiarity with Git and Agile development methodologies.
-//   Excellent problem-solving skills and ability to work independently.
-//   Strong written and verbal communication skills.
-
-//   Bonus:
-
-//   Experience with Redux or similar state management libraries.
-//   Experience with automated testing frameworks such as Jest or Vitest.
-//   Knowledge of native iOS and Android development (Swift, Objective-C, Java, Kotlin).
-//   `,
-//   location: "Halifax, NS (Remote)",
-//   platform: "LinkedIn",
-// },
 // {
 //   title: "Front-End Developer",
 //   company: "Priceline",
