@@ -28,7 +28,7 @@ const requestToOpenAI = async (description: string) => {
 const getPlatformJobIdFromURL = (link: string, label: string) => {
   const urlId = link
     .split("&")
-    .find((str: string | string[]) => str.includes("currentJobId"));
+    .find((str: string | string[]) => str.includes(label));
 
   return urlId?.slice(urlId.indexOf("=") + 1);
 };
@@ -66,7 +66,7 @@ const runPuppeteer = async (link: string) => {
 
   const logo = await page.$$eval(
     "img.artdeco-entity-image.artdeco-entity-image--square-5.lazy-loaded[src]",
-    (imgs: { getAttribute: (arg0: string) => any; }[]) =>
+    (imgs: { getAttribute: (arg0: string) => any }[]) =>
       imgs[0].getAttribute("src")
   );
 
@@ -80,19 +80,19 @@ const runPuppeteer = async (link: string) => {
     description: "",
   };
   jobData.title = await page.evaluate(
-    (el: { innerText: any; }) => el.innerText,
+    (el: { innerText: any }) => el.innerText,
     title[0]
   );
   jobData.company_name = await page.evaluate(
-    (el: { innerText: any; }) => el.innerText,
+    (el: { innerText: any }) => el.innerText,
     company[0]
   );
   jobData.location = await page.evaluate(
-    (el: { innerText: any; }) => el.innerText,
+    (el: { innerText: any }) => el.innerText,
     location[0]
   );
   jobData.description = await page.evaluate(
-    (el: { innerText: any; }) => el.innerText,
+    (el: { innerText: any }) => el.innerText,
     description[0]
   );
   jobData.description = jobData.description.replace(/(\r\n|\n|\r)/gm, "");
