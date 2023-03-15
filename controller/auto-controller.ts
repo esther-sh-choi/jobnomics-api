@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 const puppeteer = require("puppeteer");
+const { requestToOpenAI } = require("../helper/auto");
 
 type jobDataType = {
   title: string;
@@ -57,7 +58,7 @@ const getJobInfo = (req: Request, res: Response) => {
 
     const logo = await page.$$eval(
       "img.artdeco-entity-image.artdeco-entity-image--square-5.lazy-loaded[src]",
-      (imgs: { getAttribute: (arg0: string) => any }[]) =>
+      (imgs: { getAttribute: (arg0: string) => any; }[]) =>
         imgs[0].getAttribute("src")
     );
 
@@ -71,19 +72,19 @@ const getJobInfo = (req: Request, res: Response) => {
       description: "",
     };
     jobData.title = await page.evaluate(
-      (el: { innerText: any }) => el.innerText,
+      (el: { innerText: any; }) => el.innerText,
       title[0]
     );
     jobData.company_name = await page.evaluate(
-      (el: { innerText: any }) => el.innerText,
+      (el: { innerText: any; }) => el.innerText,
       company[0]
     );
     jobData.location = await page.evaluate(
-      (el: { innerText: any }) => el.innerText,
+      (el: { innerText: any; }) => el.innerText,
       location[0]
     );
     jobData.description = await page.evaluate(
-      (el: { innerText: any }) => el.innerText,
+      (el: { innerText: any; }) => el.innerText,
       description[0]
     );
     jobData.description = jobData.description.replace(/(\r\n|\n|\r)/gm, "");
@@ -92,6 +93,7 @@ const getJobInfo = (req: Request, res: Response) => {
   };
 
   start();
+  requestToOpenAI("What is your name?");
 };
 
 module.exports = { getJobInfo };
