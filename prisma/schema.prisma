@@ -11,45 +11,62 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  givenName
-  familyName
-  name
-  email
-  picture
-  nickname
+  id         Int                 @id @default(autoincrement())
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  givenName  String
+  familyName String
+  name       String
+  email      String              @unique
+  picture    String?             @default("N/A")
+  nickname   String?
+  jobs       UsersOnJobs[]
+  checklists UsersOnChecklists[]
 }
 
 model Job {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  title
-  company
-  location
-  description
-  summary
-  logo
-  skills
+  id                 Int           @id @default(autoincrement())
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  title              String
+  company            String
+  location           String
+  description        String
+  summary            String?
+  logo               String?       @default("N/A")
+  interview_examples String?
+  skills             Skill[]
+  users              UsersOnJobs[]
 }
 
-model UserJob {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model UsersOnJobs {
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isFavorite    Boolean   @default(false)
+  position      Int
+  interviewDate DateTime?
+  isDeleted     Boolean   @default(false)
+
+  user     User       @relation(fields: [userId], references: [id])
+  userId   Int
+  job      Job        @relation(fields: [jobId], references: [id])
+  jobId    Int
+  category Category[]
+
+  @@id([userId, jobId])
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String   @unique
+  id                Int          @id @default(autoincrement())
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  name              String       @unique
+  UsersOnJobs       UsersOnJobs? @relation(fields: [usersOnJobsUserId, usersOnJobsJobId], references: [userId, jobId])
+  usersOnJobsUserId Int?
+  usersOnJobsJobId  Int?
 }
 
 model UsersOnChecklists {
-  id          Int       @id @default(autoincrement())
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   user        User      @relation(fields: [userId], references: [id])
@@ -66,4 +83,13 @@ model Checklist {
   updatedAt   DateTime            @updatedAt
   description String              @db.VarChar(200)
   users       UsersOnChecklists[]
+}
+
+model Skill {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  job       Job?     @relation(fields: [jobId], references: [id])
+  jobId     Int?
 }
