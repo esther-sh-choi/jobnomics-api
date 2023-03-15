@@ -2,9 +2,9 @@ const express = require("express");
 import { Request, Response } from "express";
 const router = express.Router();
 
-const { getJobInfo } = require("../controller/auto-controller");
+const { createNewJob } = require("../controller/auto-controller");
 
 // Switched to get to check if puppeteer works
-router.post("/", getJobInfo);
+router.post("/", createNewJob);
 
 module.exports = router;
