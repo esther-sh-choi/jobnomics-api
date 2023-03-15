@@ -5,6 +5,6 @@ const router = express.Router();
 const { getJobInfo } = require("../controller/auto-controller");
 
 // Switched to get to check if puppeteer works
-router.get("/", getJobInfo);
+router.post("/", getJobInfo);
 
 module.exports = router;
