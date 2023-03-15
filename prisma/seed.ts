@@ -49,7 +49,7 @@ async function seed() {
       logo: "https://media.licdn.com/dms/image/C560BAQFT0TgSqjoVlw/company-logo_100_100/0/1660000334094?e=1686787200&v=beta&t=yHRQVVuYe3UMdPIAhCEZlpG7awmxAknrG62RZxvOgGI",
       platform: "LinkedIn",
       skills: {
-        connect: [{ id: 1 }, { id: 2 }],
+        connect: [{ id: 1 }],
       },
     },
     include: {
@@ -184,6 +184,20 @@ async function seed() {
   await prisma.usersOnJobs.create({
     data: {
       user: { connect: { id: 1 } },
+      job: { connect: { id: 1 } },
+      category: { connect: { id: 1 } },
+    },
+  });
+  await prisma.usersOnJobs.create({
+    data: {
+      user: { connect: { id: 1 } },
+      job: { connect: { id: 2 } },
+      category: { connect: { id: 1 } },
+    },
+  });
+  await prisma.usersOnJobs.create({
+    data: {
+      user: { connect: { id: 2 } },
       job: { connect: { id: 1 } },
       category: { connect: { id: 1 } },
     },
