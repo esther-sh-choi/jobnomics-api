@@ -39,7 +39,7 @@ model Job {
   interviewExamples String?
   skills            Skill[]
   platform          String
-  platformJobId     String?
+  platformJobId     String?       @unique
   users             UsersOnJobs[]
 }
 
@@ -92,6 +92,6 @@ model Skill {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String
+  name      String   @unique
   jobs      Job[]
 }
