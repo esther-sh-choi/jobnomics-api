@@ -14,8 +14,8 @@ app.use(express.static("public"));
 const jobRoutes = require("./routes/job");
 const autoRoutes = require("./routes/auto");
 
-app.use("/api/v1/job/", jobRoutes);
-app.use("/api/v1/auto/", autoRoutes);
+app.use("/api/v1/job", jobRoutes);
+app.use("/api/v1/auto", autoRoutes);
 
 app.get("*", (req: Request, res: Response) => {
   res.status(200).json({ message: "Invalid" });
