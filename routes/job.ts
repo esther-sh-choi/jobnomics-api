@@ -13,14 +13,15 @@ const {
 
 router.get("/", getAllJobs);
 
-router.get("/:id", getJobById);
-
 router.get("/filter", filterJobs);
+
+router.get("/:id", getJobById);
 
 router.put("/", updateJobs);
 
-router.put("/:id", updateJobById);
+router.put("/user-job", updateJobById);
 
-router.delete("/:id", deleteJobById);
+
+// router.put("/:id", deleteJobById);
 
 module.exports = router;
