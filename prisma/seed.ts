@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.job.create({
+  await prisma.job.createMany({
     data: [
       {
         title: "Webflow Developer",
@@ -150,13 +150,10 @@ async function main() {
         logo: "https://media.licdn.com/dms/image/C4E0BAQGZZi9C5UARaw/company-logo_100_100/0/1616615051263?e=1686787200&v=beta&t=SS6uPjJe3H5V29YI6j2sv_vL2dsW9CxpqnciiSIHM4I",
       },
     ],
+    skipDuplicates: true,
   });
 
-  const allJobs = await prisma.job.findMany({
-    include: {
-      title: true,
-    },
-  });
+  const allJobs = await prisma.job.findMany();
   console.dir(allJobs, { depth: null });
 }
 
