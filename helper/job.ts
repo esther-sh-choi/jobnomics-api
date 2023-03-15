@@ -1,8 +1,7 @@
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../server";
 import { CategoryType, DeleteItemType, updateDataType, UpdateInformationType, UpdateItemType, UserJobsType } from "../type/job";
-// Delete later
-const prisma = new PrismaClient();
+
 
 
 const queryUserAndJobsEntities = async (userId: number) => {
