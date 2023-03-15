@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
-const { runPuppeteer, getPlatformJobIdFromURL } = require("../helper/auto");
+const {
+  runPuppeteer,
+  getPlatformJobIdFromURL,
+  getPlatformJobIdDetailView,
+} = require("../helper/auto");
 
 const createNewJob = async (req: Request, res: Response) => {
   const jobLink = req.body.link;
@@ -45,7 +49,11 @@ const createNewJob = async (req: Request, res: Response) => {
   let platformJobIdFromURL: string;
 
   if (jobLink.includes("linkedin")) {
-    platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "currentJobId");
+    if (jobLink.includes("currentJobId")) {
+      platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "currentJobId");
+    } else {
+      platformJobIdFromURL = getPlatformJobIdDetailView(jobLink);
+    }
   } else if (jobLink.includes("indeed")) {
     platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "vjk");
   } else if (jobLink.includes("ziprecruiter")) {

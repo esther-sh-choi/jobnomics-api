@@ -41,10 +41,23 @@ const getPlatformJobIdFromURL = (link: string, label: string) => {
   return urlId?.slice(urlId.indexOf("=") + 1);
 };
 
-const extractLinkedIn = async (link: string) => {
+const getPlatformJobIdDetailView = (link: string) => {
+  const urlSplit = link.split("/");
+  const indexOfId = urlSplit.indexOf("view") + 1;
+
+  return urlSplit[indexOfId];
+};
+
+const extractLinkedIn = async (link: string, label: string = "") => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  const platformJobId = getPlatformJobIdFromURL(link, "currentJobId");
+
+  let platformJobId;
+  if (label) {
+    platformJobId = getPlatformJobIdFromURL(link, label);
+  } else {
+    platformJobId = getPlatformJobIdDetailView(link);
+  }
 
   // user may paste in something like: https://www.linkedin.com/jobs/search/?currentJobId=3491773649&distance=25&geoId=101174742&keywords=js%20developer
   // extract the currentJobId if there is any = 3491773649
@@ -110,17 +123,17 @@ const extractLinkedIn = async (link: string) => {
   const openaiData = await requestToOpenAI(jobData.description);
   const { summary, skills } = JSON.parse(openaiData);
   jobData = { ...jobData, summary, skills };
-
+  console.log(jobData);
   return jobData;
 };
 
-const extractIndeed = async (link: string) => {
+const extractIndeed = async (link: string, label: string = "") => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   page.setUserAgent(
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
   );
-  const platformJobId = getPlatformJobIdFromURL(link, "vjk");
+  const platformJobId = getPlatformJobIdFromURL(link, label);
 
   await page.goto(link, {
     waitUntil: "networkidle0",
@@ -182,14 +195,14 @@ const extractIndeed = async (link: string) => {
   return jobData;
 };
 
-const extractZip = async (link: string) => {
+const extractZip = async (link: string, label: string = "") => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   page.setUserAgent(
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
   );
 
-  const platformJobId = getPlatformJobIdFromURL(link, "lvk");
+  const platformJobId = getPlatformJobIdFromURL(link, label);
 
   await page.goto(link, {
     waitUntil: "networkidle0",
@@ -261,12 +274,20 @@ const extractZip = async (link: string) => {
 
 const runPuppeteer = async (link: string) => {
   if (link.includes("linkedin")) {
+    if (link.includes("currentJobId")) {
+      return await extractLinkedIn(link, "currentJobId");
+    }
     return await extractLinkedIn(link);
   } else if (link.includes("indeed")) {
-    return await extractIndeed(link);
+    return await extractIndeed(link, "vjk");
   } else if (link.includes("ziprecruiter")) {
-    return await extractZip(link);
+    return await extractZip(link, "lvk");
   }
 };
 
-module.exports = { requestToOpenAI, runPuppeteer, getPlatformJobIdFromURL };
+module.exports = {
+  requestToOpenAI,
+  runPuppeteer,
+  getPlatformJobIdFromURL,
+  getPlatformJobIdDetailView,
+};
