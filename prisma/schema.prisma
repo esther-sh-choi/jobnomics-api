@@ -47,23 +47,22 @@ model UsersOnJobs {
   interviewDate DateTime?
   isDeleted     Boolean   @default(false)
 
-  user     User       @relation(fields: [userId], references: [id])
-  userId   Int
-  job      Job        @relation(fields: [jobId], references: [id])
-  jobId    Int
-  category Category[]
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  job        Job      @relation(fields: [jobId], references: [id])
+  jobId      Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
-  @@id([userId, jobId])
+  @@id([userId, jobId, categoryId])
 }
 
 model Category {
-  id                Int          @id @default(autoincrement())
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-  name              String       @unique
-  UsersOnJobs       UsersOnJobs? @relation(fields: [usersOnJobsUserId, usersOnJobsJobId], references: [userId, jobId])
-  usersOnJobsUserId Int?
-  usersOnJobsJobId  Int?
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  name        String        @unique
+  usersOnJobs UsersOnJobs[]
 }
 
 model UsersOnChecklists {
@@ -90,6 +89,5 @@ model Skill {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
-  job       Job?     @relation(fields: [jobId], references: [id])
-  jobId     Int?
+  jobs      Job[]
 }
