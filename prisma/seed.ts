@@ -1,9 +1,12 @@
+//  npx prisma migrate reset
+// npx ts-node prisma/seed.ts
+
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function jobs() {
-  prisma.job.deleteMany({});
+  // prisma.job.deleteMany({});
 
   await prisma.job.createMany({
     data: [
@@ -164,7 +167,7 @@ async function jobs() {
 }
 
 async function categories() {
-  await prisma.category.deleteMany({});
+  // await prisma.category.deleteMany({});
   await prisma.category.createMany({
     data: [
       { name: "Bookmarked" },
@@ -178,7 +181,7 @@ async function categories() {
 }
 
 async function checklists() {
-  await prisma.checklist.deleteMany({});
+  // await prisma.checklist.deleteMany({});
   await prisma.checklist.createMany({
     data: [
       { description: "Celebrate your accomplishments" },
@@ -195,6 +198,44 @@ async function checklists() {
       },
       { description: "Update your interview prep notes" },
     ],
+  });
+}
+
+async function users() {
+  // await prisma.user.deleteMany({});
+  await prisma.user.createMany({
+    data: [
+      {
+        givenName: "Esther",
+        familyName: "Choi",
+        name: "Esther Choi",
+        email: "esther@email.com",
+      },
+      {
+        givenName: "Viet",
+        familyName: "Tran",
+        name: "Viet Tran",
+        email: "viet@email.com",
+      },
+    ],
+  });
+}
+
+// async function usersOnChecklists() {
+//   // await prisma.usersOnChecklists.deleteMany({});
+//   await prisma.usersOnChecklists.create({
+//     data: { user: { connect: { id: 1 } }, checklist: { connect: { id: 1 } } },
+//   });
+// }
+
+async function usersOnJobs() {
+  // await prisma.usersOnChecklists.deleteMany({});
+  await prisma.usersOnJobs.create({
+    data: {
+      user: { connect: { id: 1 } },
+      job: { connect: { id: 1 } },
+      category: { connect: { id: 1 } },
+    },
   });
 }
 
@@ -227,3 +268,23 @@ checklists()
     await prisma.$disconnect();
     process.exit(1);
   });
+
+users()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
+
+// usersOnChecklists()
+//   .then(async () => {
+//     await prisma.$disconnect();
+//   })
+//   .catch(async (e) => {
+//     console.error(e);
+//     await prisma.$disconnect();
+//     process.exit(1);
+//   });

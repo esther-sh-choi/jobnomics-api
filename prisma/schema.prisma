@@ -1,6 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// npx prisma migrate dev --name init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -45,7 +47,7 @@ model UsersOnJobs {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   isFavorite    Boolean   @default(false)
-  position      Int
+  position      Int?
   interviewDate DateTime?
   isDeleted     Boolean   @default(false)
 
