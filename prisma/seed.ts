@@ -2,7 +2,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function jobs() {
+  prisma.job.deleteMany({});
+
   await prisma.job.createMany({
     data: [
       {
@@ -25,6 +27,7 @@ async function main() {
         The ultimate purpose of the Webflow Developer is to plan, design, evaluate, develop, test, edit, maintain and document the look and flow of Dieselmatic Partners’ websites.`,
         location: "Canada (Remote)",
         logo: "https://media.licdn.com/dms/image/C560BAQFT0TgSqjoVlw/company-logo_100_100/0/1660000334094?e=1686787200&v=beta&t=yHRQVVuYe3UMdPIAhCEZlpG7awmxAknrG62RZxvOgGI",
+        platform: "LinkedIn",
       },
       {
         title: "React Hybrid Developer",
@@ -62,6 +65,7 @@ async function main() {
         Knowledge of native iOS and Android development (Swift, Objective-C, Java, Kotlin).
         `,
         location: "Halifax, NS (Remote)",
+        platform: "LinkedIn",
       },
       {
         title: "Front-End Developer",
@@ -90,6 +94,7 @@ async function main() {
         Illustrated history of living the values necessary to Priceline: Customer, Innovation, Team, Accountability and Trust.
         The Right Results, the Right Way is not just a motto at Priceline; it’s a way of life. Unquestionable integrity and ethics is essential.`,
         location: "Toronto, ON (Hybrid)",
+        platform: "LinkedIn",
       },
       {
         title: "Technical Lead Frontend Engineer",
@@ -148,6 +153,7 @@ async function main() {
         Someone who likes to be challenged loves learning new things, and loves solving problems in a clean and modular way.`,
         location: "Ontario, Canada (Hybrid)",
         logo: "https://media.licdn.com/dms/image/C4E0BAQGZZi9C5UARaw/company-logo_100_100/0/1616615051263?e=1686787200&v=beta&t=SS6uPjJe3H5V29YI6j2sv_vL2dsW9CxpqnciiSIHM4I",
+        platform: "LinkedIn",
       },
     ],
     skipDuplicates: true,
@@ -157,7 +163,62 @@ async function main() {
   console.dir(allJobs, { depth: null });
 }
 
-main()
+async function categories() {
+  await prisma.category.deleteMany({});
+  await prisma.category.createMany({
+    data: [
+      { name: "Bookmarked" },
+      { name: "Applied" },
+      { name: "Interviewing" },
+      { name: "Interviewed" },
+      { name: "Job Offer" },
+      { name: "Position Filled" },
+    ],
+  });
+}
+
+async function checklists() {
+  await prisma.checklist.deleteMany({});
+  await prisma.checklist.createMany({
+    data: [
+      { description: "Celebrate your accomplishments" },
+      {
+        description:
+          "Record your interview experience, questions, and your response",
+      },
+      {
+        description: "Send a thank you note to the hiring manager/interviewers",
+      },
+      {
+        description:
+          "Remind your references to expect a call or email from the employer",
+      },
+      { description: "Update your interview prep notes" },
+    ],
+  });
+}
+
+jobs()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
+
+categories()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
+
+checklists()
   .then(async () => {
     await prisma.$disconnect();
   })
