@@ -1,14 +1,66 @@
 import { Request, Response } from "express";
-const { runPuppeteer } = require("../helper/auto");
+import { prisma } from "../server";
+const { runPuppeteer, getPlatformJobIdFromURL } = require("../helper/auto");
 
-const getJobInfo = async (req: Request, res: Response) => {
+const createNewJob = async (req: Request, res: Response) => {
   const jobLink = req.body.link;
-  console.log(jobLink);
 
-  // await runPuppeteer(jobLink);
-  await runPuppeteer("https://www.linkedin.com/jobs/search/?currentJobId=3523596546&distance=25&geoId=101174742&keywords=js%20developer&position=4&pageNum=0");
+  const main = async () => {
+    const job = await prisma.job.findFirst({
+      where: { platformJobId: platformJobIdFromURL },
+    });
 
-  res.json({ message: "Hello Auto" });
+    if (!job) {
+      const jobData = await runPuppeteer(jobLink);
+
+      jobData.skills.forEach(async (skill: string) => {
+        await prisma.skill.upsert({
+          where: { name: skill },
+          create: { name: skill },
+          update: {},
+        });
+      });
+
+      await prisma.job.create({
+        data: {
+          ...jobData,
+          skills: {
+            connect: jobData.skills.map((skill: string) => {
+              return { name: skill };
+            }),
+          },
+        },
+      });
+    }
+
+    const allJobs = await prisma.job.findMany({
+      include: {
+        skills: true,
+      },
+    });
+
+    res.json(allJobs);
+  };
+
+  let platformJobIdFromURL: string;
+
+  if (jobLink.includes("linkedin")) {
+    platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "currentJobId");
+  } else if (jobLink.includes("indeed")) {
+    platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "vjk");
+  } else if (jobLink.includes("ziprecruiter")) {
+    platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "lvk");
+  }
+
+  main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
 };
 
-module.exports = { getJobInfo };
+module.exports = { createNewJob };

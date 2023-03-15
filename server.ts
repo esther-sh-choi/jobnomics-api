@@ -3,6 +3,9 @@ require("dotenv").config();
 const express = require("express");
 import { Request, Response } from "express";
 const morgan = require("morgan");
+import { PrismaClient } from "@prisma/client";
+
+export const prisma = new PrismaClient();
 
 const PORT = process.env.PORT || 8080;
 const app = express();
