@@ -15,6 +15,7 @@ const logInAndSignIn = async (req: CustomRequest, res: Response) => {
       email: req?.user?.email
     }
   });
+
   if (user) {
     return res.json({ message: "User is already registered" });
   } else {
