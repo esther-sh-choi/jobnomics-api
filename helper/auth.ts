@@ -12,7 +12,7 @@ const validateAccessToken = auth({
 
 const getUserInfo = async (req: CustomRequest, res: Response, next: NextFunction) => {
   const accessToken = req?.headers?.authorization?.split(' ')[1];
-  const response = await axios.get("https://dev-sjrxw0i3zr5854yq.us.auth0.com/userinfo", {
+  const response = await axios.get(`${process.env.AUTH0_ISSUER}/userinfo`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }
