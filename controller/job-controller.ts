@@ -28,11 +28,11 @@ const filterJobs = async (req: Request, res: Response) => {
 };
 
 const updateJobs = async (req: Request, res: Response) => {
-  // req.body = { jobBookmarkUpdates:[{userId: 1, jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {userId: 1, jobId: 2, categoryId: 2, newCategoryId: 1, pos: 1}], type: "update"}
+  // req.body = { jobBookmarkUpdates:[{userId: 1, jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {userId: 1, jobId: 2, categoryId: 2, newCategoryId: 1, position: 1}], type: "update"}
   // Example: { "jobBookmarkUpdates":[
-  //   {"userId": 1, "jobId": 1, "categoryId": 1, "newCategoryId": 1, "pos": 0}, 
-  //   {"userId": 1, "jobId": 2, "categoryId": 1, "newCategoryId": 2, "pos": 0}
-  //   {"userId": 1, "jobId": 2, "categoryId": 2, "newCategoryId": 3, "pos": 1}
+  //   {"userId": 1, "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0}, 
+  //   {"userId": 1, "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0}
+  //   {"userId": 1, "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1}
   //   ], 
   //   "type": "update"
   // }

@@ -12,6 +12,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
     },
     select: {
       userId: true,
+      isFavorite: true,
       category: {
         select: {
           id: true,
@@ -33,17 +34,18 @@ const queryUserAndJobsEntities = async (userId: number) => {
 
 const processUserJobs = (userJobs: UserJobsType) => {
   const result: CategoryType = {};
+
   for (const eachJob of userJobs) {
+    console.log(eachJob);
     const categoryName: string = eachJob.category.name;
     const categoryId: number = eachJob.category.id;
-
     if (eachJob.category.name in result) {
-      result[categoryName].jobs.push({ ...eachJob.job, pos: eachJob.position });
+      result[categoryName].jobs.push({ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite });
     } else {
       result[categoryName] = {
         category: categoryName,
         id: categoryId,
-        jobs: [{ ...eachJob.job, pos: eachJob.position }]
+        jobs: [{ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite }]
       };
     }
   }
@@ -118,7 +120,7 @@ const updateAllRearrangedJobs = async (updateInformation: UpdateInformationType)
             id: update.newCategoryId
           }
         },
-        position: update.pos
+        position: update.position
       }
     });
   }

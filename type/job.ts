@@ -3,7 +3,8 @@ interface Job {
   title: string;
   company: string;
   logo: string | null;
-  pos: number | null;
+  isFavorite: boolean;
+  position: number | null;
 }
 
 interface Category {
@@ -46,6 +47,7 @@ interface UserJobs {
   userId: number;
   category: CategoryEntity;
   position: number | null;
+  isFavorite: boolean,
   job: Job;
 }
 
@@ -56,7 +58,7 @@ interface JobUpdateEntity {
   jobId: number;
   categoryId: number;
   newCategoryId: number;
-  pos: number;
+  position: number;
 }
 
 export type UpdateInformationType = JobUpdateEntity[];
