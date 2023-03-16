@@ -17,6 +17,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
     select: {
       userId: true,
       isFavorite: true,
+      updatedAt: true,
       category: {
         select: {
           id: true,
@@ -43,12 +44,12 @@ const processUserJobs = (userJobs: UserJobsType) => {
     const categoryName: string = eachJob.category.name;
     const categoryId: number = eachJob.category.id;
     if (eachJob.category.name in result) {
-      result[categoryName].jobs.push({ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite });
+      result[categoryName].jobs.push({ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite, updatedAt: eachJob.updatedAt });
     } else {
       result[categoryName] = {
         category: categoryName,
         id: categoryId,
-        jobs: [{ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite }]
+        jobs: [{ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite, updatedAt: eachJob.updatedAt }]
       };
     }
   }

@@ -6,6 +6,7 @@ interface Job {
   logo: string | null;
   isFavorite: boolean;
   position: number | null;
+  updatedAt: Date;
 }
 
 interface Category {
@@ -48,7 +49,8 @@ interface UserJobs {
   userId: number;
   category: CategoryEntity;
   position: number | null;
-  isFavorite: boolean,
+  isFavorite: boolean;
+  updatedAt: Date;
   job: Job;
 }
 
