@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
-const { queryUserAndJobsEntities, processUserJobs, queryJobById, queryUserJobsWithFilter, updateAllRearrangedJobs, deleteUserJob, updateInterviewDateAndFavorite } = require("../helper/job");
+import { CustomRequest } from "../type/job";
+const { getUserIdByEmail, queryUserAndJobsEntities, processUserJobs, queryJobById, queryUserJobsWithFilter, updateAllRearrangedJobs, deleteUserJob, updateInterviewDateAndFavorite } = require("../helper/job");
 
+const getAllJobs = async (req: CustomRequest, res: Response) => {
+  // console.log(req.user);
+  // const userId = await getUserIdByEmail(req.user.email);
+  // console.log(userId);
 
-const getAllJobs = async (req: Request, res: Response) => {
-  // const userId = req.body.id;
   const userId = 1;
   const userJobs = await queryUserAndJobsEntities(userId);
   const formatUserJobs = processUserJobs(userJobs);
@@ -13,6 +16,7 @@ const getAllJobs = async (req: Request, res: Response) => {
 
 const getJobById = async (req: Request, res: Response) => {
   const { id } = req.params;
+
   const queryJob = await queryJobById(id);
 
   res.json({ job: queryJob });
