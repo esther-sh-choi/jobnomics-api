@@ -26,9 +26,10 @@ const filterJobs = async (req: Request, res: Response) => {
   // req.body = {userId: 1, category: ["Applied", "Bookmarked"], languages: ['javascript', 'express']}
   const userId = 1;
   const userJobs = await queryUserJobsWithFilter(userId, req.body.category, req.body.languages);
+
   const formatUserJobs = processUserJobs(userJobs);
 
-  res.json({ jobs: formatUserJobs });
+  res.json(formatUserJobs);
 };
 
 const updateJobs = async (req: Request, res: Response) => {

@@ -6,8 +6,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function seed() {
-  // prisma.job.deleteMany({});
-
   await prisma.skill.createMany({
     data: [
       {
@@ -93,6 +91,85 @@ async function seed() {
   `,
       location: "Halifax, NS (Remote)",
       platform: "LinkedIn",
+      skills: {
+        connect: [{ id: 1 }, { id: 2 }],
+      },
+    },
+    include: {
+      skills: true,
+    },
+  });
+
+
+  await prisma.job.create({
+    data: {
+      title: "Senior Full Stack Software Engineer",
+      company: "Bellwood Labs",
+      description: `About the job
+      Bellwood Labs is a dynamic Product Development Consultancy founded in Atlanta and funded by Mark Cuban that has navigated to profitability and is hiring for growth.
+      
+      We are seeking a Senior Full Stack Software Engineer to build and scale a variety of Web and Mobile Products for an intriguing range of clients.
+      
+      This is a unique opportunity to work alongside an experienced team that excels at building SaaS products. This position reports to a Development Team Lead. Because this is a remote position, we will consider applicants based in the US and Canada.
+      
+      Key Responsibilities include:
+      
+      Design, build, scale, and enhance Software Products, Apps, and Platforms based on Client Needs and Business Requirements
+      Communicate Technical Topics clearly, in language that can be easily understood by Clients
+      Collaborate with Designers, and Product Teams to propose solutions to meet the goals of Clients and their Products
+      Define, refine, and document Best Practices that enable excellent team performance
+      Qualifications
+      Experience developing applications in Ruby on Rails, React, React Native, Node, or Java is necessary, though the role also requires a voracious appetite to learn and apply new skills. You should be skilled at building web-based software or mobile apps and excel at learning new languages and frameworks.
+      
+      We’re looking for someone who:
+      
+      Has a minimum of 5+ years full-stack software development experience in a professional work environment
+      Offers additional full-stack software development experience in other environments - school, GitHub, etc.
+      Has experience building and scaling Software Products
+      Has worked in a dynamic, small company environment and has a demonstrated ability to deliver with minimal direction
+      Has experience architecting and deploying Software Products to Cloud Providers like Google Cloud, Amazon Web Services, or Azure
+      Can communicate complex subject matter with clarity in both written and spoken form
+      Has a passion for technology that has impacted your education and career choices
+      Preferably has several years of experience with some combination of NodeJS, Ruby on Rails, React, React Native, and Angular
+      Benefits
+      
+      Remote
+      Unlimited PTO
+      Subsidized Medical, Dental, and Vision Insurance
+      Short/Long Term Disability
+      Profit Sharing
+      Referral Bonuses
+      Company Retreats
+      Our Mission
+      Bellwood Labs seeks to be and be known as the most trusted partner to develop and advance software products.
+      
+      Our Core Values
+      
+      We Embrace Your Goals
+      We Own our Commitments
+      We Succeed through Empathy
+      We Take the Next Step
+      Join our tight-knit team of sharp technologists to leverage your talents and grow your skills. We are looking forward to meeting with you!
+      
+      Job Type: Full-time
+      
+      Pay: $95,000.00-$120,000.00 per year
+      
+      Benefits:
+      
+      Company events
+      Dental care
+      Disability insurance
+      Paid time off
+      Profit sharing
+      Vision care
+      Work from home
+      Schedule:
+      
+      Monday to Friday      
+  `,
+      location: "Toronto, ON (Remote)",
+      platform: "Indeed",
       skills: {
         connect: [{ id: 1 }, { id: 2 }],
       },
@@ -193,6 +270,13 @@ async function seed() {
       user: { connect: { id: 1 } },
       job: { connect: { id: 2 } },
       category: { connect: { id: 1 } },
+    },
+  });
+  await prisma.usersOnJobs.create({
+    data: {
+      user: { connect: { id: 1 } },
+      job: { connect: { id: 3 } },
+      category: { connect: { id: 2 } },
     },
   });
   await prisma.usersOnJobs.create({
