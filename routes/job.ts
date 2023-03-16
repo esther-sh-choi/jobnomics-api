@@ -8,10 +8,11 @@ const {
   filterJobs,
   updateJobs,
   updateJobById,
-  deleteJobById,
 } = require("../controller/job-controller");
 
-router.get("/", getAllJobs);
+const { getUserInfo } = require('../helper/auth');
+
+router.get("/", getUserInfo, getAllJobs);
 
 router.get("/filter", filterJobs);
 

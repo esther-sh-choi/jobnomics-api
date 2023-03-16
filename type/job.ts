@@ -1,3 +1,4 @@
+import { Request } from 'express';
 interface Job {
   id: number;
   title: string;
@@ -63,3 +64,13 @@ interface JobUpdateEntity {
 
 export type UpdateInformationType = JobUpdateEntity[];
 
+export interface CustomRequest extends Request {
+  user: {
+    given_name: string;
+    family_name: string;
+    nickname: string;
+    name: string;
+    picture: string;
+    email: string;
+  };
+}
