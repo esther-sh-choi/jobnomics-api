@@ -1,3 +1,4 @@
+import { Request } from 'express';
 interface Job {
   id: number;
   title: string;
@@ -5,6 +6,7 @@ interface Job {
   logo: string | null;
   isFavorite: boolean;
   position: number | null;
+  updatedAt: Date;
 }
 
 interface Category {
@@ -47,7 +49,8 @@ interface UserJobs {
   userId: number;
   category: CategoryEntity;
   position: number | null;
-  isFavorite: boolean,
+  isFavorite: boolean;
+  updatedAt: Date;
   job: Job;
 }
 
@@ -63,3 +66,13 @@ interface JobUpdateEntity {
 
 export type UpdateInformationType = JobUpdateEntity[];
 
+export interface CustomRequest extends Request {
+  user: {
+    given_name: string;
+    family_name: string;
+    nickname: string;
+    name: string;
+    picture: string;
+    email: string;
+  };
+}
