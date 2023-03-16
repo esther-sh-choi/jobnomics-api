@@ -41,7 +41,7 @@ const filterJobs = async (req: Request, res: Response) => {
   );
   const formatUserJobs = processUserJobs(userJobs);
 
-  res.json({ jobs: formatUserJobs });
+  res.json(formatUserJobs);
 };
 
 const updateJobs = async (req: Request, res: Response) => {
