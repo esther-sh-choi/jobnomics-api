@@ -7,9 +7,7 @@ const cors = require("cors");
 import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
-const {
-  validateAccessToken,
-} = require("./helper/auth");
+const { validateAccessToken } = require("./helper/auth");
 
 const PORT = process.env.PORT || 8080;
 const app = express();

@@ -1,6 +1,15 @@
 import { Request, Response } from "express";
 import { CustomRequest } from "../type/job";
-const { getUserIdByEmail, queryUserAndJobsEntities, processUserJobs, queryJobById, queryUserJobsWithFilter, updateAllRearrangedJobs, deleteUserJob, updateInterviewDateAndFavorite } = require("../helper/job");
+const {
+  getUserIdByEmail,
+  queryUserAndJobsEntities,
+  processUserJobs,
+  queryJobById,
+  queryUserJobsWithFilter,
+  updateAllRearrangedJobs,
+  deleteUserJob,
+  updateInterviewDateAndFavorite,
+} = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
   // console.log(req.user);
@@ -25,22 +34,27 @@ const getJobById = async (req: Request, res: Response) => {
 const filterJobs = async (req: Request, res: Response) => {
   // req.body = {userId: 1, category: ["Applied", "Bookmarked"], languages: ['javascript', 'express']}
   const userId = 1;
-  const userJobs = await queryUserJobsWithFilter(userId, req.body.category, req.body.languages);
+  const userJobs = await queryUserJobsWithFilter(
+    userId,
+    req.body.category,
+    req.body.languages
+  );
   const formatUserJobs = processUserJobs(userJobs);
 
   res.json({ jobs: formatUserJobs });
 };
 
 const updateJobs = async (req: Request, res: Response) => {
-  // req.body = { jobBookmarkUpdates:[{userId: 1, jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {userId: 1, jobId: 2, categoryId: 2, newCategoryId: 1, position: 1}], type: "update"}
-  // Example: { "jobBookmarkUpdates":[
-  //   {"userId": 1, "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0}, 
+  // req.body = { jobUpdates:[{userId: 1, jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {userId: 1, jobId: 2, categoryId: 2, newCategoryId: 1, position: 1}], type: "update"}
+  // Example: { "jobUpdates":[
+  //   {"userId": 1, "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0},
   //   {"userId": 1, "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0}
   //   {"userId": 1, "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1}
-  //   ], 
+  //   ],
   //   "type": "update"
   // }
-  await updateAllRearrangedJobs(req.body.jobBookmarkUpdates);
+
+  await updateAllRearrangedJobs(req.body.jobUpdates);
 
   res.json({ message: "Update Successful" });
 };
@@ -69,4 +83,3 @@ module.exports = {
   updateJobs,
   updateJobById,
 };
-
