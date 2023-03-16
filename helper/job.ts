@@ -53,6 +53,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
       };
     }
   }
+
   return result;
 };
 
@@ -101,24 +102,31 @@ const queryUserJobsWithFilter = async (
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
-      job: {
-        skills: {
-          some: {
-            name: {
-              in: filteredLanguage,
+      OR: [
+        {
+          job: {
+            skills: {
+              some: {
+                name: {
+                  in: filteredLanguage,
+                },
+              },
             },
-          },
+          }
         },
-      },
-      category: {
-        name: {
-          in: filteredCategory,
+        {
+          category: {
+            name: {
+              in: filteredCategory,
+            },
+          }
         },
-      },
+      ],
       isDeleted: false,
     },
     select: {
       userId: true,
+      updatedAt: true,
       category: {
         select: {
           id: true,

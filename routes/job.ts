@@ -14,7 +14,7 @@ const { getUserInfo } = require('../helper/auth');
 
 router.get("/", getUserInfo, getAllJobs);
 
-router.get("/filter", filterJobs);
+router.put("/filter", filterJobs);
 
 router.get("/:id", getJobById);
 
