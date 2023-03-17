@@ -27,20 +27,21 @@ model User {
 }
 
 model Job {
-  id                Int           @id @default(autoincrement())
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  id                Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   title             String
   company           String
   location          String
   description       String
   summary           String?
-  logo              String?       @default("N/A")
+  logo              String?             @default("N/A")
   interviewExamples String?
   skills            Skill[]
   platform          String
-  platformJobId     String?       @unique
+  platformJobId     String?             @unique
   users             UsersOnJobs[]
+  UsersOnChecklists UsersOnChecklists[]
 }
 
 model UsersOnJobs {
@@ -76,6 +77,8 @@ model UsersOnChecklists {
   userId      Int
   checklist   Checklist @relation(fields: [checklistId], references: [id])
   checklistId Int
+  job         Job?      @relation(fields: [jobId], references: [id])
+  jobId       Int?
 
   @@id([userId, checklistId])
 }
