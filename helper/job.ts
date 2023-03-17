@@ -70,8 +70,8 @@ const processUserJobs = (userJobs: UserJobsType) => {
   return result;
 };
 
-const queryJobById = (selectedItem: SelectedItemType) => {
-  const { userId, jobId, categoryId } = selectedItem;
+const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
+  const { jobId, categoryId } = selectedItem;
 
   return prisma.usersOnJobs.findFirst({
     where: {
@@ -162,14 +162,14 @@ const queryUserJobsWithFilter = async (
 };
 
 const updateAllRearrangedJobs = async (
-  updateInformation: UpdateInformationType
+  updateInformation: UpdateInformationType, userId: number
 ) => {
   for (let update of updateInformation) {
     console.log("update", update);
     const job = await prisma.usersOnJobs.update({
       where: {
         userId_jobId_categoryId: {
-          userId: 1,
+          userId: userId,
           jobId: update.jobId,
           categoryId: update.categoryId,
         },
@@ -186,11 +186,11 @@ const updateAllRearrangedJobs = async (
   }
 };
 
-const deleteUserJob = async (deleteItem: DeleteItemType) => {
+const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
   return prisma.usersOnJobs.update({
     where: {
       userId_jobId_categoryId: {
-        userId: deleteItem.userId,
+        userId: userId,
         jobId: deleteItem.jobId,
         categoryId: deleteItem.categoryId,
       },
@@ -201,7 +201,7 @@ const deleteUserJob = async (deleteItem: DeleteItemType) => {
   });
 };
 
-const updateInterviewDateAndFavorite = async (updateItem: UpdateItemType) => {
+const updateInterviewDateAndFavorite = async (updateItem: UpdateItemType, userId: number) => {
   const updateData: updateDataType = {};
   if (updateItem.favorite) updateData["isFavorite"] = updateItem.favorite;
   if (updateItem.interviewDate)
@@ -210,7 +210,7 @@ const updateInterviewDateAndFavorite = async (updateItem: UpdateItemType) => {
   return prisma.usersOnJobs.update({
     where: {
       userId_jobId_categoryId: {
-        userId: updateItem.userId,
+        userId: userId,
         jobId: updateItem.jobId,
         categoryId: updateItem.categoryId,
       },
