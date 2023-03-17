@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
+import type { createNewJobType } from "../type/auto";
+
 const {
   runPuppeteer,
   getPlatformJobIdFromURL,
@@ -7,11 +9,13 @@ const {
 } = require("../helper/auto");
 
 const createNewJob = async (req: Request, res: Response) => {
-  const jobLink = req.body.link;
+  const { jobLink, position, interviewDate }: createNewJobType = req.body;
+  const userId = 1;
 
   const main = async () => {
-    const job = await prisma.job.findFirst({
+    let job = await prisma.job.findFirst({
       where: { platformJobId: platformJobIdFromURL },
+      select: { id: true },
     });
 
     if (!job) {
@@ -25,7 +29,7 @@ const createNewJob = async (req: Request, res: Response) => {
         });
       });
 
-      await prisma.job.create({
+      const newJob = await prisma.job.create({
         data: {
           ...jobData,
           skills: {
@@ -35,15 +39,21 @@ const createNewJob = async (req: Request, res: Response) => {
           },
         },
       });
+
+      job = newJob;
     }
 
-    const allJobs = await prisma.job.findMany({
-      include: {
-        skills: true,
+    const createUserOnJob = await prisma.usersOnJobs.create({
+      data: {
+        position,
+        interviewDate,
+        user: { connect: { id: 1 } },
+        job: { connect: { id: job.id } },
+        category: { connect: { id: 1 } },
       },
     });
 
-    res.json(allJobs);
+    res.json(createUserOnJob);
   };
 
   let platformJobIdFromURL: string;

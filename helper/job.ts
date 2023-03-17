@@ -127,14 +127,14 @@ const queryUserJobsWithFilter = async (
                 },
               },
             },
-          }
+          },
         },
         {
           category: {
             name: {
               in: filteredCategory,
             },
-          }
+          },
         },
       ],
       isDeleted: false,
@@ -165,10 +165,11 @@ const updateAllRearrangedJobs = async (
   updateInformation: UpdateInformationType
 ) => {
   for (let update of updateInformation) {
+    console.log("update", update);
     const job = await prisma.usersOnJobs.update({
       where: {
         userId_jobId_categoryId: {
-          userId: update.userId,
+          userId: 1,
           jobId: update.jobId,
           categoryId: update.categoryId,
         },
