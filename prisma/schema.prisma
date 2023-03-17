@@ -73,6 +73,7 @@ model Category {
 model UsersOnChecklists {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  isComplete  Boolean   @default(false)
   user        User      @relation(fields: [userId], references: [id])
   userId      Int
   checklist   Checklist @relation(fields: [checklistId], references: [id])
