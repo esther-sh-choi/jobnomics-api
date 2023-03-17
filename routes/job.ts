@@ -16,11 +16,11 @@ router.get("/", getUserInfo, getAllJobs);
 
 router.get("/filter", filterJobs);
 
-router.get("/:id", getJobById);
+router.get("/:userId/:jobId/:categoryId", getJobById);
 
 router.patch("/", updateJobs);
 
-router.put("/user-job", updateJobById);
+router.patch("/user-job", updateJobById);
 
 // router.put("/:id", deleteJobById);
 
