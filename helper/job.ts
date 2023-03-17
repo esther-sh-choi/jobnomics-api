@@ -6,6 +6,7 @@ import {
   UpdateInformationType,
   UpdateItemType,
   UserJobsType,
+  SelectedItemType,
 } from "../type/job";
 
 const queryUserAndJobsEntities = async (userId: number) => {
@@ -44,12 +45,24 @@ const processUserJobs = (userJobs: UserJobsType) => {
     const categoryName: string = eachJob.category.name;
     const categoryId: number = eachJob.category.id;
     if (eachJob.category.name in result) {
-      result[categoryName].jobs.push({ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite, updatedAt: eachJob.updatedAt });
+      result[categoryName].jobs.push({
+        ...eachJob.job,
+        position: eachJob.position,
+        isFavorite: eachJob.isFavorite,
+        updatedAt: eachJob.updatedAt,
+      });
     } else {
       result[categoryName] = {
         category: categoryName,
         id: categoryId,
-        jobs: [{ ...eachJob.job, position: eachJob.position, isFavorite: eachJob.isFavorite, updatedAt: eachJob.updatedAt }]
+        jobs: [
+          {
+            ...eachJob.job,
+            position: eachJob.position,
+            isFavorite: eachJob.isFavorite,
+            updatedAt: eachJob.updatedAt,
+          },
+        ],
       };
     }
   }
@@ -57,12 +70,14 @@ const processUserJobs = (userJobs: UserJobsType) => {
   return result;
 };
 
-const queryJobById = (id: string) => {
+const queryJobById = (selectedItem: SelectedItemType) => {
+  const { userId, jobId, categoryId } = selectedItem;
+
   return prisma.usersOnJobs.findFirst({
     where: {
-      user: { id: 1 },
-      job: { id: Number(id) },
-      category: { id: 1 },
+      user: { id: Number(userId) },
+      job: { id: Number(jobId) },
+      category: { id: Number(categoryId) },
     },
     select: {
       category: {
@@ -164,8 +179,8 @@ const updateAllRearrangedJobs = async (
             id: update.newCategoryId,
           },
         },
-        position: update.position
-      }
+        position: update.position,
+      },
     });
   }
 };
@@ -206,11 +221,11 @@ const updateInterviewDateAndFavorite = async (updateItem: UpdateItemType) => {
 const getUserIdByEmail = (email: string) => {
   return prisma.user.findUnique({
     where: {
-      email
+      email,
     },
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
 };
 
@@ -222,5 +237,5 @@ module.exports = {
   updateAllRearrangedJobs,
   deleteUserJob,
   updateInterviewDateAndFavorite,
-  getUserIdByEmail
+  getUserIdByEmail,
 };
