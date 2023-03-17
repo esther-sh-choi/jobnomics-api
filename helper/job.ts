@@ -230,6 +230,24 @@ const getUserIdByEmail = (email: string) => {
   });
 };
 
+const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
+  const { jobId } = selectedItem;
+
+  return prisma.usersOnChecklists.findMany({
+    where: {
+      user: { id: Number(userId) },
+      job: { id: Number(jobId) },
+    },
+    select: {
+      checklist: {
+        select: {
+          description: true
+        }
+      }
+    },
+  });
+};
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -239,4 +257,5 @@ module.exports = {
   deleteUserJob,
   updateInterviewDateAndFavorite,
   getUserIdByEmail,
+  queryChecklist
 };
