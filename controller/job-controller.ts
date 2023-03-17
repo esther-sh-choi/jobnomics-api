@@ -12,28 +12,31 @@ const {
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
-  // console.log(req.user);
-  // const userId = await getUserIdByEmail(req.user.email);
-  // console.log(userId);
+  const user = await getUserIdByEmail(req.user.email);
 
-  const userId = 1;
-  const userJobs = await queryUserAndJobsEntities(userId);
+  const userJobs = await queryUserAndJobsEntities(user.id);
   const formatUserJobs = processUserJobs(userJobs);
 
   res.json(formatUserJobs);
 };
 
-const getJobById = async (req: Request, res: Response) => {
-  const queryJob = await queryJobById(req.params);
+const getJobById = async (req: CustomRequest, res: Response) => {
+  // Get userId by doing user.id
+  const user = await getUserIdByEmail(req.user.email);
+
+  const queryJob = await queryJobById(req.params, user.id);
   console.log(queryJob);
   res.json(queryJob);
 };
 
-const filterJobs = async (req: Request, res: Response) => {
-  // req.body = {userId: 1, category: ["Applied", "Bookmarked"], languages: ['javascript', 'express']}
-  const userId = 1;
+const filterJobs = async (req: CustomRequest, res: Response) => {
+  // req.body = {category: ["Applied", "Bookmarked"], languages: ['javascript', 'express']}
+  console.log(req.body);
+  // Get userId by doing user.id
+  const user = await getUserIdByEmail(req.user.email);
+
   const userJobs = await queryUserJobsWithFilter(
-    userId,
+    user.id,
     req.body.category,
     req.body.languages
   );
@@ -42,32 +45,38 @@ const filterJobs = async (req: Request, res: Response) => {
   res.json(formatUserJobs);
 };
 
-const updateJobs = async (req: Request, res: Response) => {
-  // req.body = { jobUpdates:[{userId: 1, jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {userId: 1, jobId: 2, categoryId: 2, newCategoryId: 1, position: 1}], type: "update"}
+const updateJobs = async (req: CustomRequest, res: Response) => {
+  // req.body = { jobUpdates:[{jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {jobId: 2, categoryId: 2, newCategoryId: 1, position: 1}], type: "update"}
   // Example: { "jobUpdates":[
-  //   {"userId": 1, "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0},
-  //   {"userId": 1, "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0}
-  //   {"userId": 1, "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1}
+  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0},
+  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0}
+  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1}
   //   ],
   //   "type": "update"
   // }
 
-  await updateAllRearrangedJobs(req.body.jobUpdates);
+  // Get userId by doing user.id
+  const user = await getUserIdByEmail(req.user.email);
+
+  await updateAllRearrangedJobs(req.body.jobUpdates, user.id);
 
   res.json({ message: "Update Successful" });
 };
 
-const updateJobById = async (req: Request, res: Response) => {
-  // Option 1: req.body = { userId: 1, jobId: 2, categoryId: 1, type: "delete"}
-  // Option 2: req.body = { userId: 1, jobId: 2, categoryId: 1, interviewDate: SomeDate, favorite: true, type: "update"}
+const updateJobById = async (req: CustomRequest, res: Response) => {
+  // Option 1: req.body = { jobId: 2, categoryId: 1, type: "delete"}
+  // Option 2: req.body = { jobId: 2, categoryId: 1, interviewDate: SomeDate, favorite: true, type: "update"}
+
+  // Get userId by doing user.id
+  const user = await getUserIdByEmail(req.user.email);
 
   if (req.body.type === "delete") {
-    await deleteUserJob(req.body);
+    await deleteUserJob(req.body, user.id);
     return res.json({ message: "Delete Successful" });
   }
 
   if (req.body.type === "update") {
-    await updateInterviewDateAndFavorite(req.body);
+    await updateInterviewDateAndFavorite(req.body, user.id);
     return res.json({ message: "Update Successful" });
   }
 

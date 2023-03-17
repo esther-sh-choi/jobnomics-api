@@ -15,20 +15,25 @@ const getUserInfo = async (
 ) => {
   const accessToken = req?.headers?.authorization?.split(" ")[1];
 
-  const response = await axios.get(`${process.env.AUTH0_ISSUER}/userinfo`, {
-    headers: {
-      authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    const response = await axios.get(`${process.env.AUTH0_ISSUER}/userinfo`, {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  req.user = {
-    given_name: response.data?.given_name,
-    family_name: response.data?.family_name,
-    nickname: response.data?.nickname,
-    name: response.data?.name,
-    picture: response.data?.picture,
-    email: response.data?.email,
-  };
+    req.user = {
+      given_name: response.data?.given_name,
+      family_name: response.data?.family_name,
+      nickname: response.data?.nickname,
+      name: response.data?.name,
+      picture: response.data?.picture,
+      email: response.data?.email,
+    };
+  } catch (e) {
+    return res.json({ error: "Too many request!" });
+  }
+
   next();
 };
 
