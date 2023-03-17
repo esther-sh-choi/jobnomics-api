@@ -77,10 +77,10 @@ model UsersOnChecklists {
   userId      Int
   checklist   Checklist @relation(fields: [checklistId], references: [id])
   checklistId Int
-  job         Job?      @relation(fields: [jobId], references: [id])
-  jobId       Int?
+  job         Job       @relation(fields: [jobId], references: [id])
+  jobId       Int
 
-  @@id([userId, checklistId])
+  @@id([userId, checklistId, jobId])
 }
 
 model Checklist {

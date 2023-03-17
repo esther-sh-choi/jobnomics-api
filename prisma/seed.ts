@@ -214,19 +214,12 @@ async function seed() {
     ],
   });
 
-  const checklistArray = await prisma.checklist.findMany();
-
   await prisma.user.create({
     data: {
       givenName: "Esther",
       familyName: "Choi",
       name: "Esther Choi",
       email: "esther@email.com",
-      checklists: {
-        create: checklistArray.map((checklist) => {
-          return { checklist: { connect: { id: checklist.id } } };
-        }),
-      },
     },
     include: {
       checklists: true,
@@ -239,16 +232,24 @@ async function seed() {
       familyName: "Tran",
       name: "Viet Tran",
       email: "viet@email.com",
-      checklists: {
-        create: checklistArray.map((checklist) => {
-          return { checklist: { connect: { id: checklist.id } } };
-        }),
-      },
     },
     include: {
       checklists: true,
     },
   });
+
+  const checklistArray = await prisma.checklist.findMany();
+
+  checklistArray.forEach(
+    async (checklist) =>
+      await prisma.usersOnChecklists.create({
+        data: {
+          user: { connect: { id: 1 } },
+          job: { connect: { id: 1 } },
+          checklist: { connect: { id: checklist.id } },
+        },
+      })
+  );
 
   const allUsers = await prisma.user.findMany({
     include: {
