@@ -100,7 +100,6 @@ async function seed() {
     },
   });
 
-
   await prisma.job.create({
     data: {
       title: "Senior Full Stack Software Engineer",
@@ -262,6 +261,8 @@ async function seed() {
     data: {
       user: { connect: { id: 1 } },
       job: { connect: { id: 1 } },
+      position: 0,
+      interviewDate: null,
       category: { connect: { id: 1 } },
     },
   });
@@ -269,6 +270,8 @@ async function seed() {
     data: {
       user: { connect: { id: 1 } },
       job: { connect: { id: 2 } },
+      position: 1,
+      interviewDate: null,
       category: { connect: { id: 1 } },
     },
   });
@@ -276,6 +279,8 @@ async function seed() {
     data: {
       user: { connect: { id: 1 } },
       job: { connect: { id: 3 } },
+      position: 0,
+      interviewDate: null,
       category: { connect: { id: 2 } },
     },
   });
@@ -283,6 +288,8 @@ async function seed() {
     data: {
       user: { connect: { id: 2 } },
       job: { connect: { id: 1 } },
+      position: 0,
+      interviewDate: null,
       category: { connect: { id: 1 } },
     },
   });
