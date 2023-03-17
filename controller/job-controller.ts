@@ -9,7 +9,8 @@ const {
   updateAllRearrangedJobs,
   deleteUserJob,
   updateInterviewDateAndFavorite,
-  queryChecklist
+  queryChecklist,
+  combineChecklistInfo
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -25,14 +26,15 @@ const getJobById = async (req: CustomRequest, res: Response) => {
   // Get userId by doing user.id
   const user = await getUserIdByEmail(req.user.email);
 
-  // const queryJob = await queryJobById(req.params, user.id);
-  // console.log(queryJob);
-  // res.json(queryJob);
+  const queryJob = await queryJobById(req.params, user.id);
 
   const queryChecklists = await queryChecklist(req.params, user.id);
 
-  console.log(queryChecklists);
-  res.json({ message: "hey" });
+  const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
+
+  console.log(formattedJob);
+
+  res.json(formattedJob);
 };
 
 const filterJobs = async (req: CustomRequest, res: Response) => {

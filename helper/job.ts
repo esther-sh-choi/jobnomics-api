@@ -239,13 +239,20 @@ const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
       job: { id: Number(jobId) },
     },
     select: {
+      isComplete: true,
       checklist: {
         select: {
+          id: true,
           description: true
         }
       }
     },
   });
+};
+const combineChecklistInfo = (job: any, checklists: any) => {
+  const formattedChecklist = checklists.map((checklist: any) => ({ ...checklist.checklist, isComplete: checklist.isComplete }));
+  const formattedJob = { ...job, checklists: formattedChecklist };
+  return formattedJob;
 };
 
 module.exports = {
@@ -257,5 +264,6 @@ module.exports = {
   deleteUserJob,
   updateInterviewDateAndFavorite,
   getUserIdByEmail,
-  queryChecklist
+  queryChecklist,
+  combineChecklistInfo
 };

@@ -240,16 +240,15 @@ async function seed() {
 
   const checklistArray = await prisma.checklist.findMany();
 
-  checklistArray.forEach(
-    async (checklist) =>
-      await prisma.usersOnChecklists.create({
-        data: {
-          user: { connect: { id: 1 } },
-          job: { connect: { id: 1 } },
-          checklist: { connect: { id: checklist.id } },
-        },
-      })
-  );
+  await prisma.usersOnChecklists.createMany({
+    data: checklistArray.map((checklist) => ({
+      userId: 1,
+      jobId: 1,
+      checklistId: checklist.id,
+      isComplete: false
+    })),
+  });
+
 
   const allUsers = await prisma.user.findMany({
     include: {
