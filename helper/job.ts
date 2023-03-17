@@ -162,7 +162,8 @@ const queryUserJobsWithFilter = async (
 };
 
 const updateAllRearrangedJobs = async (
-  updateInformation: UpdateInformationType, userId: number
+  updateInformation: UpdateInformationType,
+  userId: number
 ) => {
   for (let update of updateInformation) {
     console.log("update", update);
@@ -201,11 +202,20 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
   });
 };
 
-const updateInterviewDateAndFavorite = async (updateItem: UpdateItemType, userId: number) => {
+const updateInterviewDateAndFavoriteAndChecklist = async (
+  updateItem: UpdateItemType,
+  userId: number
+) => {
   const updateData: updateDataType = {};
-  if (updateItem.favorite) updateData["isFavorite"] = updateItem.favorite;
-  if (updateItem.interviewDate)
+  if (updateItem.favorite) {
+    updateData["isFavorite"] = updateItem.favorite;
+  }
+  if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
+  }
+  if (updateItem.checklists) {
+    updateData["checklists"] = [...updateItem.checklists];
+  }
 
   return prisma.usersOnJobs.update({
     where: {
@@ -230,6 +240,27 @@ const getUserIdByEmail = (email: string) => {
   });
 };
 
+const createChecklistsUserJob = async (userId: number, jobId: number) => {
+  const checklists = await prisma.checklist.findMany();
+
+  const userJobChecklists = await prisma.usersOnChecklists.findMany({
+    where: { userId, jobId },
+  });
+
+  if (userJobChecklists) {
+    checklists.forEach(async (checklist) => {
+      await prisma.usersOnChecklists.create({
+        data: {
+          userId: userId,
+          jobId: jobId,
+          checklistId: checklist.id,
+          isComplete: false,
+        },
+      });
+    });
+  }
+};
+
 const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
   const { jobId } = selectedItem;
 
@@ -243,14 +274,18 @@ const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
       checklist: {
         select: {
           id: true,
-          description: true
-        }
-      }
+          description: true,
+        },
+      },
     },
   });
 };
+
 const combineChecklistInfo = (job: any, checklists: any) => {
-  const formattedChecklist = checklists.map((checklist: any) => ({ ...checklist.checklist, isComplete: checklist.isComplete }));
+  const formattedChecklist = checklists.map((checklist: any) => ({
+    ...checklist.checklist,
+    isComplete: checklist.isComplete,
+  }));
   const formattedJob = { ...job, checklists: formattedChecklist };
   return formattedJob;
 };
@@ -262,8 +297,9 @@ module.exports = {
   queryUserJobsWithFilter,
   updateAllRearrangedJobs,
   deleteUserJob,
-  updateInterviewDateAndFavorite,
+  updateInterviewDateAndFavoriteAndChecklist,
   getUserIdByEmail,
   queryChecklist,
-  combineChecklistInfo
+  combineChecklistInfo,
+  createChecklistsUserJob,
 };
