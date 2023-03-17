@@ -31,7 +31,7 @@ const getJobById = async (req: CustomRequest, res: Response) => {
 
 const filterJobs = async (req: CustomRequest, res: Response) => {
   // req.body = {category: ["Applied", "Bookmarked"], languages: ['javascript', 'express']}
-
+  console.log(req.body);
   // Get userId by doing user.id
   const user = await getUserIdByEmail(req.user.email);
 
