@@ -30,15 +30,15 @@ const getJobById = async (req: CustomRequest, res: Response) => {
 };
 
 const filterJobs = async (req: CustomRequest, res: Response) => {
-  // req.body = {category: ["Applied", "Bookmarked"], languages: ['javascript', 'express']}
-  console.log(req.body);
+  // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
+
   // Get userId by doing user.id
   const user = await getUserIdByEmail(req.user.email);
 
   const userJobs = await queryUserJobsWithFilter(
     user.id,
     req.body.category,
-    req.body.languages
+    req.body.skills
   );
   const formatUserJobs = processUserJobs(userJobs);
 
