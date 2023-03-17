@@ -23,11 +23,11 @@ const getUserInfo = async (
     });
 
     req.user = {
-      given_name: response.data?.given_name,
-      family_name: response.data?.family_name,
-      nickname: response.data?.nickname,
-      name: response.data?.name,
-      picture: response.data?.picture,
+      given_name: response.data?.given_name || "",
+      family_name: response.data?.family_name || "",
+      nickname: response.data?.nickname || "",
+      name: response.data?.name || "",
+      picture: response.data?.picture || "",
       email: response.data?.email,
     };
   } catch (e) {
