@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request } from "express";
 interface Job {
   id: number;
   title: string;
@@ -43,6 +43,12 @@ export type UpdateItemType = {
 interface CategoryEntity {
   id: number;
   name: string;
+}
+
+export interface SelectedItemType {
+  userId: number;
+  jobId: number;
+  categoryId: number;
 }
 
 interface UserJobs {

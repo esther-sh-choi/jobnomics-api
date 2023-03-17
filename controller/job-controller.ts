@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, query } from "express";
 import { CustomRequest } from "../type/job";
 const {
   getUserIdByEmail,
@@ -24,11 +24,9 @@ const getAllJobs = async (req: CustomRequest, res: Response) => {
 };
 
 const getJobById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  const queryJob = await queryJobById(id);
-
-  res.json({ job: queryJob });
+  const queryJob = await queryJobById(req.params);
+  console.log(queryJob);
+  res.json(queryJob);
 };
 
 const filterJobs = async (req: Request, res: Response) => {
