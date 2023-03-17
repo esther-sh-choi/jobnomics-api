@@ -17,7 +17,7 @@ model User {
   createdAt  DateTime            @default(now())
   updatedAt  DateTime            @updatedAt
   givenName  String
-  familyName String
+  familyName String?
   name       String
   email      String              @unique
   picture    String?             @default("N/A")
