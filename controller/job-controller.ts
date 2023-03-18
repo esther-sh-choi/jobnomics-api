@@ -32,6 +32,8 @@ const getJobById = async (req: CustomRequest, res: Response) => {
   const queryChecklists = await queryChecklist(req.params, req.user.id);
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
+
+  console.log(formattedJob);
   res.json(formattedJob);
 };
 
@@ -107,8 +109,7 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
 };
 
 const rejectedJob = async (req: CustomRequest, res: Response) => {
-
-  await updateRejectedReason(req.user.id, req.body.jobId, req.body.categoryId, req.body.description);
+  await updateRejectedReason(req.user.id, req.body.jobId, req.body.categoryId, req.body.reason);
 
   res.json({ message: "Reason rejected!" });
 };
