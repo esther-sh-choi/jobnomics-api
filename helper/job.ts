@@ -9,6 +9,9 @@ import {
   SelectedItemType,
 } from "../type/job";
 
+
+const { requestToOpenAI } = require("./auto");
+
 const queryUserAndJobsEntities = async (userId: number) => {
   return prisma.usersOnJobs.findMany({
     where: {
@@ -165,25 +168,28 @@ const updateAllRearrangedJobs = async (
   updateInformation: UpdateInformationType,
   userId: number
 ) => {
-  for (let update of updateInformation) {
-    console.log("update", update);
-    const job = await prisma.usersOnJobs.update({
-      where: {
-        userId_jobId_categoryId: {
-          userId: userId,
-          jobId: update.jobId,
-          categoryId: update.categoryId,
-        },
-      },
-      data: {
-        category: {
-          connect: {
-            id: update.newCategoryId,
+  try {
+    for (let update of updateInformation) {
+      const job = await prisma.usersOnJobs.update({
+        where: {
+          userId_jobId_categoryId: {
+            userId: userId,
+            jobId: update.jobId,
+            categoryId: update.categoryId,
           },
         },
-        position: update.position,
-      },
-    });
+        data: {
+          category: {
+            connect: {
+              id: update.newCategoryId,
+            },
+          },
+          position: update.position,
+        },
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -246,8 +252,7 @@ const createChecklistsUserJob = async (userId: number, jobId: number) => {
   const userJobChecklists = await prisma.usersOnChecklists.findMany({
     where: { userId, jobId },
   });
-
-  if (!userJobChecklists) {
+  if (userJobChecklists.length === 0) {
     checklists.forEach(async (checklist) => {
       await prisma.usersOnChecklists.create({
         data: {
@@ -290,6 +295,40 @@ const combineChecklistInfo = (job: any, checklists: any) => {
   return formattedJob;
 };
 
+const checkJobQuestions = async (jobId: number) => {
+  const job = await prisma.job.findUnique({
+    where: {
+      id: jobId
+    },
+    select: {
+      description: true,
+      interviewExamples: true,
+    },
+  });
+
+  if (job?.interviewExamples) {
+    return { check: true, description: null };
+  }
+  return { check: false, description: job?.description };
+};
+
+const questionsFromOpenAi = async (description: string) => {
+  return requestToOpenAI(description, "interview");
+};
+
+const saveQuestionsToDatabase = async (jobId: number, description: string) => {
+  return prisma.job.update({
+    where: {
+      id: jobId
+    },
+    data: {
+      interviewExamples: description
+    },
+  });
+};
+
+
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -302,4 +341,7 @@ module.exports = {
   queryChecklist,
   combineChecklistInfo,
   createChecklistsUserJob,
+  checkJobQuestions,
+  questionsFromOpenAi,
+  saveQuestionsToDatabase
 };
