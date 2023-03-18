@@ -9,7 +9,6 @@ import {
   SelectedItemType,
 } from "../type/job";
 
-
 const { requestToOpenAI } = require("./auto");
 
 const queryUserAndJobsEntities = async (userId: number) => {
@@ -298,7 +297,7 @@ const combineChecklistInfo = (job: any, checklists: any) => {
 const checkJobQuestions = async (jobId: number) => {
   const job = await prisma.job.findUnique({
     where: {
-      id: jobId
+      id: jobId,
     },
     select: {
       description: true,
@@ -319,15 +318,36 @@ const questionsFromOpenAi = async (description: string) => {
 const saveQuestionsToDatabase = async (jobId: number, description: string) => {
   return prisma.job.update({
     where: {
-      id: jobId
+      id: jobId,
     },
     data: {
-      interviewExamples: description
+      interviewExamples: description,
     },
   });
 };
 
-
+const updateNoteInUserJob = async (
+  noteObj: {
+    note: string;
+    jobId: number;
+    categoryId: number;
+  },
+  userId: number
+) => {
+  const { note, jobId, categoryId } = noteObj;
+  return prisma.usersOnJobs.update({
+    where: {
+      userId_jobId_categoryId: {
+        userId,
+        jobId,
+        categoryId,
+      },
+    },
+    data: {
+      note,
+    },
+  });
+};
 
 module.exports = {
   queryUserAndJobsEntities,
@@ -343,5 +363,6 @@ module.exports = {
   createChecklistsUserJob,
   checkJobQuestions,
   questionsFromOpenAi,
-  saveQuestionsToDatabase
+  saveQuestionsToDatabase,
+  updateNoteInUserJob,
 };
