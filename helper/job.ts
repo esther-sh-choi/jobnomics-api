@@ -168,24 +168,28 @@ const updateAllRearrangedJobs = async (
   updateInformation: UpdateInformationType,
   userId: number
 ) => {
-  for (let update of updateInformation) {
-    const job = await prisma.usersOnJobs.update({
-      where: {
-        userId_jobId_categoryId: {
-          userId: userId,
-          jobId: update.jobId,
-          categoryId: update.categoryId,
-        },
-      },
-      data: {
-        category: {
-          connect: {
-            id: update.newCategoryId,
+  try {
+    for (let update of updateInformation) {
+      const job = await prisma.usersOnJobs.update({
+        where: {
+          userId_jobId_categoryId: {
+            userId: userId,
+            jobId: update.jobId,
+            categoryId: update.categoryId,
           },
         },
-        position: update.position,
-      },
-    });
+        data: {
+          category: {
+            connect: {
+              id: update.newCategoryId,
+            },
+          },
+          position: update.position,
+        },
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -248,8 +252,7 @@ const createChecklistsUserJob = async (userId: number, jobId: number) => {
   const userJobChecklists = await prisma.usersOnChecklists.findMany({
     where: { userId, jobId },
   });
-
-  if (!userJobChecklists) {
+  if (userJobChecklists.length === 0) {
     checklists.forEach(async (checklist) => {
       await prisma.usersOnChecklists.create({
         data: {

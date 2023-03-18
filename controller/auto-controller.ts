@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
 import type { createNewJobType } from "../type/auto";
+import { CustomRequest } from "../type/job";
+const {
+  getUserIdByEmail,
+} = require("../helper/job");
 
 const {
   runPuppeteer,
@@ -8,9 +12,9 @@ const {
   getPlatformJobIdDetailView,
 } = require("../helper/auto");
 
-const createNewJob = async (req: Request, res: Response) => {
+const createNewJob = async (req: CustomRequest, res: Response) => {
   const { jobLink, position, interviewDate }: createNewJobType = req.body;
-  const userId = 1;
+  const user = await getUserIdByEmail(req.user.email);
 
   const main = async () => {
     let job = await prisma.job.findFirst({
@@ -29,31 +33,35 @@ const createNewJob = async (req: Request, res: Response) => {
         });
       });
 
-      const newJob = await prisma.job.create({
-        data: {
-          ...jobData,
-          skills: {
-            connect: jobData.skills.map((skill: string) => {
-              return { name: skill };
-            }),
+      try {
+        const newJob = await prisma.job.create({
+          data: {
+            ...jobData,
+            skills: {
+              connect: jobData.skills.map((skill: string) => {
+                return { name: skill };
+              }),
+            },
           },
-        },
-      });
+        });
+        job = newJob;
 
-      job = newJob;
+        const createUserOnJob = await prisma.usersOnJobs.create({
+          data: {
+            position,
+            interviewDate,
+            user: { connect: { id: user.id } },
+            job: { connect: { id: job?.id } },
+            category: { connect: { id: 1 } },
+          },
+        });
+        return res.json(createUserOnJob);
+      } catch (e) {
+        console.log(e);
+      }
     }
 
-    const createUserOnJob = await prisma.usersOnJobs.create({
-      data: {
-        position,
-        interviewDate,
-        user: { connect: { id: 1 } },
-        job: { connect: { id: job.id } },
-        category: { connect: { id: 1 } },
-      },
-    });
-
-    res.json(createUserOnJob);
+    res.json({ message: "Cannot create the job at the moment" });
   };
 
   let platformJobIdFromURL: string;

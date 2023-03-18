@@ -35,7 +35,6 @@ const getJobById = async (req: CustomRequest, res: Response) => {
   const queryChecklists = await queryChecklist(req.params, user.id);
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
-
   res.json(formattedJob);
 };
 

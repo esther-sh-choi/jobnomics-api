@@ -18,7 +18,7 @@ router.get("/", getUserInfo, getAllJobs);
 
 router.put("/filter", getUserInfo, filterJobs);
 
-router.get("/:userId/:jobId/:categoryId", getUserInfo, getJobById);
+router.get("/:jobId/:categoryId", getUserInfo, getJobById);
 
 router.post("/", getUserInfo, addUserChecklists);
 
