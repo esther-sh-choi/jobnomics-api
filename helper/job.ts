@@ -166,7 +166,6 @@ const updateAllRearrangedJobs = async (
   userId: number
 ) => {
   for (let update of updateInformation) {
-    console.log("update", update);
     const job = await prisma.usersOnJobs.update({
       where: {
         userId_jobId_categoryId: {
@@ -290,6 +289,23 @@ const combineChecklistInfo = (job: any, checklists: any) => {
   return formattedJob;
 };
 
+const checkJobQuestions = async (jobId: number) => {
+  const job = await prisma.job.findUnique({
+    where: {
+      id: jobId
+    },
+    select: {
+      description: true,
+      interviewExamples: true,
+    },
+  });
+
+  if (job?.interviewExamples) {
+    return { check: true };
+  }
+  return { check: false, description: job?.description };
+};
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -302,4 +318,5 @@ module.exports = {
   queryChecklist,
   combineChecklistInfo,
   createChecklistsUserJob,
+  checkJobQuestions
 };
