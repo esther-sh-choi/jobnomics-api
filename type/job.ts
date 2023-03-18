@@ -7,6 +7,7 @@ interface Job {
   isFavorite: boolean;
   position: number | null;
   updatedAt: Date;
+  description?: string;
 }
 
 interface Category {
@@ -60,6 +61,7 @@ interface UserJobs {
   isFavorite: boolean;
   updatedAt: Date;
   job: Job;
+  description: string;
 }
 
 export type UserJobsType = UserJobs[];
