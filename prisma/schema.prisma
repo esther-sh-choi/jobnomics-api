@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-  id         Int                 @id @default(autoincrement())
+  id         Int                 @id @unique @default(autoincrement())
   createdAt  DateTime            @default(now())
   updatedAt  DateTime            @updatedAt
   givenName  String
@@ -51,6 +51,7 @@ model UsersOnJobs {
   position      Int?
   interviewDate DateTime?
   isDeleted     Boolean   @default(false)
+  rejectReason  String?
 
   user       User     @relation(fields: [userId], references: [id])
   userId     Int
@@ -99,3 +100,5 @@ model Skill {
   name      String   @unique
   jobs      Job[]
 }
+
+// Make model for Rejected Reason to connect to UserOnJobs
