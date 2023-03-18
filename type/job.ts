@@ -23,7 +23,6 @@ export type CategoryType = {
 export type updateDataType = {
   isFavorite?: boolean;
   interviewDate?: Date;
-  checklists?: { id: number; description: string; isComplete: boolean; }[];
 };
 
 export type DeleteItemType = {
@@ -34,7 +33,6 @@ export type DeleteItemType = {
 };
 
 export type UpdateItemType = {
-  checklists?: { id: number; description: string; isComplete: boolean; }[];
   favorite?: boolean;
   type: string;
   userId: number;
@@ -82,3 +80,13 @@ export interface CustomRequest extends Request {
     email: string;
   };
 }
+
+export type UpdateChecklistType = {
+  checklists?: { id: number; description: string; isComplete: boolean }[];
+};
+
+export type selectedCheckboxType = {
+  checklistId: number;
+  jobId: number;
+  isComplete: boolean;
+};
