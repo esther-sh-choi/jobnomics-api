@@ -327,7 +327,20 @@ const saveQuestionsToDatabase = async (jobId: number, description: string) => {
   });
 };
 
-
+const updateRejectedReason = (userId: number, jobId: string, categoryId: string, reason: string) => {
+  return prisma.usersOnJobs.update({
+    where: {
+      userId_jobId_categoryId: {
+        userId,
+        jobId: Number(jobId),
+        categoryId: Number(categoryId),
+      },
+    },
+    data: {
+      rejectReason: reason
+    },
+  });
+};
 
 module.exports = {
   queryUserAndJobsEntities,
@@ -343,5 +356,6 @@ module.exports = {
   createChecklistsUserJob,
   checkJobQuestions,
   questionsFromOpenAi,
-  saveQuestionsToDatabase
+  saveQuestionsToDatabase,
+  updateRejectedReason
 };
