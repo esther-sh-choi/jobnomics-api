@@ -9,7 +9,8 @@ const {
   updateJobs,
   updateJobById,
   addUserChecklists,
-  createInterviewQuestions
+  createInterviewQuestions,
+  rejectedJob
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -27,6 +28,8 @@ router.post("/interview-questions", getUserInfo, createInterviewQuestions);
 router.patch("/", getUserInfo, updateJobs);
 
 router.patch("/user-job", getUserInfo, updateJobById);
+
+router.patch("/rejected-reason", getUserInfo, rejectedJob);
 
 // router.put("/:id", deleteJobById);
 
