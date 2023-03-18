@@ -8,6 +8,7 @@ const {
   filterJobs,
   updateJobs,
   updateJobById,
+  addUserChecklists,
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -17,6 +18,8 @@ router.get("/", getUserInfo, getAllJobs);
 router.put("/filter", getUserInfo, filterJobs);
 
 router.get("/:userId/:jobId/:categoryId", getUserInfo, getJobById);
+
+router.post("/", getUserInfo, addUserChecklists);
 
 router.patch("/", getUserInfo, updateJobs);
 
