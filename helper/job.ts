@@ -7,8 +7,8 @@ import {
   UpdateItemType,
   UserJobsType,
   SelectedItemType,
+  selectedCheckboxType,
 } from "../type/job";
-
 
 const { requestToOpenAI } = require("./auto");
 
@@ -53,7 +53,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
         position: eachJob.position,
         isFavorite: eachJob.isFavorite,
         updatedAt: eachJob.updatedAt,
-        description: eachJob.job?.description
+        description: eachJob.job?.description,
       });
     } else {
       result[categoryName] = {
@@ -65,7 +65,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
             position: eachJob.position,
             isFavorite: eachJob.isFavorite,
             updatedAt: eachJob.updatedAt,
-            description: eachJob.job?.description
+            description: eachJob.job?.description,
           },
         ],
       };
@@ -95,6 +95,7 @@ const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
       updatedAt: true,
       isFavorite: true,
       position: true,
+      note: true,
       interviewDate: true,
       rejectReason: true,
       job: {
@@ -154,6 +155,7 @@ const queryUserJobsWithFilter = async (
           name: true,
         },
       },
+      note: true,
       position: true,
       job: {
         select: {
@@ -161,7 +163,7 @@ const queryUserJobsWithFilter = async (
           title: true,
           company: true,
           logo: true,
-          description: true
+          description: true,
         },
       },
     },
@@ -212,7 +214,7 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
   });
 };
 
-const updateInterviewDateAndFavoriteAndChecklist = async (
+const updateInterviewDateAndFavorite = async (
   updateItem: UpdateItemType,
   userId: number
 ) => {
@@ -222,9 +224,6 @@ const updateInterviewDateAndFavoriteAndChecklist = async (
   }
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
-  }
-  if (updateItem.checklists) {
-    updateData["checklists"] = [...updateItem.checklists];
   }
 
   return prisma.usersOnJobs.update({
@@ -270,6 +269,30 @@ const createChecklistsUserJob = async (userId: number, jobId: number) => {
   }
 };
 
+const updateChecklistUserJob = async (
+  selectedCheckbox: selectedCheckboxType,
+  userId: number
+) => {
+  const { checklistId, jobId, isComplete } = selectedCheckbox;
+
+  try {
+    return await prisma.usersOnChecklists.update({
+      where: {
+        userId_checklistId_jobId: {
+          userId,
+          checklistId,
+          jobId,
+        },
+      },
+      data: {
+        isComplete,
+      },
+    });
+  } catch (e) {
+    return e;
+  }
+};
+
 const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
   const { jobId } = selectedItem;
 
@@ -302,7 +325,7 @@ const combineChecklistInfo = (job: any, checklists: any) => {
 const checkJobQuestions = async (jobId: number) => {
   const job = await prisma.job.findUnique({
     where: {
-      id: jobId
+      id: jobId,
     },
     select: {
       description: true,
@@ -323,15 +346,47 @@ const questionsFromOpenAi = async (description: string) => {
 const saveQuestionsToDatabase = async (jobId: number, description: string) => {
   return prisma.job.update({
     where: {
-      id: jobId
+      id: jobId,
     },
     data: {
-      interviewExamples: description
+      interviewExamples: description,
     },
   });
 };
 
-const updateRejectedReason = (userId: number, jobId: string, categoryId: string, reason: string) => {
+const updateNoteInUserJob = async (
+  noteObj: {
+    note: string;
+    jobId: number;
+    categoryId: number;
+  },
+  userId: number
+) => {
+  const { note, jobId, categoryId } = noteObj;
+  try {
+    return await prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId,
+          jobId,
+          categoryId,
+        },
+      },
+      data: {
+        note,
+      },
+    });
+  } catch (e) {
+    return e;
+  }
+};
+
+const updateRejectedReason = (
+  userId: number,
+  jobId: string,
+  categoryId: string,
+  reason: string
+) => {
   return prisma.usersOnJobs.update({
     where: {
       userId_jobId_categoryId: {
@@ -341,7 +396,7 @@ const updateRejectedReason = (userId: number, jobId: string, categoryId: string,
       },
     },
     data: {
-      rejectReason: reason
+      rejectReason: reason,
     },
   });
 };
@@ -353,7 +408,7 @@ module.exports = {
   queryUserJobsWithFilter,
   updateAllRearrangedJobs,
   deleteUserJob,
-  updateInterviewDateAndFavoriteAndChecklist,
+  updateInterviewDateAndFavorite,
   getUserIdByEmail,
   queryChecklist,
   combineChecklistInfo,
@@ -361,5 +416,7 @@ module.exports = {
   checkJobQuestions,
   questionsFromOpenAi,
   saveQuestionsToDatabase,
-  updateRejectedReason
+  updateNoteInUserJob,
+  updateRejectedReason,
+  updateChecklistUserJob,
 };
