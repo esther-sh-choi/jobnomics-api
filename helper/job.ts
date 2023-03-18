@@ -53,6 +53,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
         position: eachJob.position,
         isFavorite: eachJob.isFavorite,
         updatedAt: eachJob.updatedAt,
+        description: eachJob.job?.description
       });
     } else {
       result[categoryName] = {
@@ -64,6 +65,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
             position: eachJob.position,
             isFavorite: eachJob.isFavorite,
             updatedAt: eachJob.updatedAt,
+            description: eachJob.job?.description
           },
         ],
       };
@@ -94,6 +96,7 @@ const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
       isFavorite: true,
       position: true,
       interviewDate: true,
+      rejectReason: true,
       job: {
         select: {
           id: true,
@@ -158,6 +161,7 @@ const queryUserJobsWithFilter = async (
           title: true,
           company: true,
           logo: true,
+          description: true
         },
       },
     },
