@@ -13,7 +13,14 @@ type jobDataType = {
   skills: [];
 };
 
-const requestToOpenAI = async (description: string) => {
+const requestToOpenAI = async (description: string, from: string) => {
+  let contextDescription: string;
+  if (from === "jobLink") {
+    contextDescription = `Object with 2 keys summary and skills - Summary (string) in less than 150 words and tech skills (JS array of max 10 items, lowercase, order by importance) - Format in JSON: ${description}`;
+  } else {
+    contextDescription = `Give me 4 interview question and answer pairs (with answer less than 100 words) respectively to prepare for the following job description: ${description}`;
+  }
+
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -24,7 +31,7 @@ const requestToOpenAI = async (description: string) => {
     messages: [
       {
         role: "user",
-        content: `Object with 2 keys summary and skills - Summary (string) in less than 150 words and tech skills (JS array of max 10 items, lowercase, order by importance) - Format in JSON: ${description}`,
+        content: contextDescription,
       },
     ],
     temperature: 0.7,
@@ -120,7 +127,7 @@ const extractLinkedIn = async (link: string, label: string = "") => {
   );
   // jobData.description = jobData.description.replace(/(\r\n|\n|\r)/gm, "");
 
-  const openaiData = await requestToOpenAI(jobData.description);
+  const openaiData = await requestToOpenAI(jobData.description, "jobLink");
   const { summary, skills } = JSON.parse(openaiData);
   jobData = { ...jobData, summary, skills };
   console.log(jobData);
@@ -187,7 +194,7 @@ const extractIndeed = async (link: string, label: string = "") => {
       imgs[0].getAttribute("src")
   );
 
-  const openaiData = await requestToOpenAI(jobData.description);
+  const openaiData = await requestToOpenAI(jobData.description, "jobLink");
   const { summary, skills } = JSON.parse(openaiData);
   jobData = { ...jobData, summary, skills };
 
@@ -263,7 +270,7 @@ const extractZip = async (link: string, label: string = "") => {
     );
   }
 
-  const openaiData = await requestToOpenAI(jobData.description);
+  const openaiData = await requestToOpenAI(jobData.description, "jobLink");
   const { summary, skills } = JSON.parse(openaiData);
   jobData = { ...jobData, summary, skills };
 
