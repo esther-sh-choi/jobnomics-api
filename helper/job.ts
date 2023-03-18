@@ -301,9 +301,14 @@ const checkJobQuestions = async (jobId: number) => {
   });
 
   if (job?.interviewExamples) {
-    return { check: true };
+    return { check: true, description: null };
   }
   return { check: false, description: job?.description };
+};
+
+const questionsFromOpenAi = async (description: string) => {
+
+  return "";
 };
 
 module.exports = {
@@ -318,5 +323,6 @@ module.exports = {
   queryChecklist,
   combineChecklistInfo,
   createChecklistsUserJob,
-  checkJobQuestions
+  checkJobQuestions,
+  questionsFromOpenAi
 };
