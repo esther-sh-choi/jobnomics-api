@@ -12,7 +12,8 @@ const {
   queryChecklist,
   combineChecklistInfo,
   createChecklistsUserJob,
-  checkJobQuestions
+  checkJobQuestions,
+  questionsFromOpenAi
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -104,15 +105,14 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
 
 const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
   const user = await getUserIdByEmail(req.user.email);
+  const checkIfQuestionsExist = await checkJobQuestions(req.body.jobId);
 
-  if (user.id) {
-    const checkIfQuestionsExist = await checkJobQuestions(req.body.jobId);
-    if (!checkIfQuestionsExist.check) {
+  if (user.id && !checkIfQuestionsExist.check) {
+    const getQuestions = await questionsFromOpenAi(checkIfQuestionsExist.description);
 
-    }
   }
 
-  res.json({ message: "Update Failed" });
+  res.json({ message: "Update Completed" });
 };
 
 module.exports = {
