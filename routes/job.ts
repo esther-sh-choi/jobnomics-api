@@ -12,6 +12,7 @@ const {
   createInterviewQuestions,
   updateNote,
   rejectedJob,
+  updateChecklist,
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -29,6 +30,8 @@ router.post("/interview-questions", getUserInfo, createInterviewQuestions);
 router.patch("/", getUserInfo, updateJobs);
 
 router.patch("/user-job", getUserInfo, updateJobById);
+
+router.patch("/checklist", getUserInfo, updateChecklist);
 
 router.patch("/note", getUserInfo, updateNote);
 

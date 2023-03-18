@@ -7,7 +7,7 @@ const {
   queryUserJobsWithFilter,
   updateAllRearrangedJobs,
   deleteUserJob,
-  updateInterviewDateAndFavoriteAndChecklist,
+  updateInterviewDateAndFavorite,
   queryChecklist,
   combineChecklistInfo,
   createChecklistsUserJob,
@@ -16,6 +16,7 @@ const {
   saveQuestionsToDatabase,
   updateNoteInUserJob,
   updateRejectedReason,
+  updateChecklistUserJob,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -83,7 +84,7 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
   }
 
   if (req.body.type === "update") {
-    await updateInterviewDateAndFavoriteAndChecklist(req.body, req.user.id);
+    await updateInterviewDateAndFavorite(req.body, req.user.id);
     return res.json({ message: "Update Successful" });
   }
 
@@ -108,9 +109,14 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
   res.json({ message: "No questions are created!" });
 };
 
+const updateChecklist = async (req: CustomRequest, res: Response) => {
+  const response = await updateChecklistUserJob(req.body, req.user.id);
+  return res.json({ response });
+};
+
 const updateNote = async (req: CustomRequest, res: Response) => {
-  await updateNoteInUserJob(req.body, req.user.id);
-  return res.json({ message: "Update Successful" });
+  const response = await updateNoteInUserJob(req.body, req.user.id);
+  return res.json({ response });
 };
 
 const rejectedJob = async (req: CustomRequest, res: Response) => {
@@ -134,4 +140,5 @@ module.exports = {
   createInterviewQuestions,
   updateNote,
   rejectedJob,
+  updateChecklist,
 };
