@@ -13,7 +13,8 @@ const {
   createChecklistsUserJob,
   checkJobQuestions,
   questionsFromOpenAi,
-  saveQuestionsToDatabase
+  saveQuestionsToDatabase,
+  updateRejectedReason
 } = require("../helper/job");
 
 
@@ -98,11 +99,18 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
 
   if (req.user.id && !checkIfQuestionsExist.check) {
     const getQuestions = await questionsFromOpenAi(checkIfQuestionsExist.description);
-    await saveQuestionsToDatabase(req.body.jobId, getQuestions);
+    await saveQuestionsToDatabase(req.body.jobId, getQuestions.trim());
 
     return res.json({ message: "Created questions" });
   }
   res.json({ message: "No questions are created!" });
+};
+
+const rejectedJob = async (req: CustomRequest, res: Response) => {
+
+  await updateRejectedReason(req.user.id, req.body.jobId, req.body.categoryId, req.body.description);
+
+  res.json({ message: "Reason rejected!" });
 };
 
 module.exports = {
@@ -112,5 +120,6 @@ module.exports = {
   updateJobs,
   updateJobById,
   addUserChecklists,
-  createInterviewQuestions
+  createInterviewQuestions,
+  rejectedJob
 };
