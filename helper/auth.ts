@@ -1,7 +1,12 @@
 const { auth } = require("express-oauth2-jwt-bearer");
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { CustomRequest } from "../type/job";
-const { default: axios } = require("axios");
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.AUTH0_SECRET || '';
+
+const {
+  getUserIdByEmail,
+} = require("./job");
 
 const validateAccessToken = auth({
   issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
@@ -14,24 +19,18 @@ const getUserInfo = async (
   next: NextFunction
 ) => {
   const accessToken = req?.headers?.authorization?.split(" ")[1];
+  const decoded = jwt.decode(accessToken);
 
   try {
-    const response = await axios.get(`${process.env.AUTH0_ISSUER}/userinfo`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const email = decoded[SECRET];
+    const user = await getUserIdByEmail(email);
 
     req.user = {
-      given_name: response.data?.given_name || "",
-      family_name: response.data?.family_name || "",
-      nickname: response.data?.nickname || "",
-      name: response.data?.name || "",
-      picture: response.data?.picture || "",
-      email: response.data?.email,
+      id: user.id,
+      email: email,
     };
   } catch (e) {
-    return res.json({ error: "Too many request!" });
+    return res.json({ error: "Error in getting user info" });
   }
 
   next();
