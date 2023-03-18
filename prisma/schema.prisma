@@ -50,6 +50,7 @@ model UsersOnJobs {
   isFavorite    Boolean   @default(false)
   position      Int?
   interviewDate DateTime?
+  note          String?
   isDeleted     Boolean   @default(false)
   rejectReason  String?
 
