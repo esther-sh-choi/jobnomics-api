@@ -12,6 +12,7 @@ const {
   queryChecklist,
   combineChecklistInfo,
   createChecklistsUserJob,
+  checkJobQuestions
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -32,8 +33,6 @@ const getJobById = async (req: CustomRequest, res: Response) => {
   const queryChecklists = await queryChecklist(req.params, user.id);
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
-
-  console.log(formattedJob);
 
   res.json(formattedJob);
 };
@@ -103,6 +102,19 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
   res.json({ message: "Update Failed" });
 };
 
+const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
+  const user = await getUserIdByEmail(req.user.email);
+
+  if (user.id) {
+    const checkIfQuestionsExist = await checkJobQuestions(req.body.jobId);
+    if (!checkIfQuestionsExist.check) {
+
+    }
+  }
+
+  res.json({ message: "Update Failed" });
+};
+
 module.exports = {
   getAllJobs,
   getJobById,
@@ -110,4 +122,5 @@ module.exports = {
   updateJobs,
   updateJobById,
   addUserChecklists,
+  createInterviewQuestions
 };
