@@ -5,6 +5,7 @@ interface Job {
   company: string;
   logo: string | null;
   isFavorite: boolean;
+  interviewDate: Date | null;
   position: number | null;
   updatedAt: Date;
   description?: string;
@@ -57,6 +58,7 @@ interface UserJobs {
   category: CategoryEntity;
   position: number | null;
   isFavorite: boolean;
+  interviewDate: Date | null;
   updatedAt: Date;
   job: Job;
   description: string;
