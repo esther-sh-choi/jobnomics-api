@@ -14,7 +14,8 @@ const {
   createChecklistsUserJob,
   checkJobQuestions,
   questionsFromOpenAi,
-  saveQuestionsToDatabase
+  saveQuestionsToDatabase,
+  updateNoteInUserJob,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -112,12 +113,21 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
   const checkIfQuestionsExist = await checkJobQuestions(req.body.jobId);
 
   if (user.id && !checkIfQuestionsExist.check) {
-    const getQuestions = await questionsFromOpenAi(checkIfQuestionsExist.description);
+    const getQuestions = await questionsFromOpenAi(
+      checkIfQuestionsExist.description
+    );
     await saveQuestionsToDatabase(req.body.jobId, getQuestions);
 
     return res.json({ message: "Created questions" });
   }
   res.json({ message: "No questions are created!" });
+};
+
+const updateNote = async (req: CustomRequest, res: Response) => {
+  const user = await getUserIdByEmail(req.user.email);
+
+  await updateNoteInUserJob(req.body, user.id);
+  return res.json({ message: "Update Successful" });
 };
 
 module.exports = {
@@ -127,5 +137,6 @@ module.exports = {
   updateJobs,
   updateJobById,
   addUserChecklists,
-  createInterviewQuestions
+  createInterviewQuestions,
+  updateNote,
 };
