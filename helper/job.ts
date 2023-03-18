@@ -345,6 +345,28 @@ const updateNoteInUserJob = async (
     },
     data: {
       note,
+      jobId: Number(jobId),
+      categoryId: Number(categoryId),
+    },
+  });
+};
+
+const updateRejectedReason = (
+  userId: number,
+  jobId: string,
+  categoryId: string,
+  reason: string
+) => {
+  return prisma.usersOnJobs.update({
+    where: {
+      userId_jobId_categoryId: {
+        userId,
+        jobId: Number(jobId),
+        categoryId: Number(categoryId),
+      },
+    },
+    data: {
+      rejectReason: reason,
     },
   });
 };
@@ -365,4 +387,5 @@ module.exports = {
   questionsFromOpenAi,
   saveQuestionsToDatabase,
   updateNoteInUserJob,
+  updateRejectedReason,
 };

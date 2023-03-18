@@ -1,7 +1,6 @@
 import { Request, Response, query } from "express";
 import { CustomRequest } from "../type/job";
 const {
-  getUserIdByEmail,
   queryUserAndJobsEntities,
   processUserJobs,
   queryJobById,
@@ -16,34 +15,28 @@ const {
   questionsFromOpenAi,
   saveQuestionsToDatabase,
   updateNoteInUserJob,
+  updateRejectedReason,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
-  const user = await getUserIdByEmail(req.user.email);
-
-  const userJobs = await queryUserAndJobsEntities(user.id);
+  const userJobs = await queryUserAndJobsEntities(req.user.id);
   const formatUserJobs = processUserJobs(userJobs);
 
   res.json(formatUserJobs);
 };
 
 const getJobById = async (req: CustomRequest, res: Response) => {
-  // Get userId by doing user.id
-  const user = await getUserIdByEmail(req.user.email);
+  const queryJob = await queryJobById(req.params, req.user.id);
 
-  const queryJob = await queryJobById(req.params, user.id);
-
-  const queryChecklists = await queryChecklist(req.params, user.id);
+  const queryChecklists = await queryChecklist(req.params, req.user.id);
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
   res.json(formattedJob);
 };
 
 const addUserChecklists = async (req: CustomRequest, res: Response) => {
-  const user = await getUserIdByEmail(req.user.email);
-
   const checklistsUserJob = await createChecklistsUserJob(
-    user.id,
+    req.user.id,
     req.body.jobId
   );
 
@@ -53,11 +46,8 @@ const addUserChecklists = async (req: CustomRequest, res: Response) => {
 const filterJobs = async (req: CustomRequest, res: Response) => {
   // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
 
-  // Get userId by doing user.id
-  const user = await getUserIdByEmail(req.user.email);
-
   const userJobs = await queryUserJobsWithFilter(
-    user.id,
+    req.user.id,
     req.body.category,
     req.body.skills
   );
@@ -76,10 +66,7 @@ const updateJobs = async (req: CustomRequest, res: Response) => {
   //   "type": "update"
   // }
 
-  // Get userId by doing user.id
-  const user = await getUserIdByEmail(req.user.email);
-
-  await updateAllRearrangedJobs(req.body.jobUpdates, user.id);
+  await updateAllRearrangedJobs(req.body.jobUpdates, req.user.id);
 
   res.json({ message: "Update Successful" });
 };
@@ -88,16 +75,13 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
   // Option 1: req.body = { jobId: 2, categoryId: 1, type: "delete"}
   // Option 2: req.body = { jobId: 2, categoryId: 1, interviewDate: SomeDate, favorite: true, type: "update"}
 
-  // Get userId by doing user.id
-  const user = await getUserIdByEmail(req.user.email);
-
   if (req.body.type === "delete") {
-    await deleteUserJob(req.body, user.id);
+    await deleteUserJob(req.body, req.user.id);
     return res.json({ message: "Delete Successful" });
   }
 
   if (req.body.type === "update") {
-    await updateInterviewDateAndFavoriteAndChecklist(req.body, user.id);
+    await updateInterviewDateAndFavoriteAndChecklist(req.body, req.user.id);
     return res.json({ message: "Update Successful" });
   }
 
@@ -109,14 +93,13 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
   //   "jobId": 1
   // }
 
-  const user = await getUserIdByEmail(req.user.email);
   const checkIfQuestionsExist = await checkJobQuestions(req.body.jobId);
 
-  if (user.id && !checkIfQuestionsExist.check) {
+  if (req.user.id && !checkIfQuestionsExist.check) {
     const getQuestions = await questionsFromOpenAi(
       checkIfQuestionsExist.description
     );
-    await saveQuestionsToDatabase(req.body.jobId, getQuestions);
+    await saveQuestionsToDatabase(req.body.jobId, getQuestions.trim());
 
     return res.json({ message: "Created questions" });
   }
@@ -124,10 +107,19 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
 };
 
 const updateNote = async (req: CustomRequest, res: Response) => {
-  const user = await getUserIdByEmail(req.user.email);
-
-  await updateNoteInUserJob(req.body, user.id);
+  await updateNoteInUserJob(req.body, req.user.id);
   return res.json({ message: "Update Successful" });
+};
+
+const rejectedJob = async (req: CustomRequest, res: Response) => {
+  await updateRejectedReason(
+    req.user.id,
+    req.body.jobId,
+    req.body.categoryId,
+    req.body.description
+  );
+
+  res.json({ message: "Reason rejected!" });
 };
 
 module.exports = {
@@ -139,4 +131,5 @@ module.exports = {
   addUserChecklists,
   createInterviewQuestions,
   updateNote,
+  rejectedJob,
 };
