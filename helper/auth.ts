@@ -26,7 +26,7 @@ const getUserInfo = async (
     const user = await getUserIdByEmail(email);
 
     req.user = {
-      id: user.id,
+      id: user?.id,
       email: email,
     };
   } catch (e) {
