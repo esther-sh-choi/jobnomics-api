@@ -50,23 +50,18 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
   // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
 
   const query = req.query;
-  console.log("first");
   const categoryList = (query?.category as string)?.split(',');
   const skillsList = (query?.skills as string)?.split(',');
 
-  console.log((query?.category as string)?.split(','));
-  console.log((query?.skills as string)?.split(','));
   const userJobs = await queryUserJobsWithFilter(
     req.user.id,
     categoryList,
     skillsList
   );
 
-
   const formatUserJobs = processUserJobs(userJobs);
 
   res.json(formatUserJobs);
-  // res.json({ message: "Hello world" });
 };
 
 const updateJobs = async (req: CustomRequest, res: Response) => {
