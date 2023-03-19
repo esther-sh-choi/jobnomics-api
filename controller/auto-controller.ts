@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import { prisma } from "../server";
+import { prisma, io } from "../server";
 import type { createNewJobType } from "../type/auto";
 import { CustomRequest } from "../type/job";
-const {
-  getUserIdByEmail,
-} = require("../helper/job");
+const { getUserIdByEmail } = require("../helper/job");
 
 const {
   runPuppeteer,
@@ -57,12 +55,13 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
         },
       });
 
+      const getAllJobs = await queryUserAndJobsEntities();
+      io.emit;
       // query the jobs here
       // socket io .emit("","")
       // broadcast to all active user
 
       return res.json(createUserOnJob);
-
     } catch (e) {
       res.json({ message: "Cannot create the job at the moment" });
     }
@@ -96,3 +95,6 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
 };
 
 module.exports = { createNewJob };
+function queryUserAndJobsEntities() {
+  throw new Error("Function not implemented.");
+}
