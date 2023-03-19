@@ -84,8 +84,11 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
   }
 
   if (req.body.type === "update") {
-    await updateInterviewDateAndFavorite(req.body, req.user.id);
-    return res.json({ message: "Update Successful" });
+    const updateResult = await updateInterviewDateAndFavorite(
+      req.body,
+      req.user.id
+    );
+    return res.json({ response: updateResult });
   }
 
   res.json({ message: "Update Failed" });
