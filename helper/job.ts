@@ -21,6 +21,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
     select: {
       userId: true,
       isFavorite: true,
+      interviewDate: true,
       updatedAt: true,
       category: {
         select: {
@@ -52,6 +53,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
         ...eachJob.job,
         position: eachJob.position,
         isFavorite: eachJob.isFavorite,
+        interviewDate: eachJob.interviewDate,
         updatedAt: eachJob.updatedAt,
         description: eachJob.job?.description,
       });
@@ -64,6 +66,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
             ...eachJob.job,
             position: eachJob.position,
             isFavorite: eachJob.isFavorite,
+            interviewDate: eachJob.interviewDate,
             updatedAt: eachJob.updatedAt,
             description: eachJob.job?.description,
           },
@@ -157,6 +160,8 @@ const queryUserJobsWithFilter = async (
       },
       note: true,
       position: true,
+      isFavorite: true,
+      interviewDate: true,
       job: {
         select: {
           id: true,
@@ -200,18 +205,22 @@ const updateAllRearrangedJobs = async (
 };
 
 const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
-  return prisma.usersOnJobs.update({
-    where: {
-      userId_jobId_categoryId: {
-        userId: userId,
-        jobId: deleteItem.jobId,
-        categoryId: deleteItem.categoryId,
+  try {
+    return await prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId: userId,
+          jobId: deleteItem.jobId,
+          categoryId: deleteItem.categoryId,
+        },
       },
-    },
-    data: {
-      isDeleted: true,
-    },
-  });
+      data: {
+        isDeleted: true,
+      },
+    });
+  } catch (e) {
+    return e;
+  }
 };
 
 const updateInterviewDateAndFavorite = async (
@@ -219,23 +228,27 @@ const updateInterviewDateAndFavorite = async (
   userId: number
 ) => {
   const updateData: updateDataType = {};
-  if (updateItem.favorite) {
-    updateData["isFavorite"] = updateItem.favorite;
-  }
+
+  updateData["isFavorite"] = updateItem.favorite;
+
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
   }
 
-  return prisma.usersOnJobs.update({
-    where: {
-      userId_jobId_categoryId: {
-        userId: userId,
-        jobId: updateItem.jobId,
-        categoryId: updateItem.categoryId,
+  try {
+    return await prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId: userId,
+          jobId: updateItem.jobId,
+          categoryId: updateItem.categoryId,
+        },
       },
-    },
-    data: updateData,
-  });
+      data: updateData,
+    });
+  } catch (e) {
+    return e;
+  }
 };
 
 const getUserIdByEmail = (email: string) => {

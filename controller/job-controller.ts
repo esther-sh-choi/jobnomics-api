@@ -82,13 +82,16 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
   // Option 2: req.body = { jobId: 2, categoryId: 1, interviewDate: SomeDate, favorite: true, type: "update"}
 
   if (req.body.type === "delete") {
-    await deleteUserJob(req.body, req.user.id);
-    return res.json({ message: "Delete Successful" });
+    const deleteResult = await deleteUserJob(req.body, req.user.id);
+    return res.json({ response: deleteResult });
   }
 
   if (req.body.type === "update") {
-    await updateInterviewDateAndFavorite(req.body, req.user.id);
-    return res.json({ message: "Update Successful" });
+    const updateResult = await updateInterviewDateAndFavorite(
+      req.body,
+      req.user.id
+    );
+    return res.json({ response: updateResult });
   }
 
   res.json({ message: "Update Failed" });
