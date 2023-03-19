@@ -228,23 +228,27 @@ const updateInterviewDateAndFavorite = async (
   userId: number
 ) => {
   const updateData: updateDataType = {};
-  if (updateItem.favorite) {
-    updateData["isFavorite"] = updateItem.favorite;
-  }
+
+  updateData["isFavorite"] = updateItem.favorite;
+
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
   }
 
-  return prisma.usersOnJobs.update({
-    where: {
-      userId_jobId_categoryId: {
-        userId: userId,
-        jobId: updateItem.jobId,
-        categoryId: updateItem.categoryId,
+  try {
+    return await prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId: userId,
+          jobId: updateItem.jobId,
+          categoryId: updateItem.categoryId,
+        },
       },
-    },
-    data: updateData,
-  });
+      data: updateData,
+    });
+  } catch (e) {
+    return e;
+  }
 };
 
 const getUserIdByEmail = (email: string) => {
