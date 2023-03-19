@@ -172,6 +172,9 @@ const queryUserJobsWithFilter = async (
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
 };
 
