@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Response } from "express";
 import { prisma } from "../server";
 import { CustomRequest } from "../type/job";
@@ -10,26 +11,33 @@ import { CustomRequest } from "../type/job";
 // email: string;
 
 const logInAndSignIn = async (req: CustomRequest, res: Response) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: req?.user?.email
-    }
-  });
-
-  if (user) {
+  if (req.user?.id) {
     return res.json({ message: "User is already registered" });
   } else {
-    // TODO: Add axios call to Auth0
-    // const newUser = await prisma.user.create({
-    //   data: {
-    //     givenName: req.user.given_name,
-    //     familyName: req.user.family_name,
-    //     nickname: req.user.nickname,
-    //     name: req.user.name,
-    //     picture: req.user.picture,
-    //     email: req.user.email
-    //   }
-    // });
+    const accessToken = req?.headers?.authorization?.split(" ")[1];
+
+    try {
+      const response = await axios.get(`${process.env.AUTH0_ISSUER}/userinfo`, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      await prisma.user.create({
+        data: {
+          givenName: response.data?.given_name,
+          familyName: response.data?.family_name,
+          nickname: response.data?.nickname,
+          name: response.data?.name,
+          picture: response.data?.picture,
+          email: response.data?.email
+        }
+      });
+
+    } catch (e) {
+      console.log(e);
+    }
+
     return res.json({ message: "Register Successful" });
   }
 };
