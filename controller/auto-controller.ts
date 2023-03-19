@@ -17,23 +17,23 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
   const user = await getUserIdByEmail(req.user.email);
 
   const main = async () => {
-    let job = await prisma.job.findFirst({
-      where: { platformJobId: platformJobIdFromURL },
-      select: { id: true },
-    });
-
-    if (!job) {
-      const jobData = await runPuppeteer(jobLink);
-
-      jobData.skills.forEach(async (skill: string) => {
-        await prisma.skill.upsert({
-          where: { name: skill },
-          create: { name: skill },
-          update: {},
-        });
+    try {
+      let job = await prisma.job.findFirst({
+        where: { platformJobId: platformJobIdFromURL },
+        select: { id: true },
       });
 
-      try {
+      if (!job) {
+        const jobData = await runPuppeteer(jobLink);
+
+        jobData.skills.forEach(async (skill: string) => {
+          await prisma.skill.upsert({
+            where: { name: skill },
+            create: { name: skill },
+            update: {},
+          });
+        });
+
         const newJob = await prisma.job.create({
           data: {
             ...jobData,
@@ -45,23 +45,29 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
           },
         });
         job = newJob;
-
-        const createUserOnJob = await prisma.usersOnJobs.create({
-          data: {
-            position,
-            interviewDate,
-            user: { connect: { id: user.id } },
-            job: { connect: { id: job?.id } },
-            category: { connect: { id: 1 } },
-          },
-        });
-        return res.json(createUserOnJob);
-      } catch (e) {
-        console.log(e);
       }
+
+      const createUserOnJob = await prisma.usersOnJobs.create({
+        data: {
+          position,
+          interviewDate,
+          user: { connect: { id: user.id } },
+          job: { connect: { id: job?.id } },
+          category: { connect: { id: 1 } },
+        },
+      });
+
+      // query the jobs here
+      // socket io .emit("","")
+      // broadcast to all active user
+
+      return res.json(createUserOnJob);
+
+    } catch (e) {
+      res.json({ message: "Cannot create the job at the moment" });
     }
 
-    res.json({ message: "Cannot create the job at the moment" });
+    // res.json({ message: "Cannot create the job at the moment" });
   };
 
   let platformJobIdFromURL: string;
