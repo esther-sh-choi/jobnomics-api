@@ -33,7 +33,7 @@ const getJobById = async (req: CustomRequest, res: Response) => {
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
 
-  console.log(formattedJob);
+  // console.log(formattedJob);
   res.json(formattedJob);
 };
 
@@ -48,15 +48,18 @@ const addUserChecklists = async (req: CustomRequest, res: Response) => {
 
 const filterJobs = async (req: CustomRequest, res: Response) => {
   // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
+  const query = req.query;
+  console.log("first");
+  console.log(query);
+  // const userJobs = await queryUserJobsWithFilter(
+  //   req.user.id,
+  //   req.body.category,
+  //   req.body.skills
+  // );
+  // const formatUserJobs = processUserJobs(userJobs);
 
-  const userJobs = await queryUserJobsWithFilter(
-    req.user.id,
-    req.body.category,
-    req.body.skills
-  );
-  const formatUserJobs = processUserJobs(userJobs);
-
-  res.json(formatUserJobs);
+  // res.json(formatUserJobs);
+  res.json({ message: "Hello world" });
 };
 
 const updateJobs = async (req: CustomRequest, res: Response) => {
