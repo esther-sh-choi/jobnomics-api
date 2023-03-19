@@ -80,11 +80,16 @@ export interface CustomRequest extends Request {
   user: {
     id: number;
     email: string;
+    givenName?: string,
+    familyName?: string,
+    nickname?: string,
+    name: string,
+    picture?: string,
   };
 }
 
 export type UpdateChecklistType = {
-  checklists?: { id: number; description: string; isComplete: boolean }[];
+  checklists?: { id: number; description: string; isComplete: boolean; }[];
 };
 
 export type selectedCheckboxType = {

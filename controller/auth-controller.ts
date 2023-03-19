@@ -19,16 +19,17 @@ const logInAndSignIn = async (req: CustomRequest, res: Response) => {
   if (user) {
     return res.json({ message: "User is already registered" });
   } else {
-    const newUser = await prisma.user.create({
-      data: {
-        givenName: req.user.given_name,
-        familyName: req.user.family_name,
-        nickname: req.user.nickname,
-        name: req.user.name,
-        picture: req.user.picture,
-        email: req.user.email
-      }
-    });
+    // TODO: Add axios call to Auth0
+    // const newUser = await prisma.user.create({
+    //   data: {
+    //     givenName: req.user.given_name,
+    //     familyName: req.user.family_name,
+    //     nickname: req.user.nickname,
+    //     name: req.user.name,
+    //     picture: req.user.picture,
+    //     email: req.user.email
+    //   }
+    // });
     return res.json({ message: "Register Successful" });
   }
 };
