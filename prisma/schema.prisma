@@ -37,6 +37,7 @@ model Job {
   summary           String?
   logo              String?             @default("N/A")
   interviewExamples String?
+  link              String
   skills            Skill[]
   platform          String
   platformJobId     String?             @unique
