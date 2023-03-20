@@ -26,13 +26,13 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       if (!job) {
         const jobData = await runPuppeteer(jobLink);
 
-        jobData.skills.forEach(async (skill: string) => {
+        for (let skill of jobData.skills) {
           await prisma.skill.upsert({
             where: { name: skill },
             create: { name: skill },
             update: {},
           });
-        });
+        }
 
         const newJob = await prisma.job.create({
           data: {
@@ -64,10 +64,9 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       return res.json(createUserOnJob);
 
     } catch (e) {
+      console.log(e);
       res.json({ message: "Cannot create the job at the moment" });
     }
-
-    // res.json({ message: "Cannot create the job at the moment" });
   };
 
   let platformJobIdFromURL: string;
