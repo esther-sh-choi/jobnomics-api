@@ -72,6 +72,7 @@ interface JobUpdateEntity {
   categoryId: number;
   newCategoryId: number;
   position: number;
+  isDeleted?: boolean;
 }
 
 export type UpdateInformationType = JobUpdateEntity[];
