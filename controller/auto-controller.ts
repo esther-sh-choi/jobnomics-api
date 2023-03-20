@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma, io } from "../server";
 import type { createNewJobType } from "../type/auto";
 import { CustomRequest } from "../type/job";
-const { getUserIdByEmail } = require("../helper/job");
+const { processUserJobs, queryUserAndJobsEntities } = require("../helper/job");
 
 const {
   runPuppeteer,
@@ -12,7 +12,6 @@ const {
 
 const createNewJob = async (req: CustomRequest, res: Response) => {
   const { jobLink, position, interviewDate }: createNewJobType = req.body;
-  const user = await getUserIdByEmail(req.user.email);
 
   const main = async () => {
     try {
@@ -49,24 +48,22 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
         data: {
           position,
           interviewDate,
-          user: { connect: { id: user.id } },
+          user: { connect: { id: req.user.id } },
           job: { connect: { id: job?.id } },
           category: { connect: { id: 1 } },
         },
       });
 
-      const getAllJobs = await queryUserAndJobsEntities();
-      io.emit;
-      // query the jobs here
-      // socket io .emit("","")
-      // broadcast to all active user
+      const allJobs = await queryUserAndJobsEntities(req.user.id);
+      const formatUserJobs = processUserJobs(allJobs);
+      io.on("connection", (socket) => {
+        socket.emit("add-job", { formatUserJobs });
+      });
 
       return res.json(createUserOnJob);
     } catch (e) {
       res.json({ message: "Cannot create the job at the moment" });
     }
-
-    // res.json({ message: "Cannot create the job at the moment" });
   };
 
   let platformJobIdFromURL: string;
@@ -95,6 +92,3 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
 };
 
 module.exports = { createNewJob };
-function queryUserAndJobsEntities() {
-  throw new Error("Function not implemented.");
-}
