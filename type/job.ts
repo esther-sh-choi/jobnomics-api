@@ -1,5 +1,6 @@
+
 import { Request } from "express";
-interface Job {
+export interface CustomJob {
   id: number;
   title: string;
   company: string;
@@ -9,12 +10,23 @@ interface Job {
   position: number | null;
   updatedAt: Date;
   description?: string;
+  location?: string;
+  summary?: string;
+  skills: {
+    id: number,
+    createdAt: Date,
+    updatedAt: Date,
+    name: string;
+  },
+  interviewExamples?: string,
+  platform?: string;
 }
+
 
 interface Category {
   id: number;
   category: string;
-  jobs: Job[];
+  jobs: CustomJob[];
 }
 
 export type CategoryType = {
@@ -60,8 +72,10 @@ interface UserJobs {
   isFavorite: boolean;
   interviewDate: Date | null;
   updatedAt: Date;
-  job: Job;
+  job: CustomJob;
   description: string;
+  note?: string,
+  rejectReason?: string;
 }
 
 export type UserJobsType = UserJobs[];
@@ -88,8 +102,15 @@ export type UpdateChecklistType = {
   checklists?: { id: number; description: string; isComplete: boolean; }[];
 };
 
+
+export type Checklist = {
+  isComplete: boolean,
+  checklist: { id: number, description: string; };
+};
+
 export type selectedCheckboxType = {
   checklistId: number;
   jobId: number;
   isComplete: boolean;
 };
+
