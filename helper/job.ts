@@ -269,7 +269,7 @@ const createChecklistsUserJob = async (userId: number, jobId: number) => {
     where: { userId, jobId },
   });
   if (userJobChecklists.length === 0) {
-    checklists.forEach(async (checklist) => {
+    for (let checklist of checklists) {
       await prisma.usersOnChecklists.create({
         data: {
           userId: userId,
@@ -278,7 +278,7 @@ const createChecklistsUserJob = async (userId: number, jobId: number) => {
           isComplete: false,
         },
       });
-    });
+    }
   }
 };
 
