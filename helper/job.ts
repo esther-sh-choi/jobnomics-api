@@ -39,11 +39,45 @@ const queryUserAndJobsEntities = async (userId: number) => {
         },
       },
     },
+    orderBy: {
+      position: "asc"
+    }
   });
 };
 
 const processUserJobs = (userJobs: UserJobsType) => {
-  const result: CategoryType = {};
+  const result: CategoryType = {
+    Bookmarked: {
+      category: "Bookmarked",
+      id: 1,
+      jobs: [],
+    },
+    Applied: {
+      category: "Applied",
+      id: 2,
+      jobs: [],
+    },
+    Interviewing: {
+      category: "Interviewing",
+      id: 3,
+      jobs: [],
+    },
+    Interviewed: {
+      category: "Interviewed",
+      id: 4,
+      jobs: [],
+    },
+    "Job Offer": {
+      category: "Job Offer",
+      id: 5,
+      jobs: [],
+    },
+    "Position Filled": {
+      category: "Position Filled",
+      id: 6,
+      jobs: [],
+    },
+  };
 
   for (const eachJob of userJobs) {
     const categoryName: string = eachJob.category.name;
@@ -101,6 +135,7 @@ const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
       note: true,
       interviewDate: true,
       rejectReason: true,
+      isDeleted: false,
       job: {
         select: {
           id: true,
@@ -172,6 +207,9 @@ const queryUserJobsWithFilter = async (
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
 };
 
@@ -229,13 +267,13 @@ const updateInterviewDateAndFavorite = async (
   userId: number
 ) => {
   const updateData: updateDataType = {};
-
+  console.log(updateItem);
   updateData["isFavorite"] = updateItem.favorite;
 
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
   }
-
+  console.log(updateData);
   try {
     return await prisma.usersOnJobs.update({
       where: {
