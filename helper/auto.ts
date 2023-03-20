@@ -3,6 +3,7 @@ const puppeteer = require("puppeteer");
 
 type jobDataType = {
   title: string;
+  link: string;
   company: string;
   location: string;
   description: string;
@@ -40,7 +41,7 @@ const requestToOpenAI = async (description: string, from: string) => {
   return completion.data.choices[0].message.content;
 };
 
-const getPlatformJobIdFromURL = (link: string, label: string) => {
+export const getPlatformJobIdFromURL = (link: string, label: string) => {
   const urlId = link
     .split("&")
     .find((str: string | string[]) => str.includes(label));
@@ -48,7 +49,7 @@ const getPlatformJobIdFromURL = (link: string, label: string) => {
   return urlId?.slice(urlId.indexOf("=") + 1);
 };
 
-const getPlatformJobIdDetailView = (link: string) => {
+export const getPlatformJobIdDetailView = (link: string) => {
   const urlSplit = link.split("/");
   const indexOfId = urlSplit.indexOf("view") + 1;
 
@@ -69,7 +70,8 @@ const extractLinkedIn = async (link: string, label: string = "") => {
   // user may paste in something like: https://www.linkedin.com/jobs/search/?currentJobId=3491773649&distance=25&geoId=101174742&keywords=js%20developer
   // extract the currentJobId if there is any = 3491773649
 
-  await page.goto(`https://www.linkedin.com/jobs/view/${platformJobId}/`, {
+  const linkedinLink = `https://www.linkedin.com/jobs/view/${platformJobId}`;
+  await page.goto(linkedinLink, {
     waitUntil: "networkidle0",
   });
 
@@ -100,6 +102,7 @@ const extractLinkedIn = async (link: string, label: string = "") => {
 
   let jobData: jobDataType = {
     logo,
+    link: linkedinLink,
     platformJobId,
     platform: "linkedin",
     title: "",
@@ -153,6 +156,7 @@ const extractIndeed = async (link: string, label: string = "") => {
 
   let jobData: jobDataType = {
     platformJobId,
+    link,
     platform: "indeed",
     title: "",
     company: "",
@@ -221,6 +225,7 @@ const extractZip = async (link: string, label: string = "") => {
 
   let jobData: jobDataType = {
     logo: "N/A",
+    link,
     platformJobId,
     platform: "zip-recruiter",
     title: "",

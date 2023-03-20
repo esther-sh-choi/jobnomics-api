@@ -11,12 +11,30 @@ const {
 } = require("../helper/auto");
 
 const createNewJob = async (req: CustomRequest, res: Response) => {
-  const { jobLink, position, interviewDate }: createNewJobType = req.body;
+  const { jobLink, interviewDate }: createNewJobType = req.body;
+
+  const linkedInJobId = () => {
+    if (jobLink.includes("linkedin") && jobLink.includes("currentJobId")) {
+      getPlatformJobIdFromURL(jobLink, "curentJobId");
+    } else if (
+      jobLink.includes("linkedin") &&
+      !jobLink.includes("currentJobId")
+    ) {
+      getPlatformJobIdDetailView(jobLink);
+    }
+  };
+
+  const linkedInLink = `https://www.linkedin.com/jobs/view/${linkedInJobId()}`;
 
   const main = async () => {
     try {
       let job = await prisma.job.findFirst({
-        where: { platformJobId: platformJobIdFromURL },
+        where: {
+          OR: [
+            { platformJobId: platformJobIdFromURL },
+            { link: { in: [linkedInLink, jobLink] } },
+          ],
+        },
         select: { id: true },
       });
 
@@ -44,13 +62,33 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
         job = newJob;
       }
 
-      const createUserOnJob = await prisma.usersOnJobs.create({
-        data: {
-          position,
+      const bookmarkedJobs = await prisma.usersOnJobs.findMany({
+        where: { userId: req.user.id, categoryId: 1, NOT: { isDeleted: true } },
+      });
+
+      const createUserOnJob = await prisma.usersOnJobs.upsert({
+        where: {
+          userId_jobId_categoryId: {
+            userId: req.user.id,
+            jobId: job.id,
+            categoryId: 1,
+          },
+        },
+        create: {
+          position: bookmarkedJobs.length,
           interviewDate,
+          isDeleted: false,
           user: { connect: { id: req.user.id } },
-          job: { connect: { id: job?.id } },
+          job: { connect: { id: job.id } },
           category: { connect: { id: 1 } },
+        },
+        update: {
+          position: bookmarkedJobs.length,
+          interviewDate: null,
+          isDeleted: false,
+          note: "",
+          isFavorite: false,
+          rejectReason: "",
         },
       });
 
