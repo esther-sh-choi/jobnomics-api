@@ -254,6 +254,11 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
       },
       data: {
         isDeleted: true,
+        category: {
+          connect: {
+            id: 1
+          }
+        }
       },
     });
   } catch (e) {
