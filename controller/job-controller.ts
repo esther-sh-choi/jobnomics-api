@@ -75,8 +75,10 @@ const updateJobs = async (req: CustomRequest, res: Response) => {
   // }
 
   await updateAllRearrangedJobs(req.body.jobUpdates, req.user.id);
+  const userJobs = await queryUserAndJobsEntities(req.user.id);
+  const formatUserJobs = processUserJobs(userJobs);
 
-  res.json({ message: "Update Successful" });
+  res.json({ data: formatUserJobs });
 };
 
 const updateJobById = async (req: CustomRequest, res: Response) => {
@@ -85,7 +87,7 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
 
   if (req.body.type === "delete") {
     const deleteResult = await deleteUserJob(req.body, req.user.id);
-    return res.json({ response: deleteResult });
+    return res.json({ message: "completed" });
   }
 
   if (req.body.type === "update") {
