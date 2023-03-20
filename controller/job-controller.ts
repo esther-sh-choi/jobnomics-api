@@ -65,11 +65,10 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
 };
 
 const updateJobs = async (req: CustomRequest, res: Response) => {
-  // req.body = { jobUpdates:[{jobId: 1, categoryId: 1, newCategoryId: 1, pos: 0}, {jobId: 2, categoryId: 2, newCategoryId: 1, position: 1}], type: "update"}
-  // Example: { "jobUpdates":[
-  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0},
-  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0}
-  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1}
+  // Example: req.body = { "jobUpdates":[
+  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0, isDeleted:false},
+  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0, isDeleted:false}
+  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1, isDeleted:false}
   //   ],
   //   "type": "update"
   // }
@@ -126,7 +125,7 @@ const updateChecklist = async (req: CustomRequest, res: Response) => {
 
 const updateNote = async (req: CustomRequest, res: Response) => {
   const response = await updateNoteInUserJob(req.body, req.user.id);
-  return res.json({ response });
+  return res.json({ data: response });
 };
 
 const rejectedJob = async (req: CustomRequest, res: Response) => {

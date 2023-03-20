@@ -219,7 +219,7 @@ const updateAllRearrangedJobs = async (
 ) => {
   try {
     for (let update of updateInformation) {
-      const job = await prisma.usersOnJobs.update({
+      await prisma.usersOnJobs.update({
         where: {
           userId_jobId_categoryId: {
             userId: userId,
@@ -230,10 +230,11 @@ const updateAllRearrangedJobs = async (
         data: {
           category: {
             connect: {
-              id: update.newCategoryId,
+              id: update.isDeleted ? 1 : update.newCategoryId,
             },
           },
           position: update.position,
+          isDeleted: update.isDeleted
         },
       });
     }
@@ -271,13 +272,12 @@ const updateInterviewDateAndFavorite = async (
   userId: number
 ) => {
   const updateData: updateDataType = {};
-  console.log(updateItem);
   updateData["isFavorite"] = updateItem.favorite;
 
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
   }
-  console.log(updateData);
+
   try {
     return await prisma.usersOnJobs.update({
       where: {
