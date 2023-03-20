@@ -26,25 +26,37 @@ async function seed() {
 
   await prisma.job.create({
     data: {
-      title: "Webflow Developer",
-      company: "Dieselmatic Digital Inc.",
-      description: `About Dieselmatic
+      link: "https://www.linkedin.com/jobs/view/3523183464",
+      logo: "https://media.licdn.com/dms/image/C560BAQG-22OtXJPGpA/company-logo_100_100/0/1568751879393?e=1687392000&v=beta&t=j_QCmil4exCY-iti1r6E-PaqBxQgdEd_sG8aVghsv6o",
+      title:
+        "Software Engineer, Frontend - Slack (Software II, Senior, and Staff)",
+      company: "Slack",
+      description: `We're looking for people who are passionate about crafting phenomenal web applications.
 
-        Dieselmatic is a productized digital marketing agency for heavy-duty diesel truck repair shops. We're filling the gap in a growing $12.1b industry that lacks modern solutions for marketing repair services. We are a growing team with ambitious expansion goals for 2022.
-        
-        At Dieselmatic we adopt our core values in all areas of our careers. We CELEBRATE Each Other’s Excellence, We TRUST Each Other, We RAISE the Bar and We All Just Wanna have FUN! Working at Dieselmatic means being a part of building a career-defining, industry-changing solution.
-        
-        
-        Position Summary
-        
-        This position is responsible for website design and creation using Webflow. You will be collaborating with the sales team, the website development team and SEO Specialists to clarify the goals of Dieselmatic Partners in order to conceptualize creative and strategic initiatives for unique website design and development. As such, you have the unique ability to clearly and simply communicate technical matters.
-        
-        
-        Why are we hiring a Webflow Developer?
-        
-        The ultimate purpose of the Webflow Developer is to plan, design, evaluate, develop, test, edit, maintain and document the look and flow of Dieselmatic Partners’ websites.`,
-      location: "Canada (Remote)",
-      logo: "https://media.licdn.com/dms/image/C560BAQFT0TgSqjoVlw/company-logo_100_100/0/1660000334094?e=1686787200&v=beta&t=yHRQVVuYe3UMdPIAhCEZlpG7awmxAknrG62RZxvOgGI",
+      As a Frontend Engineer you’ll use your extensive knowledge of JavaScript, HTML, and CSS to improve the Slack web client, a complex in-browser application relied upon by millions of users every day. You will work with real-time data streams, engineer for performance across browsers, and delight people by making the best software we can imagine. You will collaborate closely with Product, Design, Application Engineering, and QA to spec, conceptualize, build, test and deploy new features for our large (and growing!) user base.
+      
+      We’re currently hiring different levels of Frontend Engineers across pillars such as Conversations Search & Channels, Canvas, Quip, Virtual HQ, Developer Experience, Line of Business, Network, Expansion, and Platform.
+      
+      What You Will Be Doing
+      
+      You'll brainstorm with Product Managers and Designers to conceptualize new features.
+      You'll collaborate with Application Engineering to build new features for our large-and-growing user base.
+      You'll learn about new web technologies and discuss potential solutions to problems.
+      You'll help our skilled support team triage bugs and tackle production issues.
+      You'll mentor other engineers and deeply review code.
+      
+      What You Should Have
+      
+      3-15+ years of experience writing client-side JavaScript and React Framework.
+      Expertise in building complex layouts with CSS and HTML.
+      Experience building and debugging complex systems in a team environment.
+      Experience with modern browser technologies.
+      Strong UX and design sensibilities, and a desire to sweat the small stuff.
+      Strong communication skills, a positive attitude, and empathy.
+      Self-awareness and a desire to continually improve.
+      You have a bachelor's degree in Computer Science, Engineering or related field, or equivalent training, fellowship, or work experience.
+      `,
+      location: "Toronto, ON",
       platform: "LinkedIn",
       skills: {
         connect: [{ id: 1 }],
@@ -57,39 +69,49 @@ async function seed() {
 
   await prisma.job.create({
     data: {
-      title: "React Hybrid Developer",
-      company: "WallOps",
-      description: `Job Title: React Hybrid Developer (Contract)
-
-  Job Summary: We are seeking a React Hybrid Developer with experience in Material UI and Ionic Capacitor to join us on a contract basis. The successful candidate will be responsible for helping to develop web and mobile applications over a minimum 4 to 8 month period.
-
-  Responsibilities:
-
-  Develop applications using Ionic Capacitor and other hybrid or web development frameworks.
-  Collaborate with cross-functional teams to define, design, and ship new features.
-  Ensure the performance, quality, and responsiveness of applications.
-  Identify and correct bottlenecks and fix bugs.
-  Help maintain code quality, organization, and automation.
-  Stay up-to-date with emerging trends and technologies in web and mobile development.
-
-  Requirements:
-
-  At least 2 years of experience in React development.
-  Comfort programming in TypeScript.
-  Experience with Material UI or similar.
-  Experience with Ionic Capacitor or similar.
-  Understanding of RESTful APIs and experience with API integration.
-  Familiarity with Git and Agile development methodologies.
-  Excellent problem-solving skills and ability to work independently.
-  Strong written and verbal communication skills.
-
-  Bonus:
-
-  Experience with Redux or similar state management libraries.
-  Experience with automated testing frameworks such as Jest or Vitest.
-  Knowledge of native iOS and Android development (Swift, Objective-C, Java, Kotlin).
+      link: "https://www.linkedin.com/jobs/view/3482562469",
+      title: "Gameplay Engineer",
+      company: "Next Level Games",
+      description: `About the job
+      STUDIO
+      
+      Next Level Games is a wholly owned subsidiary of Nintendo Co., Ltd.
+      
+      
+      We’ve been passionate about video game development for 20 years now, shipping award-winning games for fans across the world and still going strong. Some of our titles include Super Mario Strikers, Mario Strikers Charged, Punch-Out!!, Luigi’s Mansion: Dark Moon, Metroid Prime Federation Force, Luigi’s Mansion 3 and most recently Mario Strikers™: Battle League.
+      
+      
+      At NLG, we believe that a project finds success when we all work together in harmony. Therefore, we place careful consideration on building and nurturing an environment where everyone feels welcome and has fun in the process of achieving our shared goals.
+      
+      
+      GAMEPLAY ENGINEER
+      
+      We are looking for an experienced Gameplay Engineer join our team of seasoned, passionate and talented game developers at Next Level Games.
+      
+      
+      RESPONSIBILITIES
+      
+      The Gameplay Engineer will work closely with Game Director, Tech Director, Designers, Gameplay Team and/or Gameplay Animators to implement core gameplay mechanics.
+      
+      KEY QUALIFICATIONs
+      
+      Post-secondary degree in Computer Science or similar, or equivalent experience
+      Strong C++ skills
+      Strong linear algebra skills
+      Good grasp of game design fundamentals
+      Excellent analytical and problem-solving skills
+      Works well within team environment
+      Highly organized and self-motivated
+      NICE TO HAVE
+      
+      Experience with game AI fundamentals
+      Experience with skeletal animation systems
+      Experience with console hardware
+      Experience with real-time physics systems
+      
+      We wish to thank all applicants in advance; however, only those under consideration will be contacted. We are currently only considering applicants who already have work eligibility in Canada.
   `,
-      location: "Halifax, NS (Remote)",
+      location: "Vancouver, BC (Hybrid)",
       platform: "LinkedIn",
       skills: {
         connect: [{ id: 1 }, { id: 2 }],
@@ -102,6 +124,7 @@ async function seed() {
 
   await prisma.job.create({
     data: {
+      link: "https://ca.indeed.com/jobs?q=Senior+Full+Stack+Software+Engineer&l=Markham%2C+ON&from=searchOnHP&vjk=0a688db5bc462049",
       title: "Senior Full Stack Software Engineer",
       company: "Bellwood Labs",
       description: `About the job
@@ -245,10 +268,9 @@ async function seed() {
       userId: 1,
       jobId: 1,
       checklistId: checklist.id,
-      isComplete: false
+      isComplete: false,
     })),
   });
-
 
   const allUsers = await prisma.user.findMany({
     include: {
