@@ -1,16 +1,26 @@
 require("dotenv").config();
 
 const express = require("express");
+import { createServer } from "http";
 import { Request, Response } from "express";
 const morgan = require("morgan");
 const cors = require("cors");
 import { PrismaClient } from "@prisma/client";
-export const prisma = new PrismaClient();
+import { Server } from "socket.io";
 
 const { validateAccessToken } = require("./helper/auth");
 
 const PORT = process.env.PORT || 8080;
 const app = express();
+const httpServer = createServer(app);
+
+export const prisma = new PrismaClient();
+export const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -30,6 +40,6 @@ app.get("*", (req: Request, res: Response) => {
   res.status(200).json({ message: "Invalid" });
 });
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
