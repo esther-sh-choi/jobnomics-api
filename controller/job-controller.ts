@@ -1,4 +1,5 @@
 import { Request, Response, query } from "express";
+import { io } from "../server";
 import { CustomRequest } from "../type/job";
 const {
   queryUserAndJobsEntities,
@@ -115,6 +116,10 @@ const createInterviewQuestions = async (req: CustomRequest, res: Response) => {
       checkIfQuestionsExist.description
     );
     await saveQuestionsToDatabase(req.body.jobId, getQuestions.trim());
+
+    // io.on("connection", (socket) => {
+    //   socket.emit("interview-questions", { message: "Created questions" });
+    // });
 
     return res.json({ message: "Created questions" });
   }
