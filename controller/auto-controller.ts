@@ -94,9 +94,9 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
 
       const allJobs = await queryUserAndJobsEntities(req.user.id);
       const formatUserJobs = processUserJobs(allJobs);
-      io.on("connection", (socket) => {
-        socket.emit("add-job", { formatUserJobs });
-      });
+      // io.on("connection", (socket) => {
+      //   socket.emit("add-job", { formatUserJobs });
+      // });
 
       return res.json(createUserOnJob);
     } catch (e) {
