@@ -39,7 +39,7 @@ model Job {
   interviewExamples String?
   link              String
   skills            Skill[]
-  platform          String
+  platform          String?             @default("unknown")
   platformJobId     String?             @unique
   users             UsersOnJobs[]
   UsersOnChecklists UsersOnChecklists[]
@@ -53,6 +53,7 @@ model UsersOnJobs {
   interviewDate DateTime?
   note          String?
   isDeleted     Boolean   @default(false)
+  isActive      Boolean   @default(true)
   rejectReason  String?
 
   user       User     @relation(fields: [userId], references: [id])
