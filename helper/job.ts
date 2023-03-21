@@ -247,7 +247,7 @@ const updateAllRearrangedJobs = async (
 
 const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
   try {
-    return await prisma.usersOnJobs.update({
+    const deletedJob = await prisma.usersOnJobs.update({
       where: {
         userId_jobId_categoryId: {
           userId: userId,
@@ -261,9 +261,42 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
           connect: {
             id: 1
           }
-        }
+        },
       },
     });
+
+    const jobsInTheCategory = await prisma.usersOnJobs.findMany({
+      where: {
+        userId: userId,
+        categoryId: deleteItem.categoryId,
+        isDeleted: false
+      },
+      orderBy: {
+        position: 'asc'
+      }
+    });
+
+    for (let i = 0; i < jobsInTheCategory.length; i++) {
+      const userOnJob = jobsInTheCategory[i];
+      const currentPosition = userOnJob.position || 0;
+      const newPosition = currentPosition - 1;
+
+      if (deleteItem.jobId && i >= (deletedJob.position || 0)) {
+        await prisma.usersOnJobs.update({
+          where: {
+            userId_jobId_categoryId: {
+              userId: userId,
+              jobId: jobsInTheCategory[i].jobId,
+              categoryId: deleteItem.categoryId,
+            },
+          },
+          data: {
+            position: newPosition
+          },
+        });
+      }
+    }
+
   } catch (e) {
     return e;
   }
