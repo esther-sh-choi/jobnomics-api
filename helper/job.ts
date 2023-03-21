@@ -368,6 +368,9 @@ const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
         },
       },
     },
+    orderBy: {
+      checklistId: 'asc'
+    }
   });
 };
 
