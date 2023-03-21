@@ -8,6 +8,8 @@ import {
   UserJobsType,
   SelectedItemType,
   selectedCheckboxType,
+  Checklist,
+  UserJobs,
 } from "../type/job";
 
 const { requestToOpenAI } = require("./auto");
@@ -366,14 +368,18 @@ const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
         },
       },
     },
+    orderBy: {
+      checklistId: 'asc'
+    }
   });
 };
 
-const combineChecklistInfo = (job: any, checklists: any) => {
-  const formattedChecklist = checklists.map((checklist: any) => ({
+const combineChecklistInfo = (job: UserJobs, checklists: Checklist[]) => {
+  const formattedChecklist = checklists.map((checklist: Checklist) => ({
     ...checklist.checklist,
     isComplete: checklist.isComplete,
   }));
+
   const formattedJob = { ...job, checklists: formattedChecklist };
   return formattedJob;
 };
