@@ -52,6 +52,10 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
   const categoryList = (query?.category as string)?.split(',');
   const skillsList = (query?.skills as string)?.split(',');
 
+  if (categoryList.length === 1 && categoryList[0] === '' && skillsList.length === 1 && skillsList[0] === '') {
+    categoryList.push(...["Bookmarked", "Applied", "Interviewing", "Interviewed", "Job Offer", "Position Filled"]);
+  }
+
   const userJobs = await queryUserJobsWithFilter(
     req.user.id,
     categoryList,
@@ -84,7 +88,7 @@ const updateJobById = async (req: CustomRequest, res: Response) => {
   // Option 2: req.body = { jobId: 2, categoryId: 1, interviewDate: SomeDate, favorite: true, type: "update"}
 
   if (req.body.type === "delete") {
-    const deleteResult = await deleteUserJob(req.body, req.user.id);
+    await deleteUserJob(req.body, req.user.id);
     return res.json({ message: "completed" });
   }
 
