@@ -92,8 +92,8 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
         },
       });
 
-      const allJobs = await queryUserAndJobsEntities(req.user.id);
-      const formatUserJobs = processUserJobs(allJobs);
+      // const allJobs = await queryUserAndJobsEntities(req.user.id);
+      // const formatUserJobs = processUserJobs(allJobs);
       // io.on("connection", (socket) => {
       //   socket.emit("add-job", { formatUserJobs });
       // });
@@ -101,7 +101,7 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       return res.json(createUserOnJob);
     } catch (e) {
       console.log(e);
-      res.json({ message: "Cannot create the job at the moment" });
+      res.status(400).json({ error: "Error in creating job!" });
     }
   };
 
