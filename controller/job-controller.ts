@@ -33,7 +33,6 @@ const getJobById = async (req: CustomRequest, res: Response) => {
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
 
-  // console.log(formattedJob);
   res.json(formattedJob);
 };
 
