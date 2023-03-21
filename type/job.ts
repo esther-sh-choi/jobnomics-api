@@ -1,6 +1,6 @@
 
 import { Request } from "express";
-export interface CustomJob {
+interface CustomJob {
   id: number;
   title: string;
   company: string;
@@ -65,7 +65,7 @@ export interface SelectedItemType {
   categoryId: number;
 }
 
-interface UserJobs {
+export interface UserJobs {
   userId: number;
   category: CategoryEntity;
   position: number | null;
