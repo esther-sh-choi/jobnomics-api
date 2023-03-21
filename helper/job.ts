@@ -9,7 +9,6 @@ import {
   SelectedItemType,
   selectedCheckboxType,
   Checklist,
-  CustomJob,
   UserJobs,
 } from "../type/job";
 
