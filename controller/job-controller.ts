@@ -18,6 +18,7 @@ const {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
+  processFilterJobs
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -65,7 +66,7 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
     columnFilterList
   );
 
-  const formatUserJobs = processUserJobs(userJobs);
+  const formatUserJobs = processFilterJobs(userJobs);
 
   res.json(formatUserJobs);
 };
