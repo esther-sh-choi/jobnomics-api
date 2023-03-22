@@ -18,7 +18,7 @@ const {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
-  processFilterJobs
+  processFilterJobs,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -51,12 +51,26 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
   // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
 
   const query = req.query;
-  const categoryList = (query?.category as string)?.split(',');
-  const skillsList = (query?.skills as string)?.split(',');
-  const columnFilterList = (query?.columnFilter as string)?.split(',');
+  const categoryList = (query?.category as string)?.split(",");
+  const skillsList = (query?.skills as string)?.split(",");
+  const columnFilterList = (query?.columnFilter as string)?.split(",");
 
-  if (categoryList.length === 1 && categoryList[0] === '' && skillsList.length === 1 && skillsList[0] === '') {
-    categoryList.push(...["Bookmarked", "Applied", "Interviewing", "Interviewed", "Job Offer", "Position Filled"]);
+  if (
+    categoryList.length === 1 &&
+    categoryList[0] === "" &&
+    skillsList.length === 1 &&
+    skillsList[0] === ""
+  ) {
+    categoryList.push(
+      ...[
+        "Bookmarked",
+        "Applied",
+        "Interviewing",
+        "Interviewed",
+        "Job Offer",
+        "Position Filled",
+      ]
+    );
   }
 
   const userJobs = await queryUserJobsWithFilter(

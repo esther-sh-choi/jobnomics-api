@@ -1,4 +1,3 @@
-
 import { Request } from "express";
 interface CustomJob {
   id: number;
@@ -12,16 +11,16 @@ interface CustomJob {
   description?: string;
   location?: string;
   summary?: string;
+  isActive: boolean;
   skills: {
-    id: number,
-    createdAt: Date,
-    updatedAt: Date,
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
     name: string;
-  },
-  interviewExamples?: string,
+  };
+  interviewExamples?: string;
   platform?: string;
 }
-
 
 interface Category {
   id: number;
@@ -66,6 +65,7 @@ export interface SelectedItemType {
 }
 
 export interface UserJobs {
+  isActive: any;
   userId: number;
   category: CategoryEntity;
   position: number | null;
@@ -74,7 +74,7 @@ export interface UserJobs {
   updatedAt: Date;
   job: CustomJob;
   description: string;
-  note?: string,
+  note?: string;
   rejectReason?: string;
 }
 
@@ -99,13 +99,12 @@ export interface CustomRequest extends Request {
 }
 
 export type UpdateChecklistType = {
-  checklists?: { id: number; description: string; isComplete: boolean; }[];
+  checklists?: { id: number; description: string; isComplete: boolean }[];
 };
 
-
 export type Checklist = {
-  isComplete: boolean,
-  checklist: { id: number, description: string; };
+  isComplete: boolean;
+  checklist: { id: number; description: string };
 };
 
 export type selectedCheckboxType = {
@@ -113,4 +112,3 @@ export type selectedCheckboxType = {
   jobId: number;
   isComplete: boolean;
 };
-

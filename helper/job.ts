@@ -15,6 +15,18 @@ import {
 const { requestToOpenAI } = require("./auto");
 
 const queryUserAndJobsEntities = async (userId: number) => {
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  const updatedUsersOnJobs = await prisma.usersOnJobs.updateMany({
+    where: {
+      updatedAt: {
+        lte: sixtyDaysAgo,
+      },
+    },
+    data: {
+      isActive: false,
+    },
+  });
+
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
@@ -32,6 +44,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
         },
       },
       position: true,
+      isActive: true,
       job: {
         select: {
           id: true,
@@ -42,8 +55,8 @@ const queryUserAndJobsEntities = async (userId: number) => {
       },
     },
     orderBy: {
-      position: "asc"
-    }
+      position: "asc",
+    },
   });
 };
 
@@ -79,6 +92,11 @@ const processUserJobs = (userJobs: UserJobsType) => {
       id: 6,
       jobs: [],
     },
+    inActive: {
+      category: "Inactive",
+      id: 7,
+      jobs: [],
+    },
   };
 
   for (const eachJob of userJobs) {
@@ -109,6 +127,17 @@ const processUserJobs = (userJobs: UserJobsType) => {
         ],
       };
     }
+
+    if (!eachJob.isActive) {
+      result.inActive.jobs.push({
+        ...eachJob.job,
+        position: eachJob.position,
+        isFavorite: eachJob.isFavorite,
+        interviewDate: eachJob.interviewDate,
+        updatedAt: eachJob.updatedAt,
+        description: eachJob.job?.description,
+      });
+    }
   }
 
   return result;
@@ -128,7 +157,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       position: eachJob?.position,
       title: eachJob?.job?.title,
       updatedAt: eachJob?.updatedAt,
-      description: eachJob?.job?.description
+      description: eachJob?.job?.description,
     };
     result.push(job);
   }
@@ -187,26 +216,26 @@ const queryUserJobsWithFilter = async (
   let orderParams = {};
   if (columnFilter[0] === "updatedAt") {
     orderParams = {
-      [columnFilter[0]]: columnFilter[1]
+      [columnFilter[0]]: columnFilter[1],
     };
   } else if (columnFilter[0] === "isFavorite") {
     orderParams = [
       {
-        isFavorite: columnFilter[1]
+        isFavorite: columnFilter[1],
       },
       {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     ];
   } else if (columnFilter[0] === "company" || columnFilter[0] === "title") {
     orderParams = {
       job: {
-        [columnFilter[0]]: columnFilter[1]
-      }
+        [columnFilter[0]]: columnFilter[1],
+      },
     };
   } else {
     orderParams = {
-      [columnFilter[0]]: columnFilter[1]
+      [columnFilter[0]]: columnFilter[1],
     };
   }
 
@@ -258,7 +287,7 @@ const queryUserJobsWithFilter = async (
         },
       },
     },
-    orderBy: orderParams
+    orderBy: orderParams,
   });
 };
 
@@ -283,7 +312,7 @@ const updateAllRearrangedJobs = async (
             },
           },
           position: update.position,
-          isDeleted: update.isDeleted
+          isDeleted: update.isDeleted,
         },
       });
     }
@@ -306,8 +335,8 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
         isDeleted: true,
         category: {
           connect: {
-            id: 1
-          }
+            id: 1,
+          },
         },
       },
     });
@@ -316,11 +345,11 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
       where: {
         userId: userId,
         categoryId: deleteItem.categoryId,
-        isDeleted: false
+        isDeleted: false,
       },
       orderBy: {
-        position: 'asc'
-      }
+        position: "asc",
+      },
     });
 
     for (let i = 0; i < jobsInTheCategory.length; i++) {
@@ -338,12 +367,11 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
             },
           },
           data: {
-            position: newPosition
+            position: newPosition,
           },
         });
       }
     }
-
   } catch (e) {
     return e;
   }
@@ -449,8 +477,8 @@ const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
       },
     },
     orderBy: {
-      checklistId: 'asc'
-    }
+      checklistId: "asc",
+    },
   });
 };
 
@@ -561,5 +589,5 @@ module.exports = {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
-  processFilterJobs
+  processFilterJobs,
 };
