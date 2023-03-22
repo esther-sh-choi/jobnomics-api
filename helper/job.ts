@@ -159,8 +159,21 @@ const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
 const queryUserJobsWithFilter = async (
   userId: number,
   filteredCategory: string[],
-  filteredLanguage: string[]
+  filteredLanguage: string[],
+  columnFilter: string[]
 ) => {
+  let orderParams = {};
+  if (columnFilter[0] === "updatedAt" || columnFilter[0] === "isFavorite") {
+    orderParams = {
+      [columnFilter[0]]: columnFilter[1]
+    };
+  } else if (columnFilter[0] === "company" || columnFilter[0] === "title") {
+    orderParams = {
+      job: {
+        [columnFilter[0]]: columnFilter[1]
+      }
+    };
+  }
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
@@ -209,9 +222,7 @@ const queryUserJobsWithFilter = async (
         },
       },
     },
-    orderBy: {
-      createdAt: 'desc'
-    }
+    orderBy: orderParams
   });
 };
 
