@@ -1,18 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const puppeteer = require("puppeteer");
 
-type jobDataType = {
-  title: string;
-  link: string;
-  company: string;
-  location: string;
-  description: string;
-  logo?: string;
-  platformJobId: string | undefined;
-  platform: string;
-  summary: string;
-  skills: [];
-};
+import type { JobDataType, FormDataType } from "../type/auto";
 
 const requestToOpenAI = async (description: string, from: string) => {
   let contextDescription: string;
@@ -100,7 +89,7 @@ const extractLinkedIn = async (link: string, label: string = "") => {
       imgs[0].getAttribute("src")
   );
 
-  let jobData: jobDataType = {
+  let jobData: JobDataType = {
     logo,
     link: linkedinLink,
     platformJobId,
@@ -154,7 +143,7 @@ const extractIndeed = async (link: string, label: string = "") => {
     deviceScaleFactor: 1,
   });
 
-  let jobData: jobDataType = {
+  let jobData: JobDataType = {
     platformJobId,
     link,
     platform: "indeed",
@@ -223,7 +212,7 @@ const extractZip = async (link: string, label: string = "") => {
     deviceScaleFactor: 1,
   });
 
-  let jobData: jobDataType = {
+  let jobData: JobDataType = {
     logo: "N/A",
     link,
     platformJobId,
@@ -293,9 +282,31 @@ const runPuppeteer = async (link: string) => {
   }
 };
 
+const compileManualData = async (data: FormDataType) => {
+  const { link, platform, title, company, location, description } = data;
+  const openaiData = await requestToOpenAI(description, "jobLink");
+  const { summary, skills } = JSON.parse(openaiData);
+
+  const jobData: JobDataType = {
+    logo: "N/A",
+    link,
+    platformJobId: "",
+    platform: platform ? platform : "unknown",
+    title,
+    company,
+    location,
+    description,
+    summary,
+    skills,
+  };
+
+  return jobData;
+};
+
 module.exports = {
   requestToOpenAI,
   runPuppeteer,
   getPlatformJobIdFromURL,
   getPlatformJobIdDetailView,
+  compileManualData,
 };

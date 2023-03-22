@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma, io } from "../server";
-import type { createNewJobType } from "../type/auto";
+import type { CreateNewJobType } from "../type/auto";
 import { CustomRequest } from "../type/job";
 const { processUserJobs, queryUserAndJobsEntities } = require("../helper/job");
 
@@ -8,10 +8,12 @@ const {
   runPuppeteer,
   getPlatformJobIdFromURL,
   getPlatformJobIdDetailView,
+  compileManualData,
 } = require("../helper/auto");
 
 const createNewJob = async (req: CustomRequest, res: Response) => {
-  const { jobLink, interviewDate }: createNewJobType = req.body;
+  const { jobLink, interviewDate, manualForm, type }: CreateNewJobType =
+    req.body;
 
   const linkedInJobId = () => {
     if (jobLink.includes("linkedin") && jobLink.includes("currentJobId")) {
@@ -39,7 +41,10 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       });
 
       if (!job) {
-        const jobData = await runPuppeteer(jobLink);
+        let jobData =
+          type === "link"
+            ? await runPuppeteer(jobLink)
+            : await compileManualData(manualForm);
 
         for (let skill of jobData.skills) {
           await prisma.skill.upsert({
