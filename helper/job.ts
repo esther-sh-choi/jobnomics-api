@@ -114,6 +114,28 @@ const processUserJobs = (userJobs: UserJobsType) => {
   return result;
 };
 
+const processFilterJobs = (userJobs: UserJobsType) => {
+  let result = [];
+
+  for (const eachJob of userJobs) {
+    const job = {
+      categoryId: eachJob?.category?.id,
+      company: eachJob?.job?.company,
+      id: eachJob?.job?.id,
+      interviewDate: eachJob?.interviewDate,
+      isFavorite: eachJob?.isFavorite,
+      logo: eachJob?.job?.logo,
+      position: eachJob?.position,
+      title: eachJob?.job?.title,
+      updatedAt: eachJob?.updatedAt,
+      description: eachJob?.job?.description
+    };
+    result.push(job);
+  }
+
+  return result;
+};
+
 const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
   const { jobId, categoryId } = selectedItem;
 
@@ -163,17 +185,31 @@ const queryUserJobsWithFilter = async (
   columnFilter: string[]
 ) => {
   let orderParams = {};
-  if (columnFilter[0] === "updatedAt" || columnFilter[0] === "isFavorite") {
+  if (columnFilter[0] === "updatedAt") {
     orderParams = {
       [columnFilter[0]]: columnFilter[1]
     };
+  } else if (columnFilter[0] === "isFavorite") {
+    orderParams = [
+      {
+        isFavorite: columnFilter[1]
+      },
+      {
+        createdAt: 'desc'
+      }
+    ];
   } else if (columnFilter[0] === "company" || columnFilter[0] === "title") {
     orderParams = {
       job: {
         [columnFilter[0]]: columnFilter[1]
       }
     };
+  } else {
+    orderParams = {
+      [columnFilter[0]]: columnFilter[1]
+    };
   }
+
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
@@ -525,4 +561,5 @@ module.exports = {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
+  processFilterJobs
 };
