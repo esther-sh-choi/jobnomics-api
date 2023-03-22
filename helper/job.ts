@@ -128,6 +128,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       position: eachJob?.position,
       title: eachJob?.job?.title,
       updatedAt: eachJob?.updatedAt,
+      description: eachJob?.job?.description
     };
     result.push(job);
   }
@@ -202,6 +203,10 @@ const queryUserJobsWithFilter = async (
       job: {
         [columnFilter[0]]: columnFilter[1]
       }
+    };
+  } else {
+    orderParams = {
+      [columnFilter[0]]: columnFilter[1]
     };
   }
 
