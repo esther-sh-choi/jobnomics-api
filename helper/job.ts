@@ -646,6 +646,7 @@ const queryInterviewDates = (
       interviewDate: true,
       job: {
         select: {
+          id: true,
           title: true,
           company: true
         }
