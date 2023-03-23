@@ -2,6 +2,7 @@ import axios from "axios";
 import { Response } from "express";
 import { prisma } from "../server";
 import { CustomRequest } from "../type/job";
+const aws = require("aws-sdk");
 
 // given_name: string;
 // family_name: string;
@@ -9,6 +10,16 @@ import { CustomRequest } from "../type/job";
 // name: string;
 // picture: string;
 // email: string;
+
+// TODO: REMOVE AFTER
+const SESConfig = {
+  apiVersion: '2010-12-01',
+  accessKeyId: "AKIASA24L64RHSFVAVVG",
+  secretAccessKey: "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",
+  region: "us-east-2"
+};
+
+const ses = new aws.SES(SESConfig);
 
 const logInAndSignIn = async (req: CustomRequest, res: Response) => {
   if (req.user?.id) {
@@ -41,5 +52,25 @@ const logInAndSignIn = async (req: CustomRequest, res: Response) => {
     return res.json({ message: "Register Successful" });
   }
 };
+const sendEmailVerification = async (req: CustomRequest, res: Response) => {
 
-module.exports = { logInAndSignIn };
+  const params = {
+    // EmailAddress: req.user.email
+    EmailAddress: "a9tran4@gmail.com"
+  };
+
+  const run = async () => {
+    return ses.verifyEmailAddress(params, function(err: any, data: any) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else console.log(data);           // successful response
+      /*
+      data = {
+      }
+      */
+    });
+  };
+  await run();
+  return res.json({ message: "Sent verification" });
+};
+
+module.exports = { logInAndSignIn, sendEmailVerification };
