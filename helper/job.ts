@@ -19,6 +19,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
     where: {
       userId,
       isDeleted: false,
+      isActive: true,
     },
     select: {
       userId: true,
@@ -32,6 +33,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
         },
       },
       position: true,
+      isActive: true,
       job: {
         select: {
           id: true,
@@ -42,8 +44,67 @@ const queryUserAndJobsEntities = async (userId: number) => {
       },
     },
     orderBy: {
-      position: "asc"
-    }
+      position: "asc",
+    },
+  });
+};
+
+const queryStaleJobs = async (userId: number) => {
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  // const sixtyDaysAgo = new Date(Date.now() - 0.5 * 60 * 1000); // 60 days in milliseconds
+  return await prisma.usersOnJobs.findMany({
+    where: {
+      userId,
+      updatedAt: {
+        lte: sixtyDaysAgo,
+      },
+      isActive: true,
+    },
+    select: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      userId: true,
+      updatedAt: true,
+      isFavorite: true,
+      position: true,
+      note: true,
+      interviewDate: true,
+      rejectReason: true,
+      isDeleted: false,
+      job: {
+        select: {
+          id: true,
+          title: true,
+          company: true,
+          location: true,
+          description: true,
+          logo: true,
+          summary: true,
+          skills: true,
+          interviewExamples: true,
+          platform: true,
+        },
+      },
+    },
+  });
+};
+
+const updateInactiveJobs = async (UserId: number) => {
+  const inactiveJobs = await prisma.usersOnJobs.updateMany({
+    where: {
+      updatedAt: {
+        // JobId:
+        // UserId,
+      },
+    },
+    data: {
+      isActive: false,
+      position: -1,
+    },
   });
 };
 
@@ -128,7 +189,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       position: eachJob?.position,
       title: eachJob?.job?.title,
       updatedAt: eachJob?.updatedAt,
-      description: eachJob?.job?.description
+      description: eachJob?.job?.description,
     };
     result.push(job);
   }
@@ -187,26 +248,26 @@ const queryUserJobsWithFilter = async (
   let orderParams = {};
   if (columnFilter[0] === "updatedAt") {
     orderParams = {
-      [columnFilter[0]]: columnFilter[1]
+      [columnFilter[0]]: columnFilter[1],
     };
   } else if (columnFilter[0] === "isFavorite") {
     orderParams = [
       {
-        isFavorite: columnFilter[1]
+        isFavorite: columnFilter[1],
       },
       {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     ];
   } else if (columnFilter[0] === "company" || columnFilter[0] === "title") {
     orderParams = {
       job: {
-        [columnFilter[0]]: columnFilter[1]
-      }
+        [columnFilter[0]]: columnFilter[1],
+      },
     };
   } else {
     orderParams = {
-      [columnFilter[0]]: columnFilter[1]
+      [columnFilter[0]]: columnFilter[1],
     };
   }
 
@@ -258,7 +319,7 @@ const queryUserJobsWithFilter = async (
         },
       },
     },
-    orderBy: orderParams
+    orderBy: orderParams,
   });
 };
 
@@ -283,7 +344,8 @@ const updateAllRearrangedJobs = async (
             },
           },
           position: update.position,
-          isDeleted: update.isDeleted
+          isDeleted: update.isDeleted,
+          isActive: update.isActive,
         },
       });
     }
@@ -306,8 +368,8 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
         isDeleted: true,
         category: {
           connect: {
-            id: 1
-          }
+            id: 1,
+          },
         },
       },
     });
@@ -316,11 +378,11 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
       where: {
         userId: userId,
         categoryId: deleteItem.categoryId,
-        isDeleted: false
+        isDeleted: false,
       },
       orderBy: {
-        position: 'asc'
-      }
+        position: "asc",
+      },
     });
 
     for (let i = 0; i < jobsInTheCategory.length; i++) {
@@ -338,12 +400,11 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
             },
           },
           data: {
-            position: newPosition
+            position: newPosition,
           },
         });
       }
     }
-
   } catch (e) {
     return e;
   }
@@ -358,6 +419,10 @@ const updateInterviewDateAndFavorite = async (
 
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
+  }
+
+  if (updateItem.updatedAt) {
+    updateData["updatedAt"] = updateItem.updatedAt;
   }
 
   try {
@@ -449,8 +514,8 @@ const queryChecklist = (selectedItem: SelectedItemType, userId: number) => {
       },
     },
     orderBy: {
-      checklistId: 'asc'
-    }
+      checklistId: "asc",
+    },
   });
 };
 
@@ -561,5 +626,7 @@ module.exports = {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
-  processFilterJobs
+  processFilterJobs,
+  updateInactiveJobs,
+  queryStaleJobs,
 };
