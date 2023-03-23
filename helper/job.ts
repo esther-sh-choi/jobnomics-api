@@ -50,14 +50,15 @@ const queryUserAndJobsEntities = async (userId: number) => {
 };
 
 const queryStaleJobs = async (userId: number) => {
-  // const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
-  const sixtyDaysAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // 60 days in milliseconds
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  // const sixtyDaysAgo = new Date(Date.now() - 0.5 * 60 * 1000); // 60 days in milliseconds
   return await prisma.usersOnJobs.findMany({
     where: {
       userId,
       updatedAt: {
         lte: sixtyDaysAgo,
       },
+      isActive: true,
     },
     select: {
       category: {
@@ -344,6 +345,7 @@ const updateAllRearrangedJobs = async (
           },
           position: update.position,
           isDeleted: update.isDeleted,
+          isActive: update.isActive,
         },
       });
     }
@@ -417,6 +419,10 @@ const updateInterviewDateAndFavorite = async (
 
   if (updateItem.interviewDate) {
     updateData["interviewDate"] = updateItem.interviewDate;
+  }
+
+  if (updateItem.updatedAt) {
+    updateData["updatedAt"] = updateItem.updatedAt;
   }
 
   try {

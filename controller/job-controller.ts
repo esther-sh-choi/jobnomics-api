@@ -90,9 +90,9 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
 
 const updateJobs = async (req: CustomRequest, res: Response) => {
   // Example: req.body = { "jobUpdates":[
-  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0, isDeleted:false},
-  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0, isDeleted:false}
-  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1, isDeleted:false}
+  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0, isDeleted:false, isActive: true},
+  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0, isDeleted:false, isActive: true}
+  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1, isDeleted:false, isActive: false}
   //   ],
   //   "type": "update"
   // }
