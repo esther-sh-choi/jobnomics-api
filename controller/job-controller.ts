@@ -20,10 +20,9 @@ const {
   updateChecklistUserJob,
   processFilterJobs,
   queryInterviewDate,
-  // updateInactiveJobs,
   queryStaleJobs,
   queryInterviewDates,
-  processGetInterviews
+  processGetInterviews,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -175,10 +174,13 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
 
 const getInterviewDate = async (req: CustomRequest, res: Response) => {
   if (Number(req.params.jobId) !== -1) {
-    const getDate = await queryInterviewDate(req.user.id, Number(req.params.jobId));
+    const getDate = await queryInterviewDate(
+      req.user.id,
+      Number(req.params.jobId)
+    );
     return res.json(getDate);
   }
-  res.json({ "error": "No such entity!" });
+  res.json({ error: "No such entity!" });
 };
 
 const getInterviews = async (req: CustomRequest, res: Response) => {
@@ -201,5 +203,5 @@ module.exports = {
   rejectedJob,
   updateChecklist,
   getInterviewDate,
-  getInterviews
+  getInterviews,
 };
