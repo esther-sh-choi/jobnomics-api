@@ -15,22 +15,11 @@ import {
 const { requestToOpenAI } = require("./auto");
 
 const queryUserAndJobsEntities = async (userId: number) => {
-  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
-  const updatedUsersOnJobs = await prisma.usersOnJobs.updateMany({
-    where: {
-      updatedAt: {
-        lte: sixtyDaysAgo,
-      },
-    },
-    data: {
-      isActive: false,
-    },
-  });
-
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
       isDeleted: false,
+      isActive: true,
     },
     select: {
       userId: true,
@@ -56,6 +45,20 @@ const queryUserAndJobsEntities = async (userId: number) => {
     },
     orderBy: {
       position: "asc",
+    },
+  });
+};
+
+const updateInactiveJobs = async () => {
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  const inactiveJobs = await prisma.usersOnJobs.updateMany({
+    where: {
+      updatedAt: {
+        lte: sixtyDaysAgo,
+      },
+    },
+    data: {
+      isActive: false,
     },
   });
 };
@@ -92,11 +95,6 @@ const processUserJobs = (userJobs: UserJobsType) => {
       id: 6,
       jobs: [],
     },
-    inActive: {
-      category: "Inactive",
-      id: 7,
-      jobs: [],
-    },
   };
 
   for (const eachJob of userJobs) {
@@ -127,20 +125,41 @@ const processUserJobs = (userJobs: UserJobsType) => {
         ],
       };
     }
-
-    if (!eachJob.isActive) {
-      result.inActive.jobs.push({
-        ...eachJob.job,
-        position: eachJob.position,
-        isFavorite: eachJob.isFavorite,
-        interviewDate: eachJob.interviewDate,
-        updatedAt: eachJob.updatedAt,
-        description: eachJob.job?.description,
-      });
-    }
   }
 
   return result;
+};
+
+const processInactiveJobs = async (userId: number) => {
+  return await prisma.usersOnJobs.findMany({
+    where: {
+      userId,
+      isActive: false,
+    },
+    select: {
+      userId: true,
+      updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      note: true,
+      position: true,
+      isFavorite: true,
+      interviewDate: true,
+      job: {
+        select: {
+          id: true,
+          title: true,
+          company: true,
+          logo: true,
+          description: true,
+        },
+      },
+    },
+  });
 };
 
 const processFilterJobs = (userJobs: UserJobsType) => {
@@ -590,4 +609,6 @@ module.exports = {
   updateRejectedReason,
   updateChecklistUserJob,
   processFilterJobs,
+  updateInactiveJobs,
+  processInactiveJobs,
 };
