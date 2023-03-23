@@ -19,7 +19,8 @@ const {
   updateRejectedReason,
   updateChecklistUserJob,
   processFilterJobs,
-  updateInactiveJobs,
+  queryInterviewDate,
+  // updateInactiveJobs,
   queryStaleJobs,
 } = require("../helper/job");
 
@@ -33,7 +34,10 @@ const getAllJobs = async (req: CustomRequest, res: Response) => {
 
 const getJobById = async (req: CustomRequest, res: Response) => {
   const queryJob = await queryJobById(req.params, req.user.id);
-
+  console.log(queryJob);
+  if (!queryJob) {
+    return res.json({ formattedJob: {} });
+  }
   const queryChecklists = await queryChecklist(req.params, req.user.id);
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
@@ -167,6 +171,14 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
   res.json({ message: "Reason rejected!" });
 };
 
+const getInterviewDate = async (req: CustomRequest, res: Response) => {
+  if (Number(req.params.jobId) !== -1) {
+    const getDate = await queryInterviewDate(req.user.id, Number(req.params.jobId));
+    return res.json(getDate);
+  }
+  res.json({ "error": "No such entity!" });
+};
+
 module.exports = {
   getAllJobs,
   getJobById,
@@ -178,4 +190,5 @@ module.exports = {
   updateNote,
   rejectedJob,
   updateChecklist,
+  getInterviewDate
 };
