@@ -49,12 +49,55 @@ const queryUserAndJobsEntities = async (userId: number) => {
   });
 };
 
-const updateInactiveJobs = async () => {
-  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+const queryStaleJobs = async (userId: number) => {
+  // const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  const sixtyDaysAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // 60 days in milliseconds
+  return await prisma.usersOnJobs.findMany({
+    where: {
+      userId,
+      updatedAt: {
+        lte: sixtyDaysAgo,
+      },
+    },
+    select: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      userId: true,
+      updatedAt: true,
+      isFavorite: true,
+      position: true,
+      note: true,
+      interviewDate: true,
+      rejectReason: true,
+      isDeleted: false,
+      job: {
+        select: {
+          id: true,
+          title: true,
+          company: true,
+          location: true,
+          description: true,
+          logo: true,
+          summary: true,
+          skills: true,
+          interviewExamples: true,
+          platform: true,
+        },
+      },
+    },
+  });
+};
+
+const updateInactiveJobs = async (UserId: number) => {
   const inactiveJobs = await prisma.usersOnJobs.updateMany({
     where: {
       updatedAt: {
-        lte: sixtyDaysAgo,
+        // JobId:
+        // UserId,
       },
     },
     data: {
@@ -129,38 +172,6 @@ const processUserJobs = (userJobs: UserJobsType) => {
   }
 
   return result;
-};
-
-const processInactiveJobs = async (userId: number) => {
-  return await prisma.usersOnJobs.findMany({
-    where: {
-      userId,
-      isActive: false,
-    },
-    select: {
-      userId: true,
-      updatedAt: true,
-      category: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      note: true,
-      position: true,
-      isFavorite: true,
-      interviewDate: true,
-      job: {
-        select: {
-          id: true,
-          title: true,
-          company: true,
-          logo: true,
-          description: true,
-        },
-      },
-    },
-  });
 };
 
 const processFilterJobs = (userJobs: UserJobsType) => {
@@ -611,5 +622,5 @@ module.exports = {
   updateChecklistUserJob,
   processFilterJobs,
   updateInactiveJobs,
-  processInactiveJobs,
+  queryStaleJobs,
 };

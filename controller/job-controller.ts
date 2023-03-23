@@ -20,16 +20,15 @@ const {
   updateChecklistUserJob,
   processFilterJobs,
   updateInactiveJobs,
-  processInactiveJobs,
+  queryStaleJobs,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
-  await updateInactiveJobs();
+  const staleJobs = await queryStaleJobs(req.user.id);
   const userJobs = await queryUserAndJobsEntities(req.user.id);
   const allActiveJobs = processUserJobs(userJobs);
-  const inactiveJobs = await processInactiveJobs(req.user.id);
 
-  res.json({ allActiveJobs, inactiveJobs });
+  res.json({ allActiveJobs, staleJobs });
 };
 
 const getJobById = async (req: CustomRequest, res: Response) => {
