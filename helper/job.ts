@@ -59,6 +59,7 @@ const updateInactiveJobs = async () => {
     },
     data: {
       isActive: false,
+      position: -1,
     },
   });
 };
