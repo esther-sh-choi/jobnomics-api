@@ -543,6 +543,23 @@ const updateRejectedReason = (
   });
 };
 
+const queryInterviewDate = (
+  userId: number,
+  jobId: number,
+) => {
+  console.log("userId", userId);
+  console.log("jobId", jobId);
+  return prisma.usersOnJobs.findFirst({
+    where: {
+      userId,
+      jobId
+    },
+    select: {
+      interviewDate: true
+    },
+  });
+};
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -561,5 +578,6 @@ module.exports = {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
-  processFilterJobs
+  processFilterJobs,
+  queryInterviewDate
 };
