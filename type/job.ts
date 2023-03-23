@@ -102,12 +102,12 @@ export interface CustomRequest extends Request {
 }
 
 export type UpdateChecklistType = {
-  checklists?: { id: number; description: string; isComplete: boolean }[];
+  checklists?: { id: number; description: string; isComplete: boolean; }[];
 };
 
 export type Checklist = {
   isComplete: boolean;
-  checklist: { id: number; description: string };
+  checklist: { id: number; description: string; };
 };
 
 export type selectedCheckboxType = {
@@ -115,3 +115,8 @@ export type selectedCheckboxType = {
   jobId: number;
   isComplete: boolean;
 };
+
+export type InterviewDatesType = {
+  interviewDate: Date;
+  job: { title: string, company: string; };
+}[];

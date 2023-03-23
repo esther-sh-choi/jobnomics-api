@@ -22,6 +22,8 @@ const {
   queryInterviewDate,
   // updateInactiveJobs,
   queryStaleJobs,
+  queryInterviewDates,
+  processGetInterviews
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -34,7 +36,7 @@ const getAllJobs = async (req: CustomRequest, res: Response) => {
 
 const getJobById = async (req: CustomRequest, res: Response) => {
   const queryJob = await queryJobById(req.params, req.user.id);
-  console.log(queryJob);
+
   if (!queryJob) {
     return res.json({ formattedJob: {} });
   }
@@ -179,6 +181,14 @@ const getInterviewDate = async (req: CustomRequest, res: Response) => {
   res.json({ "error": "No such entity!" });
 };
 
+const getInterviews = async (req: CustomRequest, res: Response) => {
+  const getInterviews = await queryInterviewDates(req.user.id);
+
+  const formattedInterviews = processGetInterviews(getInterviews);
+
+  res.json(formattedInterviews);
+};
+
 module.exports = {
   getAllJobs,
   getJobById,
@@ -190,5 +200,6 @@ module.exports = {
   updateNote,
   rejectedJob,
   updateChecklist,
-  getInterviewDate
+  getInterviewDate,
+  getInterviews
 };

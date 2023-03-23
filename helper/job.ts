@@ -10,6 +10,7 @@ import {
   selectedCheckboxType,
   Checklist,
   UserJobs,
+  InterviewDatesType,
 } from "../type/job";
 
 const { requestToOpenAI } = require("./auto");
@@ -199,8 +200,9 @@ const processFilterJobs = (userJobs: UserJobsType) => {
 
 const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
   const { jobId, categoryId } = selectedItem;
+
   try {
-    if (jobId && categoryId > 0) {
+    if (jobId && categoryId && jobId >= 0 && categoryId > 0) {
       const data = await prisma.usersOnJobs.findFirst({
         where: {
           user: { id: Number(userId) },
@@ -621,8 +623,6 @@ const queryInterviewDate = (
   userId: number,
   jobId: number,
 ) => {
-  console.log("userId", userId);
-  console.log("jobId", jobId);
   return prisma.usersOnJobs.findFirst({
     where: {
       userId,
@@ -632,6 +632,42 @@ const queryInterviewDate = (
       interviewDate: true
     },
   });
+};
+
+const queryInterviewDates = (
+  userId: number,
+) => {
+  return prisma.usersOnJobs.findMany({
+    where: {
+      userId,
+      NOT: { interviewDate: null }
+    },
+    select: {
+      interviewDate: true,
+      job: {
+        select: {
+          id: true,
+          title: true,
+          company: true
+        }
+      }
+    },
+  });
+};
+
+const processGetInterviews = (
+  interviews: InterviewDatesType,
+) => {
+  const result = [];
+  for (const interview of interviews) {
+    const newFormatInterview = {
+      interviewDate: interview.interviewDate,
+      title: interview.job.title,
+      company: interview.job.company,
+    };
+    result.push(newFormatInterview);
+  }
+  return result;
 };
 
 module.exports = {
@@ -656,4 +692,6 @@ module.exports = {
   queryInterviewDate,
   // updateInactiveJobs,
   queryStaleJobs,
+  queryInterviewDates,
+  processGetInterviews
 };
