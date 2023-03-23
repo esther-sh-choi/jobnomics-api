@@ -18,14 +18,17 @@ const {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
-  processFilterJobs
+  processFilterJobs,
+  updateInactiveJobs,
+  queryStaleJobs,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
+  const staleJobs = await queryStaleJobs(req.user.id);
   const userJobs = await queryUserAndJobsEntities(req.user.id);
-  const formatUserJobs = processUserJobs(userJobs);
+  const allActiveJobs = processUserJobs(userJobs);
 
-  res.json(formatUserJobs);
+  res.json({ allActiveJobs, staleJobs });
 };
 
 const getJobById = async (req: CustomRequest, res: Response) => {
@@ -51,12 +54,26 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
   // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
 
   const query = req.query;
-  const categoryList = (query?.category as string)?.split(',');
-  const skillsList = (query?.skills as string)?.split(',');
-  const columnFilterList = (query?.columnFilter as string)?.split(',');
+  const categoryList = (query?.category as string)?.split(",");
+  const skillsList = (query?.skills as string)?.split(",");
+  const columnFilterList = (query?.columnFilter as string)?.split(",");
 
-  if (categoryList.length === 1 && categoryList[0] === '' && skillsList.length === 1 && skillsList[0] === '') {
-    categoryList.push(...["Bookmarked", "Applied", "Interviewing", "Interviewed", "Job Offer", "Position Filled"]);
+  if (
+    categoryList.length === 1 &&
+    categoryList[0] === "" &&
+    skillsList.length === 1 &&
+    skillsList[0] === ""
+  ) {
+    categoryList.push(
+      ...[
+        "Bookmarked",
+        "Applied",
+        "Interviewing",
+        "Interviewed",
+        "Job Offer",
+        "Position Filled",
+      ]
+    );
   }
 
   const userJobs = await queryUserJobsWithFilter(
@@ -73,9 +90,9 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
 
 const updateJobs = async (req: CustomRequest, res: Response) => {
   // Example: req.body = { "jobUpdates":[
-  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0, isDeleted:false},
-  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0, isDeleted:false}
-  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1, isDeleted:false}
+  //   { "jobId": 1, "categoryId": 1, "newCategoryId": 1, "position": 0, isDeleted:false, isActive: true},
+  //   { "jobId": 2, "categoryId": 1, "newCategoryId": 2, "position": 0, isDeleted:false, isActive: true}
+  //   { "jobId": 2, "categoryId": 2, "newCategoryId": 3, "position": 1, isDeleted:false, isActive: false}
   //   ],
   //   "type": "update"
   // }
