@@ -26,10 +26,10 @@ const {
 const getAllJobs = async (req: CustomRequest, res: Response) => {
   await updateInactiveJobs();
   const userJobs = await queryUserAndJobsEntities(req.user.id);
-  const allJobs = processUserJobs(userJobs);
+  const allActiveJobs = processUserJobs(userJobs);
   const inactiveJobs = await processInactiveJobs(req.user.id);
 
-  res.json({ allJobs, inactiveJobs });
+  res.json({ allActiveJobs, inactiveJobs });
 };
 
 const getJobById = async (req: CustomRequest, res: Response) => {
