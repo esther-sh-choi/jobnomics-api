@@ -93,20 +93,20 @@ const queryStaleJobs = async (userId: number) => {
   });
 };
 
-const updateInactiveJobs = async (UserId: number) => {
-  const inactiveJobs = await prisma.usersOnJobs.updateMany({
-    where: {
-      updatedAt: {
-        // JobId:
-        // UserId,
-      },
-    },
-    data: {
-      isActive: false,
-      position: -1,
-    },
-  });
-};
+// const updateInactiveJobs = async (UserId: number) => {
+//   const inactiveJobs = await prisma.usersOnJobs.updateMany({
+//     where: {
+//       updatedAt: {
+//         // JobId:
+//         // UserId,
+//       },
+//     },
+//     data: {
+//       isActive: false,
+//       position: -1,
+//     },
+//   });
+// };
 
 const processUserJobs = (userJobs: UserJobsType) => {
   const result: CategoryType = {
@@ -197,46 +197,55 @@ const processFilterJobs = (userJobs: UserJobsType) => {
   return result;
 };
 
-const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
+const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
   const { jobId, categoryId } = selectedItem;
+  try {
+    if (jobId && categoryId > 0) {
+      const data = await prisma.usersOnJobs.findFirst({
+        where: {
+          user: { id: Number(userId) },
+          job: { id: Number(jobId) },
+          category: { id: Number(categoryId) },
+        },
+        select: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          userId: true,
+          updatedAt: true,
+          isFavorite: true,
+          position: true,
+          note: true,
+          interviewDate: true,
+          rejectReason: true,
+          isDeleted: false,
+          job: {
+            select: {
+              id: true,
+              title: true,
+              company: true,
+              location: true,
+              description: true,
+              logo: true,
+              summary: true,
+              skills: true,
+              interviewExamples: true,
+              platform: true,
+            },
+          },
+        },
+      });
+      return data;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log(e);
+  }
 
-  return prisma.usersOnJobs.findFirst({
-    where: {
-      user: { id: Number(userId) },
-      job: { id: Number(jobId) },
-      category: { id: Number(categoryId) },
-    },
-    select: {
-      category: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      userId: true,
-      updatedAt: true,
-      isFavorite: true,
-      position: true,
-      note: true,
-      interviewDate: true,
-      rejectReason: true,
-      isDeleted: false,
-      job: {
-        select: {
-          id: true,
-          title: true,
-          company: true,
-          location: true,
-          description: true,
-          logo: true,
-          summary: true,
-          skills: true,
-          interviewExamples: true,
-          platform: true,
-        },
-      },
-    },
-  });
 };
 
 const queryUserJobsWithFilter = async (
@@ -608,6 +617,23 @@ const updateRejectedReason = (
   });
 };
 
+const queryInterviewDate = (
+  userId: number,
+  jobId: number,
+) => {
+  console.log("userId", userId);
+  console.log("jobId", jobId);
+  return prisma.usersOnJobs.findFirst({
+    where: {
+      userId,
+      jobId
+    },
+    select: {
+      interviewDate: true
+    },
+  });
+};
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -627,6 +653,7 @@ module.exports = {
   updateRejectedReason,
   updateChecklistUserJob,
   processFilterJobs,
-  updateInactiveJobs,
+  queryInterviewDate,
+  // updateInactiveJobs,
   queryStaleJobs,
 };
