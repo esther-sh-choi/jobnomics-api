@@ -35,6 +35,7 @@ export type CategoryType = {
 export type updateDataType = {
   isFavorite?: boolean;
   interviewDate?: Date;
+  updatedAt?: Date;
 };
 
 export type DeleteItemType = {
@@ -51,6 +52,7 @@ export type UpdateItemType = {
   jobId: number;
   categoryId: number;
   interviewDate?: Date;
+  updatedAt?: Date;
 };
 
 interface CategoryEntity {
@@ -87,6 +89,7 @@ interface JobUpdateEntity {
   newCategoryId: number;
   position: number;
   isDeleted?: boolean;
+  isActive?: boolean;
 }
 
 export type UpdateInformationType = JobUpdateEntity[];
