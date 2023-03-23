@@ -197,46 +197,55 @@ const processFilterJobs = (userJobs: UserJobsType) => {
   return result;
 };
 
-const queryJobById = (selectedItem: SelectedItemType, userId: number) => {
+const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
   const { jobId, categoryId } = selectedItem;
+  try {
+    if (jobId && categoryId > 0) {
+      const data = await prisma.usersOnJobs.findFirst({
+        where: {
+          user: { id: Number(userId) },
+          job: { id: Number(jobId) },
+          category: { id: Number(categoryId) },
+        },
+        select: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          userId: true,
+          updatedAt: true,
+          isFavorite: true,
+          position: true,
+          note: true,
+          interviewDate: true,
+          rejectReason: true,
+          isDeleted: false,
+          job: {
+            select: {
+              id: true,
+              title: true,
+              company: true,
+              location: true,
+              description: true,
+              logo: true,
+              summary: true,
+              skills: true,
+              interviewExamples: true,
+              platform: true,
+            },
+          },
+        },
+      });
+      return data;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log(e);
+  }
 
-  return prisma.usersOnJobs.findFirst({
-    where: {
-      user: { id: Number(userId) },
-      job: { id: Number(jobId) },
-      category: { id: Number(categoryId) },
-    },
-    select: {
-      category: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      userId: true,
-      updatedAt: true,
-      isFavorite: true,
-      position: true,
-      note: true,
-      interviewDate: true,
-      rejectReason: true,
-      isDeleted: false,
-      job: {
-        select: {
-          id: true,
-          title: true,
-          company: true,
-          location: true,
-          description: true,
-          logo: true,
-          summary: true,
-          skills: true,
-          interviewExamples: true,
-          platform: true,
-        },
-      },
-    },
-  });
 };
 
 const queryUserJobsWithFilter = async (

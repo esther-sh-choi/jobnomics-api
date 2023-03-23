@@ -34,7 +34,7 @@ const getAllJobs = async (req: CustomRequest, res: Response) => {
 
 const getJobById = async (req: CustomRequest, res: Response) => {
   const queryJob = await queryJobById(req.params, req.user.id);
-
+  console.log(queryJob);
   if (!queryJob) {
     return res.json({ formattedJob: {} });
   }
