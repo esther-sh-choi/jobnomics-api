@@ -26,7 +26,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
       userId: true,
       isFavorite: true,
       interviewDate: true,
-      updatedAt: true,
+      updatedByUserAt: true,
       category: {
         select: {
           id: true,
@@ -51,12 +51,12 @@ const queryUserAndJobsEntities = async (userId: number) => {
 };
 
 const queryStaleJobs = async (userId: number) => {
-  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
-  // const sixtyDaysAgo = new Date(Date.now() - 0.5 * 60 * 1000); // 60 days in milliseconds
+  // const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  const sixtyDaysAgo = new Date(Date.now() - 0.5 * 60 * 1000); // 60 days in milliseconds
   return await prisma.usersOnJobs.findMany({
     where: {
       userId,
-      updatedAt: {
+      updatedByUserAt: {
         lte: sixtyDaysAgo,
       },
       isActive: true,
@@ -69,7 +69,7 @@ const queryStaleJobs = async (userId: number) => {
         },
       },
       userId: true,
-      updatedAt: true,
+      updatedByUserAt: true,
       isFavorite: true,
       position: true,
       note: true,
@@ -93,21 +93,6 @@ const queryStaleJobs = async (userId: number) => {
     },
   });
 };
-
-// const updateInactiveJobs = async (UserId: number) => {
-//   const inactiveJobs = await prisma.usersOnJobs.updateMany({
-//     where: {
-//       updatedAt: {
-//         // JobId:
-//         // UserId,
-//       },
-//     },
-//     data: {
-//       isActive: false,
-//       position: -1,
-//     },
-//   });
-// };
 
 const processUserJobs = (userJobs: UserJobsType) => {
   const result: CategoryType = {
@@ -152,7 +137,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
         position: eachJob.position,
         isFavorite: eachJob.isFavorite,
         interviewDate: eachJob.interviewDate,
-        updatedAt: eachJob.updatedAt,
+        updatedByUserAt: eachJob.updatedByUserAt,
         description: eachJob.job?.description,
       });
     } else {
@@ -165,7 +150,7 @@ const processUserJobs = (userJobs: UserJobsType) => {
             position: eachJob.position,
             isFavorite: eachJob.isFavorite,
             interviewDate: eachJob.interviewDate,
-            updatedAt: eachJob.updatedAt,
+            updatedByUserAt: eachJob.updatedByUserAt,
             description: eachJob.job?.description,
           },
         ],
@@ -189,7 +174,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       logo: eachJob?.job?.logo,
       position: eachJob?.position,
       title: eachJob?.job?.title,
-      updatedAt: eachJob?.updatedAt,
+      updatedByUserAt: eachJob?.updatedByUserAt,
       description: eachJob?.job?.description,
     };
     result.push(job);
@@ -217,7 +202,7 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
             },
           },
           userId: true,
-          updatedAt: true,
+          updatedByUserAt: true,
           isFavorite: true,
           position: true,
           note: true,
@@ -247,7 +232,6 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
   } catch (e) {
     console.log(e);
   }
-
 };
 
 const queryUserJobsWithFilter = async (
@@ -257,7 +241,7 @@ const queryUserJobsWithFilter = async (
   columnFilter: string[]
 ) => {
   let orderParams = {};
-  if (columnFilter[0] === "updatedAt") {
+  if (columnFilter[0] === "updatedByUserAt") {
     orderParams = {
       [columnFilter[0]]: columnFilter[1],
     };
@@ -309,7 +293,7 @@ const queryUserJobsWithFilter = async (
     },
     select: {
       userId: true,
-      updatedAt: true,
+      updatedByUserAt: true,
       category: {
         select: {
           id: true,
@@ -340,6 +324,21 @@ const updateAllRearrangedJobs = async (
 ) => {
   try {
     for (let update of updateInformation) {
+      const updatedData: any = {
+        category: {
+          connect: {
+            id: update.isDeleted ? 1 : update.newCategoryId,
+          },
+        },
+        position: update.position,
+        isDeleted: update.isDeleted,
+        isActive: update.isActive,
+      };
+
+      if (update.isChanged) {
+        updatedData.updatedByUserAt = new Date();
+      }
+
       await prisma.usersOnJobs.update({
         where: {
           userId_jobId_categoryId: {
@@ -348,16 +347,7 @@ const updateAllRearrangedJobs = async (
             categoryId: update.categoryId,
           },
         },
-        data: {
-          category: {
-            connect: {
-              id: update.isDeleted ? 1 : update.newCategoryId,
-            },
-          },
-          position: update.position,
-          isDeleted: update.isDeleted,
-          isActive: update.isActive,
-        },
+        data: updatedData,
       });
     }
   } catch (e) {
@@ -432,8 +422,8 @@ const updateInterviewDateAndFavorite = async (
     updateData["interviewDate"] = updateItem.interviewDate;
   }
 
-  if (updateItem.updatedAt) {
-    updateData["updatedAt"] = updateItem.updatedAt;
+  if (updateItem.updatedByUserAt) {
+    updateData["updatedByUserAt"] = updateItem.updatedByUserAt;
   }
 
   try {
@@ -445,7 +435,7 @@ const updateInterviewDateAndFavorite = async (
           categoryId: updateItem.categoryId,
         },
       },
-      data: updateData,
+      data: { ...updateData, updatedByUserAt: new Date() },
     });
   } catch (e) {
     return e;
@@ -490,7 +480,7 @@ const updateChecklistUserJob = async (
   const { checklistId, jobId, isComplete } = selectedCheckbox;
 
   try {
-    return await prisma.usersOnChecklists.update({
+    const updatedChecklist = await prisma.usersOnChecklists.update({
       where: {
         userId_checklistId_jobId: {
           userId,
@@ -502,6 +492,21 @@ const updateChecklistUserJob = async (
         isComplete,
       },
     });
+
+    await prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId,
+          jobId,
+          categoryId: 4,
+        },
+      },
+      data: {
+        updatedByUserAt: new Date(),
+      },
+    });
+
+    return updatedChecklist;
   } catch (e) {
     return e;
   }
@@ -592,6 +597,7 @@ const updateNoteInUserJob = async (
       },
       data: {
         note,
+        updatedByUserAt: new Date(),
       },
     });
   } catch (e) {
@@ -615,32 +621,28 @@ const updateRejectedReason = (
     },
     data: {
       rejectReason: reason,
+      updatedByUserAt: new Date(),
     },
   });
 };
 
-const queryInterviewDate = (
-  userId: number,
-  jobId: number,
-) => {
+const queryInterviewDate = (userId: number, jobId: number) => {
   return prisma.usersOnJobs.findFirst({
     where: {
       userId,
-      jobId
+      jobId,
     },
     select: {
-      interviewDate: true
+      interviewDate: true,
     },
   });
 };
 
-const queryInterviewDates = (
-  userId: number,
-) => {
+const queryInterviewDates = (userId: number) => {
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
-      NOT: { interviewDate: null }
+      NOT: { interviewDate: null },
     },
     select: {
       interviewDate: true,
@@ -648,16 +650,14 @@ const queryInterviewDates = (
         select: {
           id: true,
           title: true,
-          company: true
-        }
-      }
+          company: true,
+        },
+      },
     },
   });
 };
 
-const processGetInterviews = (
-  interviews: InterviewDatesType,
-) => {
+const processGetInterviews = (interviews: InterviewDatesType) => {
   const result = [];
   for (const interview of interviews) {
     const newFormatInterview = {
@@ -690,8 +690,7 @@ module.exports = {
   updateChecklistUserJob,
   processFilterJobs,
   queryInterviewDate,
-  // updateInactiveJobs,
   queryStaleJobs,
   queryInterviewDates,
-  processGetInterviews
+  processGetInterviews,
 };

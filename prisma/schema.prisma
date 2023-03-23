@@ -46,15 +46,16 @@ model Job {
 }
 
 model UsersOnJobs {
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  isFavorite    Boolean   @default(false)
-  position      Int?
-  interviewDate DateTime?
-  note          String?
-  isDeleted     Boolean   @default(false)
-  isActive      Boolean   @default(true)
-  rejectReason  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  updatedByUserAt DateTime  @default(now())
+  isFavorite      Boolean   @default(false)
+  position        Int?
+  interviewDate   DateTime?
+  note            String?
+  isDeleted       Boolean   @default(false)
+  isActive        Boolean   @default(true)
+  rejectReason    String?
 
   user       User     @relation(fields: [userId], references: [id])
   userId     Int
