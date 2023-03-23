@@ -13,6 +13,7 @@ const {
   updateNote,
   rejectedJob,
   updateChecklist,
+  getInterviewDate
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -22,6 +23,8 @@ router.get("/", getUserInfo, getAllJobs);
 router.get("/filter", getUserInfo, filterJobs);
 
 router.get("/:jobId/:categoryId", getUserInfo, getJobById);
+
+router.get("/:jobId/", getUserInfo, getInterviewDate);
 
 router.post("/", getUserInfo, addUserChecklists);
 

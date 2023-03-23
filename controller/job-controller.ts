@@ -18,7 +18,8 @@ const {
   updateNoteInUserJob,
   updateRejectedReason,
   updateChecklistUserJob,
-  processFilterJobs
+  processFilterJobs,
+  queryInterviewDate
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -31,6 +32,9 @@ const getAllJobs = async (req: CustomRequest, res: Response) => {
 const getJobById = async (req: CustomRequest, res: Response) => {
   const queryJob = await queryJobById(req.params, req.user.id);
 
+  if (!queryJob) {
+    return res.json({ formattedJob: {} });
+  }
   const queryChecklists = await queryChecklist(req.params, req.user.id);
 
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
@@ -150,6 +154,11 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
   res.json({ message: "Reason rejected!" });
 };
 
+const getInterviewDate = async (req: CustomRequest, res: Response) => {
+  const getDate = await queryInterviewDate(req.user.id, Number(req.params.jobId));
+  res.json(getDate);
+};
+
 module.exports = {
   getAllJobs,
   getJobById,
@@ -161,4 +170,5 @@ module.exports = {
   updateNote,
   rejectedJob,
   updateChecklist,
+  getInterviewDate
 };
