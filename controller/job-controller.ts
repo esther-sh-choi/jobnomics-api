@@ -172,8 +172,11 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
 };
 
 const getInterviewDate = async (req: CustomRequest, res: Response) => {
-  const getDate = await queryInterviewDate(req.user.id, Number(req.params.jobId));
-  res.json(getDate);
+  if (Number(req.params.jobId) !== -1) {
+    const getDate = await queryInterviewDate(req.user.id, Number(req.params.jobId));
+    return res.json(getDate);
+  }
+  res.json({ "error": "No such entity!" });
 };
 
 module.exports = {
