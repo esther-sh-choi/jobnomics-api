@@ -7,9 +7,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 import { PrismaClient } from "@prisma/client";
 import { Server } from "socket.io";
-
+const cron = require('cron');
 const { validateAccessToken } = require("./helper/auth");
-
+const { initScheduledJobs } = require('./helper/scheduledFunctions');
 const PORT = process.env.PORT || 8080;
 const app = express();
 const httpServer = createServer(app);
@@ -39,6 +39,8 @@ app.use("/api/v1/auth", validateAccessToken, authRoutes);
 app.get("*", (req: Request, res: Response) => {
   res.status(200).json({ message: "Invalid" });
 });
+
+initScheduledJobs();
 
 httpServer.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
