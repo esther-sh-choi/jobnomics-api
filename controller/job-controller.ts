@@ -23,6 +23,7 @@ const {
   queryStaleJobs,
   queryInterviewDates,
   processGetInterviews,
+  queryAllNotes,
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -44,6 +45,12 @@ const getJobById = async (req: CustomRequest, res: Response) => {
   const formattedJob = combineChecklistInfo(queryJob, queryChecklists);
 
   res.json(formattedJob);
+};
+
+const getAllNotes = async (req: CustomRequest, res: Response) => {
+  const allNotes = await queryAllNotes(req.params, req.user.id);
+
+  res.json(allNotes);
 };
 
 const addUserChecklists = async (req: CustomRequest, res: Response) => {
@@ -206,4 +213,5 @@ module.exports = {
   updateChecklist,
   getInterviewDate,
   getInterviews,
+  getAllNotes,
 };

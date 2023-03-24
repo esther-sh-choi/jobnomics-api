@@ -672,6 +672,63 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
   return result;
 };
 
+const queryAllNotes = (
+  orderBy: { column: string; order: string },
+  userId: number
+) => {
+  const { column, order } = orderBy;
+  const orderByObj: any = {};
+
+  if (column === "title" || column === "company") {
+    orderByObj.job = {
+      [column]: order,
+    };
+  } else {
+    orderByObj[column] = order;
+  }
+
+  return prisma.usersOnJobs.findMany({
+    where: {
+      userId,
+      isDeleted: false,
+      AND: [
+        {
+          note: {
+            not: null,
+          },
+        },
+        {
+          note: {
+            not: "",
+          },
+        },
+      ],
+    },
+    select: {
+      userId: true,
+      isFavorite: true,
+      interviewDate: true,
+      updatedByUserAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      job: {
+        select: {
+          id: true,
+          title: true,
+          company: true,
+          logo: true,
+        },
+      },
+      note: true,
+    },
+    orderBy: orderByObj,
+  });
+};
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -695,4 +752,5 @@ module.exports = {
   queryStaleJobs,
   queryInterviewDates,
   processGetInterviews,
+  queryAllNotes,
 };

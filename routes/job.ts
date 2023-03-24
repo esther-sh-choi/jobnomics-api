@@ -1,5 +1,5 @@
 const express = require("express");
-import { Request, Response } from "express";
+// import { Request, Response } from "express";
 const router = express.Router();
 
 const {
@@ -15,6 +15,7 @@ const {
   updateChecklist,
   getInterviewDate,
   getInterviews,
+  getAllNotes,
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -27,7 +28,7 @@ router.get("/interviewDates", getUserInfo, getInterviews);
 
 router.get("/interviewDate/:jobId/", getUserInfo, getInterviewDate);
 
-router.get("/:jobId/:categoryId", getUserInfo, getJobById);
+router.get("/notes/:column/:order", getUserInfo, getAllNotes);
 
 router.get("/:jobId/:categoryId", getUserInfo, getJobById);
 
