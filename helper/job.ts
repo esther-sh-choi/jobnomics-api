@@ -676,6 +676,17 @@ const queryAllNotes = (
   orderBy: { column: string; order: string },
   userId: number
 ) => {
+  const { column, order } = orderBy;
+  const orderByObj: any = {};
+
+  if (column === "title" || column === "company") {
+    orderByObj.job = {
+      [column]: order,
+    };
+  } else {
+    orderByObj[column] = order;
+  }
+
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
@@ -714,11 +725,7 @@ const queryAllNotes = (
       },
       note: true,
     },
-    orderBy: {
-      job: {
-        [orderBy.column]: orderBy.order,
-      },
-    },
+    orderBy: orderByObj,
   });
 };
 
