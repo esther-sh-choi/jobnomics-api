@@ -48,7 +48,8 @@ const getJobById = async (req: CustomRequest, res: Response) => {
 };
 
 const getAllNotes = async (req: CustomRequest, res: Response) => {
-  const allNotes = queryAllNotes(req.params, req.user.id);
+  const allNotes = await queryAllNotes(req.params, req.user.id);
+
   res.json(allNotes);
 };
 

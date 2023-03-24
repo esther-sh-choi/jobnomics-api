@@ -28,9 +28,9 @@ router.get("/interviewDates", getUserInfo, getInterviews);
 
 router.get("/interviewDate/:jobId/", getUserInfo, getInterviewDate);
 
-router.get("/:jobId/:categoryId", getUserInfo, getJobById);
+router.get("/notes/:column/:order", getUserInfo, getAllNotes);
 
-router.get("/:column/:order", getUserInfo, getAllNotes);
+router.get("/:jobId/:categoryId", getUserInfo, getJobById);
 
 router.post("/", getUserInfo, addUserChecklists);
 

@@ -680,6 +680,18 @@ const queryAllNotes = (
     where: {
       userId,
       isDeleted: false,
+      AND: [
+        {
+          note: {
+            not: null,
+          },
+        },
+        {
+          note: {
+            not: "",
+          },
+        },
+      ],
     },
     select: {
       userId: true,
@@ -703,7 +715,9 @@ const queryAllNotes = (
       note: true,
     },
     orderBy: {
-      [orderBy.column]: orderBy.order,
+      job: {
+        [orderBy.column]: orderBy.order,
+      },
     },
   });
 };
