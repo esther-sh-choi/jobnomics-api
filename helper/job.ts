@@ -176,6 +176,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       title: eachJob?.job?.title,
       updatedByUserAt: eachJob?.updatedByUserAt,
       description: eachJob?.job?.description,
+      isActive: eachJob?.isActive
     };
     result.push(job);
   }
@@ -241,11 +242,7 @@ const queryUserJobsWithFilter = async (
   columnFilter: string[]
 ) => {
   let orderParams = {};
-  if (columnFilter[0] === "updatedByUserAt") {
-    orderParams = {
-      [columnFilter[0]]: columnFilter[1],
-    };
-  } else if (columnFilter[0] === "isFavorite") {
+  if (columnFilter[0] === "isFavorite") {
     orderParams = [
       {
         isFavorite: columnFilter[1],
@@ -292,6 +289,7 @@ const queryUserJobsWithFilter = async (
       isDeleted: false,
     },
     select: {
+      isActive: true,
       userId: true,
       updatedByUserAt: true,
       category: {
@@ -673,7 +671,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string },
+  orderBy: { column: string; order: string; },
   userId: number
 ) => {
   const { column, order } = orderBy;
