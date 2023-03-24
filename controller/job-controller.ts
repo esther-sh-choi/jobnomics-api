@@ -56,7 +56,7 @@ const addUserChecklists = async (req: CustomRequest, res: Response) => {
 };
 
 const filterJobs = async (req: CustomRequest, res: Response) => {
-  // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express']}
+  // req.body = {category: ["Applied", "Bookmarked"], skills: ['javascript', 'express'], columnFilterList:[]}
 
   const query = req.query;
   const categoryList = (query?.category as string)?.split(",");
@@ -173,7 +173,7 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
 };
 
 const getInterviewDate = async (req: CustomRequest, res: Response) => {
-  console.log("first");
+
   if (Number(req.params.jobId) !== -1) {
     console.log(req.params);
     const getDate = await queryInterviewDate(

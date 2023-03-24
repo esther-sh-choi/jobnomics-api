@@ -984,7 +984,7 @@ const runEmailVerificationUpdate = async () => {
 };
 
 const initScheduledJobs = async () => {
-  const scheduledJobFunction = new cron.CronJob('0 3 * * * *', async () => {
+  const scheduledJobFunction = new cron.CronJob('0 3 * * *', async () => {
     sentInterviewReminder();
     sentNoteReminder();
     runEmailVerificationUpdate();
