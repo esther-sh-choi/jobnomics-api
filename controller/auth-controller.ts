@@ -4,18 +4,10 @@ import { prisma } from "../server";
 import { CustomRequest } from "../type/job";
 const aws = require("aws-sdk");
 
-// given_name: string;
-// family_name: string;
-// nickname: string;
-// name: string;
-// picture: string;
-// email: string;
-
-// TODO: REMOVE AFTER
 const SESConfig = {
   apiVersion: '2010-12-01',
-  accessKeyId: "AKIASA24L64RHSFVAVVG",
-  secretAccessKey: "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",
+  accessKeyId: process.env.AWS_SES_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SES_SECRET_KEY,
   region: "us-east-2"
 };
 
