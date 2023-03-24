@@ -13,17 +13,18 @@ datasource db {
 }
 
 model User {
-  id         Int                 @id @unique @default(autoincrement())
-  createdAt  DateTime            @default(now())
-  updatedAt  DateTime            @updatedAt
-  givenName  String
-  familyName String?
-  name       String
-  email      String              @unique
-  picture    String?             @default("N/A")
-  nickname   String?
-  jobs       UsersOnJobs[]
-  checklists UsersOnChecklists[]
+  id            Int                 @id @unique @default(autoincrement())
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  givenName     String
+  familyName    String?
+  name          String
+  email         String              @unique
+  picture       String?             @default("N/A")
+  nickname      String?
+  emailVerified Boolean             @default(false)
+  jobs          UsersOnJobs[]
+  checklists    UsersOnChecklists[]
 }
 
 model Job {
