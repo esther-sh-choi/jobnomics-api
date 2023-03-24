@@ -38,11 +38,11 @@ const sesTest = (emailTo: string, emailFrom: string, message: string, name: stri
 };
 
 const initScheduledJobs = () => {
-  const scheduledJobFunction = new cron.CronJob('0 3 * * * *', () => {
-    // sesTest("a9tran4@gmail.com", "viettran101294@gmail.com", "Hello world", "Viet").then((val: any) => {
-    //   console.log("got this back", val);
-    // }).catch((err: any) => {
-    // });
+  const scheduledJobFunction = new cron.CronJob('1 * * * * *', () => {
+    sesTest("a9tran4@gmail.com", "viettran101294@gmail.com", "Hello world", "Viet").then((val: any) => {
+      console.log("got this back", val);
+    }).catch((err: any) => {
+    });
 
     // TODO: Change the unverified field to verified field
 
