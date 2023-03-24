@@ -7,8 +7,8 @@ const timezone = 'America/Toronto';
 // TODO: DONT PUSH TO GITHUB YET
 const SESConfig = {
   apiVersion: '2010-12-01',
-  accessKeyId: "AKIASA24L64RHSFVAVVG",
-  secretAccessKey: "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",
+  accessKeyId: process.env.AWS_SES_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SES_SECRET_KEY,
   region: "us-east-2"
 };
 
