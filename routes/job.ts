@@ -29,6 +29,8 @@ router.get("/interviewDate/:jobId/", getUserInfo, getInterviewDate);
 
 router.get("/:jobId/:categoryId", getUserInfo, getJobById);
 
+router.get("/:jobId/:categoryId", getUserInfo, getJobById);
+
 router.post("/", getUserInfo, addUserChecklists);
 
 router.post("/interview-questions", getUserInfo, createInterviewQuestions);
