@@ -46,7 +46,10 @@ export const getPlatformJobIdDetailView = (link: string) => {
 };
 
 const extractLinkedIn = async (link: string, label: string = "") => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    ignoreDefaultArgs: ["--disable-extensions"],
+  });
   const page = await browser.newPage();
 
   let platformJobId;
@@ -126,7 +129,10 @@ const extractLinkedIn = async (link: string, label: string = "") => {
 };
 
 const extractIndeed = async (link: string, label: string = "") => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    ignoreDefaultArgs: ["--disable-extensions"],
+  });
   const page = await browser.newPage();
   page.setUserAgent(
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
@@ -194,7 +200,10 @@ const extractIndeed = async (link: string, label: string = "") => {
 };
 
 const extractZip = async (link: string, label: string = "") => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    ignoreDefaultArgs: ["--disable-extensions"],
+  });
   const page = await browser.newPage();
   page.setUserAgent(
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
