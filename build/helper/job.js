@@ -116,8 +116,8 @@ const processUserJobs = (userJobs) => {
             id: 5,
             jobs: [],
         },
-        "Position Filled": {
-            category: "Position Filled",
+        "Job Unavailable": {
+            category: "Job Unavailable",
             id: 6,
             jobs: [],
         },

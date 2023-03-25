@@ -215,7 +215,7 @@ async function seed() {
       { name: "Interviewing" },
       { name: "Interviewed" },
       { name: "Job Offer" },
-      { name: "Position Filled" },
+      { name: "Job Unavailable" },
     ],
   });
 

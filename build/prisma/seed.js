@@ -1,43 +1,68 @@
 "use strict";
 //  npx prisma migrate reset
 // npx ts-node prisma/seed.ts
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value);
+          });
+    }
     return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+      function fulfilled(value) {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function rejected(value) {
+        try {
+          step(generator["throw"](value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected);
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-};
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function seed() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield prisma.skill.createMany({
-            data: [
-                {
-                    name: "javascript",
-                },
-                {
-                    name: "react",
-                },
-            ],
-        });
-        const skillsArray = yield prisma.skill.findMany();
-        // console.log(
-        //   skillsArray.map((skill) => {
-        //     return { skill: { connect: { id: skill.id } } };
-        //   })
-        // );
-        yield prisma.job.create({
-            data: {
-                link: "https://www.linkedin.com/jobs/view/3523183464",
-                logo: "https://media.licdn.com/dms/image/C560BAQG-22OtXJPGpA/company-logo_100_100/0/1568751879393?e=1687392000&v=beta&t=j_QCmil4exCY-iti1r6E-PaqBxQgdEd_sG8aVghsv6o",
-                title: "Software Engineer, Frontend - Slack (Software II, Senior, and Staff)",
-                company: "Slack",
-                description: `We're looking for people who are passionate about crafting phenomenal web applications.
+  return __awaiter(this, void 0, void 0, function* () {
+    yield prisma.skill.createMany({
+      data: [
+        {
+          name: "javascript",
+        },
+        {
+          name: "react",
+        },
+      ],
+    });
+    const skillsArray = yield prisma.skill.findMany();
+    // console.log(
+    //   skillsArray.map((skill) => {
+    //     return { skill: { connect: { id: skill.id } } };
+    //   })
+    // );
+    yield prisma.job.create({
+      data: {
+        link: "https://www.linkedin.com/jobs/view/3523183464",
+        logo: "https://media.licdn.com/dms/image/C560BAQG-22OtXJPGpA/company-logo_100_100/0/1568751879393?e=1687392000&v=beta&t=j_QCmil4exCY-iti1r6E-PaqBxQgdEd_sG8aVghsv6o",
+        title:
+          "Software Engineer, Frontend - Slack (Software II, Senior, and Staff)",
+        company: "Slack",
+        description: `We're looking for people who are passionate about crafting phenomenal web applications.
 
       As a Frontend Engineer you’ll use your extensive knowledge of JavaScript, HTML, and CSS to improve the Slack web client, a complex in-browser application relied upon by millions of users every day. You will work with real-time data streams, engineer for performance across browsers, and delight people by making the best software we can imagine. You will collaborate closely with Product, Design, Application Engineering, and QA to spec, conceptualize, build, test and deploy new features for our large (and growing!) user base.
       
@@ -62,22 +87,22 @@ function seed() {
       Self-awareness and a desire to continually improve.
       You have a bachelor's degree in Computer Science, Engineering or related field, or equivalent training, fellowship, or work experience.
       `,
-                location: "Toronto, ON",
-                platform: "LinkedIn",
-                skills: {
-                    connect: [{ id: 1 }],
-                },
-            },
-            include: {
-                skills: true,
-            },
-        });
-        yield prisma.job.create({
-            data: {
-                link: "https://www.linkedin.com/jobs/view/3482562469",
-                title: "Gameplay Engineer",
-                company: "Next Level Games",
-                description: `About the job
+        location: "Toronto, ON",
+        platform: "LinkedIn",
+        skills: {
+          connect: [{ id: 1 }],
+        },
+      },
+      include: {
+        skills: true,
+      },
+    });
+    yield prisma.job.create({
+      data: {
+        link: "https://www.linkedin.com/jobs/view/3482562469",
+        title: "Gameplay Engineer",
+        company: "Next Level Games",
+        description: `About the job
       STUDIO
       
       Next Level Games is a wholly owned subsidiary of Nintendo Co., Ltd.
@@ -116,22 +141,22 @@ function seed() {
       
       We wish to thank all applicants in advance; however, only those under consideration will be contacted. We are currently only considering applicants who already have work eligibility in Canada.
   `,
-                location: "Vancouver, BC (Hybrid)",
-                platform: "LinkedIn",
-                skills: {
-                    connect: [{ id: 1 }, { id: 2 }],
-                },
-            },
-            include: {
-                skills: true,
-            },
-        });
-        yield prisma.job.create({
-            data: {
-                link: "https://ca.indeed.com/jobs?q=Senior+Full+Stack+Software+Engineer&l=Markham%2C+ON&from=searchOnHP&vjk=0a688db5bc462049",
-                title: "Senior Full Stack Software Engineer",
-                company: "Bellwood Labs",
-                description: `About the job
+        location: "Vancouver, BC (Hybrid)",
+        platform: "LinkedIn",
+        skills: {
+          connect: [{ id: 1 }, { id: 2 }],
+        },
+      },
+      include: {
+        skills: true,
+      },
+    });
+    yield prisma.job.create({
+      data: {
+        link: "https://ca.indeed.com/jobs?q=Senior+Full+Stack+Software+Engineer&l=Markham%2C+ON&from=searchOnHP&vjk=0a688db5bc462049",
+        title: "Senior Full Stack Software Engineer",
+        company: "Bellwood Labs",
+        description: `About the job
       Bellwood Labs is a dynamic Product Development Consultancy founded in Atlanta and funded by Mark Cuban that has navigated to profitability and is hiring for growth.
       
       We are seeking a Senior Full Stack Software Engineer to build and scale a variety of Web and Mobile Products for an intriguing range of clients.
@@ -194,131 +219,138 @@ function seed() {
       
       Monday to Friday      
   `,
-                location: "Toronto, ON (Remote)",
-                platform: "Indeed",
-                skills: {
-                    connect: [{ id: 1 }, { id: 2 }],
-                },
-            },
-            include: {
-                skills: true,
-            },
-        });
-        const allJobs = yield prisma.job.findMany({
-            include: {
-                skills: true,
-            },
-        });
-        console.dir(allJobs, { depth: null });
-        yield prisma.category.createMany({
-            data: [
-                { name: "Bookmarked" },
-                { name: "Applied" },
-                { name: "Interviewing" },
-                { name: "Interviewed" },
-                { name: "Job Offer" },
-                { name: "Position Filled" },
-            ],
-        });
-        yield prisma.checklist.createMany({
-            data: [
-                { description: "Celebrate your accomplishments" },
-                {
-                    description: "Record your interview experience, questions, and your response",
-                },
-                {
-                    description: "Send a thank you note to the hiring manager/interviewers",
-                },
-                {
-                    description: "Remind your references to expect a call or email from the employer",
-                },
-                { description: "Update your interview prep notes" },
-            ],
-        });
-        yield prisma.user.create({
-            data: {
-                givenName: "Esther",
-                familyName: "Choi",
-                name: "Esther Choi",
-                email: "esther@email.com",
-            },
-            include: {
-                checklists: true,
-            },
-        });
-        yield prisma.user.create({
-            data: {
-                givenName: "Viet",
-                familyName: "Tran",
-                name: "Viet Tran",
-                email: "viet@email.com",
-            },
-            include: {
-                checklists: true,
-            },
-        });
-        const checklistArray = yield prisma.checklist.findMany();
-        yield prisma.usersOnChecklists.createMany({
-            data: checklistArray.map((checklist) => ({
-                userId: 1,
-                jobId: 1,
-                checklistId: checklist.id,
-                isComplete: false,
-            })),
-        });
-        const allUsers = yield prisma.user.findMany({
-            include: {
-                checklists: true,
-            },
-        });
-        console.dir(allUsers, { depth: null });
-        yield prisma.usersOnJobs.create({
-            data: {
-                user: { connect: { id: 1 } },
-                job: { connect: { id: 1 } },
-                position: 0,
-                interviewDate: null,
-                category: { connect: { id: 1 } },
-            },
-        });
-        yield prisma.usersOnJobs.create({
-            data: {
-                user: { connect: { id: 1 } },
-                job: { connect: { id: 2 } },
-                position: 1,
-                interviewDate: null,
-                category: { connect: { id: 1 } },
-            },
-        });
-        yield prisma.usersOnJobs.create({
-            data: {
-                user: { connect: { id: 1 } },
-                job: { connect: { id: 3 } },
-                position: 0,
-                interviewDate: null,
-                category: { connect: { id: 2 } },
-            },
-        });
-        yield prisma.usersOnJobs.create({
-            data: {
-                user: { connect: { id: 2 } },
-                job: { connect: { id: 1 } },
-                position: 0,
-                interviewDate: null,
-                category: { connect: { id: 1 } },
-            },
-        });
+        location: "Toronto, ON (Remote)",
+        platform: "Indeed",
+        skills: {
+          connect: [{ id: 1 }, { id: 2 }],
+        },
+      },
+      include: {
+        skills: true,
+      },
     });
+    const allJobs = yield prisma.job.findMany({
+      include: {
+        skills: true,
+      },
+    });
+    console.dir(allJobs, { depth: null });
+    yield prisma.category.createMany({
+      data: [
+        { name: "Bookmarked" },
+        { name: "Applied" },
+        { name: "Interviewing" },
+        { name: "Interviewed" },
+        { name: "Job Offer" },
+        { name: "Job Unavailable" },
+      ],
+    });
+    yield prisma.checklist.createMany({
+      data: [
+        { description: "Celebrate your accomplishments" },
+        {
+          description:
+            "Record your interview experience, questions, and your response",
+        },
+        {
+          description:
+            "Send a thank you note to the hiring manager/interviewers",
+        },
+        {
+          description:
+            "Remind your references to expect a call or email from the employer",
+        },
+        { description: "Update your interview prep notes" },
+      ],
+    });
+    yield prisma.user.create({
+      data: {
+        givenName: "Esther",
+        familyName: "Choi",
+        name: "Esther Choi",
+        email: "esther@email.com",
+      },
+      include: {
+        checklists: true,
+      },
+    });
+    yield prisma.user.create({
+      data: {
+        givenName: "Viet",
+        familyName: "Tran",
+        name: "Viet Tran",
+        email: "viet@email.com",
+      },
+      include: {
+        checklists: true,
+      },
+    });
+    const checklistArray = yield prisma.checklist.findMany();
+    yield prisma.usersOnChecklists.createMany({
+      data: checklistArray.map((checklist) => ({
+        userId: 1,
+        jobId: 1,
+        checklistId: checklist.id,
+        isComplete: false,
+      })),
+    });
+    const allUsers = yield prisma.user.findMany({
+      include: {
+        checklists: true,
+      },
+    });
+    console.dir(allUsers, { depth: null });
+    yield prisma.usersOnJobs.create({
+      data: {
+        user: { connect: { id: 1 } },
+        job: { connect: { id: 1 } },
+        position: 0,
+        interviewDate: null,
+        category: { connect: { id: 1 } },
+      },
+    });
+    yield prisma.usersOnJobs.create({
+      data: {
+        user: { connect: { id: 1 } },
+        job: { connect: { id: 2 } },
+        position: 1,
+        interviewDate: null,
+        category: { connect: { id: 1 } },
+      },
+    });
+    yield prisma.usersOnJobs.create({
+      data: {
+        user: { connect: { id: 1 } },
+        job: { connect: { id: 3 } },
+        position: 0,
+        interviewDate: null,
+        category: { connect: { id: 2 } },
+      },
+    });
+    yield prisma.usersOnJobs.create({
+      data: {
+        user: { connect: { id: 2 } },
+        job: { connect: { id: 1 } },
+        position: 0,
+        interviewDate: null,
+        category: { connect: { id: 1 } },
+      },
+    });
+  });
 }
 seed()
-    .then(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma.$disconnect();
-}))
-    .catch((e) => __awaiter(void 0, void 0, void 0, function* () {
-    console.error(e);
-    yield prisma.$disconnect();
-    process.exit(1);
-}));
+  .then(() =>
+    __awaiter(void 0, void 0, void 0, function* () {
+      yield prisma.$disconnect();
+    })
+  )
+  .catch((e) =>
+    __awaiter(void 0, void 0, void 0, function* () {
+      console.error(e);
+      yield prisma.$disconnect();
+      process.exit(1);
+    })
+  );
 // {
 //   title: "Front-End Developer",
 //   company: "Priceline",

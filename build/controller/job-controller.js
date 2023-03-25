@@ -50,7 +50,7 @@ const filterJobs = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             "Interviewing",
             "Interviewed",
             "Job Offer",
-            "Position Filled",
+            "Job Unavailable",
         ]);
     }
     const userJobs = yield queryUserJobsWithFilter(req.user.id, categoryList, skillsList, columnFilterList);

@@ -83,7 +83,7 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
         "Interviewing",
         "Interviewed",
         "Job Offer",
-        "Position Filled",
+        "Job Unavailable",
       ]
     );
   }
@@ -180,7 +180,6 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
 };
 
 const getInterviewDate = async (req: CustomRequest, res: Response) => {
-
   if (Number(req.params.jobId) !== -1) {
     console.log(req.params);
     const getDate = await queryInterviewDate(

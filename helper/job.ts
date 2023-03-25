@@ -121,8 +121,8 @@ const processUserJobs = (userJobs: UserJobsType) => {
       id: 5,
       jobs: [],
     },
-    "Position Filled": {
-      category: "Position Filled",
+    "Job Unavailable": {
+      category: "Job Unavailable",
       id: 6,
       jobs: [],
     },
@@ -176,7 +176,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       title: eachJob?.job?.title,
       updatedByUserAt: eachJob?.updatedByUserAt,
       description: eachJob?.job?.description,
-      isActive: eachJob?.isActive
+      isActive: eachJob?.isActive,
     };
     result.push(job);
   }
@@ -671,7 +671,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string; },
+  orderBy: { column: string; order: string },
   userId: number
 ) => {
   const { column, order } = orderBy;
