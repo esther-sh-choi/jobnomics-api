@@ -23,11 +23,11 @@ const getUserInfo = async (
 
   try {
     const email = decoded[SECRET];
-    //const user = await getUserIdByEmail(email);
+    const user = await getUserIdByEmail(email);
 
     req.user = {
-      id: 2,
-      email: "viettran101294@gmail.com",
+      id: user?.id,
+      email: email,
     };
   } catch (e) {
     console.log(e);
