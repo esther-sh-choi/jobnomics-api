@@ -43,5 +43,5 @@ app.get("*", (req: Request, res: Response) => {
 initScheduledJobs();
 
 httpServer.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log(`Listening on port ${PORT}`);
 });

@@ -265,7 +265,7 @@ async function seed() {
 
   await prisma.usersOnChecklists.createMany({
     data: checklistArray.map((checklist) => ({
-      userId: 1,
+      userId: 2,
       jobId: 1,
       checklistId: checklist.id,
       isComplete: false,
@@ -281,7 +281,7 @@ async function seed() {
 
   await prisma.usersOnJobs.create({
     data: {
-      user: { connect: { id: 1 } },
+      user: { connect: { id: 2 } },
       job: { connect: { id: 1 } },
       position: 0,
       interviewDate: null,
@@ -290,7 +290,7 @@ async function seed() {
   });
   await prisma.usersOnJobs.create({
     data: {
-      user: { connect: { id: 1 } },
+      user: { connect: { id: 2 } },
       job: { connect: { id: 2 } },
       position: 1,
       interviewDate: null,
@@ -299,7 +299,7 @@ async function seed() {
   });
   await prisma.usersOnJobs.create({
     data: {
-      user: { connect: { id: 1 } },
+      user: { connect: { id: 2 } },
       job: { connect: { id: 3 } },
       position: 0,
       interviewDate: null,
@@ -308,7 +308,7 @@ async function seed() {
   });
   await prisma.usersOnJobs.create({
     data: {
-      user: { connect: { id: 2 } },
+      user: { connect: { id: 1 } },
       job: { connect: { id: 1 } },
       position: 0,
       interviewDate: null,

@@ -30,6 +30,7 @@ const getUserInfo = async (
       email: email,
     };
   } catch (e) {
+    console.log(e);
     return res.json({ error: "Error in getting user info" });
   }
 
