@@ -32,9 +32,9 @@ const jobRoutes = require("./routes/job");
 const autoRoutes = require("./routes/auto");
 const authRoutes = require("./routes/auth");
 
-app.use("/api/v1/job", validateAccessToken, jobRoutes);
-app.use("/api/v1/auto", validateAccessToken, autoRoutes);
-app.use("/api/v1/auth", validateAccessToken, authRoutes);
+app.use("/api/v1/job", jobRoutes);
+app.use("/api/v1/auto", autoRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.get("*", (req: Request, res: Response) => {
   res.status(200).json({ message: "Invalid" });
