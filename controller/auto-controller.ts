@@ -9,6 +9,7 @@ const {
   getPlatformJobIdFromURL,
   getPlatformJobIdDetailView,
   compileManualData,
+  getPlatformJobIdFromURLIndeed
 } = require("../helper/auto");
 
 const createNewJob = async (req: CustomRequest, res: Response) => {
@@ -119,7 +120,7 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       platformJobIdFromURL = getPlatformJobIdDetailView(jobLink);
     }
   } else if (jobLink.includes("indeed")) {
-    platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "vjk");
+    platformJobIdFromURL = getPlatformJobIdFromURLIndeed(jobLink, "jk=");
   } else if (jobLink.includes("ziprecruiter")) {
     platformJobIdFromURL = getPlatformJobIdFromURL(jobLink, "lvk");
   }
