@@ -130,6 +130,7 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
     })
     .catch(async (e) => {
       console.error(e);
+
       await prisma.$disconnect();
       process.exit(1);
     });

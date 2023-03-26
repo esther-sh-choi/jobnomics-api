@@ -6,9 +6,9 @@ import type { JobDataType, FormDataType } from "../type/auto";
 const requestToOpenAI = async (description: string, from: string) => {
   let contextDescription: string;
   if (from === "jobLink") {
-    contextDescription = `Object with 2 keys summary and skills - Summary (string) in less than 150 words and tech skills (JS array of max 10 items, lowercase, order by importance) - Format in JSON: ${description}`;
+    contextDescription = `Generate JSON with a 'summary' key (<=150 words) summarizing ${description} and a 'skills' key (array of <=10 lowercase tech skills) mentioned in it, sorted by importance.`;
   } else {
-    contextDescription = `Give me 4 interview question and answer pairs (with answer less than 100 words) respectively to prepare for the following job description: ${description}`;
+    contextDescription = `Provide 5 interview question and answer pairs (<=100 words per answer) with each pair separated by an empty line for ${description}.`;
   }
 
   const configuration = new Configuration({
