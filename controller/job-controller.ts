@@ -181,7 +181,6 @@ const rejectedJob = async (req: CustomRequest, res: Response) => {
 
 const getInterviewDate = async (req: CustomRequest, res: Response) => {
   if (Number(req.params.jobId) !== -1) {
-    console.log(req.params);
     const getDate = await queryInterviewDate(
       req.user.id,
       Number(req.params.jobId)

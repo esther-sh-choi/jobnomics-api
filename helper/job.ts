@@ -625,8 +625,6 @@ const updateRejectedReason = (
 };
 
 const queryInterviewDate = (userId: number, jobId: number) => {
-  console.log(userId);
-  console.log(jobId);
   return prisma.usersOnJobs.findFirst({
     where: {
       userId,
@@ -671,7 +669,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string },
+  orderBy: { column: string; order: string; },
   userId: number
 ) => {
   const { column, order } = orderBy;
