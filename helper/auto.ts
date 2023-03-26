@@ -30,12 +30,21 @@ const requestToOpenAI = async (description: string, from: string) => {
   return completion.data.choices[0].message.content;
 };
 
-export const getPlatformJobIdFromURL = (link: string, label: string) => {
+const getPlatformJobIdFromURL = (link: string, label: string) => {
   const urlId = link
     .split("&")
     .find((str: string | string[]) => str.includes(label));
 
   return urlId?.slice(urlId.indexOf("=") + 1);
+};
+
+const getPlatformJobIdFromURLIndeed = (link: string, label: string) => {
+  const urlId = link
+    .split(label);
+
+  const newUrlId = urlId[1].split('&');
+
+  return newUrlId.length > 0 ? newUrlId[0] : "";
 };
 
 export const getPlatformJobIdDetailView = (link: string) => {
@@ -88,7 +97,7 @@ const extractLinkedIn = async (link: string, label: string = "") => {
 
   const logo = await page.$$eval(
     "img.artdeco-entity-image.artdeco-entity-image--square-5.lazy-loaded[src]",
-    (imgs: { getAttribute: (arg0: string) => any }[]) =>
+    (imgs: { getAttribute: (arg0: string) => any; }[]) =>
       imgs[0].getAttribute("src")
   );
 
@@ -105,19 +114,19 @@ const extractLinkedIn = async (link: string, label: string = "") => {
     skills: [],
   };
   jobData.title = await page.evaluate(
-    (el: { innerText: any }) => el.innerText,
+    (el: { innerText: any; }) => el.innerText,
     title[0]
   );
   jobData.company = await page.evaluate(
-    (el: { innerText: any }) => el.innerText,
+    (el: { innerText: any; }) => el.innerText,
     company[0]
   );
   jobData.location = await page.evaluate(
-    (el: { innerText: any }) => el.innerText,
+    (el: { innerText: any; }) => el.innerText,
     location[0]
   );
   jobData.description = await page.evaluate(
-    (el: { innerText: any }) => el.innerText,
+    (el: { innerText: any; }) => el.innerText,
     description[0]
   );
 
@@ -131,15 +140,19 @@ const extractLinkedIn = async (link: string, label: string = "") => {
 const extractIndeed = async (link: string, label: string = "") => {
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    ignoreDefaultArgs: ["--disable-extensions"],
+    ignoreDefaultArgs: ["--disable-extensions"]
   });
   const page = await browser.newPage();
   page.setUserAgent(
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
   );
-  const platformJobId = getPlatformJobIdFromURL(link, label);
+  const platformJobId = getPlatformJobIdFromURLIndeed(link, label);
+  let newLink: string = link;
+  if (!link.includes("tk=")) {
+    newLink = `https://ca.indeed.com/viewjob?jk=${platformJobId}&tk=1gsddgmpfj30q801&from=hp`;
+  }
 
-  await page.goto(link, {
+  await page.goto(newLink, {
     waitUntil: "networkidle0",
   });
 
@@ -151,7 +164,7 @@ const extractIndeed = async (link: string, label: string = "") => {
 
   let jobData: JobDataType = {
     platformJobId,
-    link,
+    link: newLink,
     platform: "indeed",
     title: "",
     company: "",
@@ -160,26 +173,32 @@ const extractIndeed = async (link: string, label: string = "") => {
     summary: "",
     skills: [],
   };
+
+  await page.waitForTimeout(2000);
   jobData.title = await page.$eval(
     ".jobsearch-JobInfoHeader-title-container",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
   jobData.company = await page.$eval(
     "div[data-company-name='true'] > a",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
   jobData.location = await page.$eval(
     "div.jobsearch-CompanyInfoWithoutHeaderImage > div > div > div:nth-child(2) > div",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
-  jobData.description = await page.$eval(
-    ".jobsearch-JobComponent-embeddedBody",
-    (el: { innerText: string }) => el.innerText
-  );
+
+  // jobData.description = await page.$x(
+  //   ".jobsearch-JobComponent-embeddedBody",
+  //   (el: { innerText: string; }) => el.innerText
+  // );
+
+  const [getXpath] = await page.$x('//div[contains(@class,"jobsearch-JobComponent-description")]');
+  jobData.description = await page.evaluate((name: any) => name.innerText, getXpath);
 
   const companyPage = await page.$eval(
     "div[data-company-name='true'] > a",
-    (el: { getAttribute: (arg0: string) => any }) => el.getAttribute("href")
+    (el: { getAttribute: (arg0: string) => any; }) => el.getAttribute("href")
   );
 
   await page.goto(companyPage, {
@@ -188,7 +207,7 @@ const extractIndeed = async (link: string, label: string = "") => {
 
   jobData.logo = await page.$$eval(
     "img[itemprop='image']",
-    (imgs: { getAttribute: (arg0: string) => HTMLImageElement }[]) =>
+    (imgs: { getAttribute: (arg0: string) => HTMLImageElement; }[]) =>
       imgs[0].getAttribute("src")
   );
 
@@ -235,24 +254,24 @@ const extractZip = async (link: string, label: string = "") => {
   };
   jobData.title = await page.$eval(
     "h1.job_title",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
   jobData.company = await page.$eval(
     ".hiring_company_text.t_company_name",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
   jobData.location = await page.$eval(
     "span[data-name='address']",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
   jobData.description = await page.$eval(
     ".jobDescriptionSection",
-    (el: { innerText: string }) => el.innerText
+    (el: { innerText: string; }) => el.innerText
   );
 
   let companyPage = await page.$eval(
     ".hiring_company_text.t_company_name",
-    (el: { getAttribute: (arg0: string) => any }) => el.getAttribute("href")
+    (el: { getAttribute: (arg0: string) => any; }) => el.getAttribute("href")
   );
 
   if (companyPage) {
@@ -266,7 +285,7 @@ const extractZip = async (link: string, label: string = "") => {
 
     jobData.logo = await page.$$eval(
       "div.company_image > img",
-      (imgs: { getAttribute: (arg0: string) => HTMLImageElement }[]) =>
+      (imgs: { getAttribute: (arg0: string) => HTMLImageElement; }[]) =>
         imgs[0].getAttribute("src")
     );
   }
@@ -285,7 +304,7 @@ const runPuppeteer = async (link: string) => {
     }
     return await extractLinkedIn(link);
   } else if (link.includes("indeed")) {
-    return await extractIndeed(link, "vjk");
+    return await extractIndeed(link, "jk=");
   } else if (link.includes("ziprecruiter")) {
     return await extractZip(link, "lvk");
   }
@@ -318,4 +337,5 @@ module.exports = {
   getPlatformJobIdFromURL,
   getPlatformJobIdDetailView,
   compileManualData,
+  getPlatformJobIdFromURLIndeed
 };
