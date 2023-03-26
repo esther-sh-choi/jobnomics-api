@@ -1,4 +1,6 @@
+import { AWSError } from "aws-sdk";
 import { prisma } from "../server";
+import { ListIdentitiesType } from "../type/job";
 
 const cron = require('cron');
 const aws = require("aws-sdk");
@@ -960,14 +962,15 @@ const sentNoteReminder = async () => {
 };
 
 const runEmailVerificationUpdate = async () => {
-  ses.listIdentities({ IdentityType: 'EmailAddress' }, async (err: any, data: any) => {
+  ses.listIdentities({ IdentityType: 'EmailAddress' }, async (err: AWSError, data: ListIdentitiesType) => {
     if (err) {
       console.log(err);
     } else {
+      console.log(data);
       const verifiedEmails = data.Identities;
       for (const email of verifiedEmails) {
         try {
-          await prisma.user.update({
+          await prisma.user.updateMany({
             where: {
               email
             },

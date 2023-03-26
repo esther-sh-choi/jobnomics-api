@@ -211,6 +211,8 @@ const extractIndeed = async (link: string, label: string = "") => {
       imgs[0].getAttribute("src")
   );
 
+  // console.log(jobData);
+
   const openaiData = await requestToOpenAI(jobData.description, "jobLink");
   const { summary, skills } = JSON.parse(openaiData);
   jobData = { ...jobData, summary, skills };

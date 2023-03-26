@@ -69,7 +69,7 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       }
 
       const bookmarkedJobs = await prisma.usersOnJobs.findMany({
-        where: { userId: req.user.id, categoryId: 1, NOT: { isDeleted: true } },
+        where: { userId: req.user.id, categoryId: 1, isDeleted: false, isActive: true },
       });
 
       const createUserOnJob = await prisma.usersOnJobs.upsert({

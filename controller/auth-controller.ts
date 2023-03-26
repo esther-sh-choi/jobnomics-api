@@ -1,7 +1,8 @@
+import { AWSError } from "aws-sdk";
 import axios from "axios";
 import { Response } from "express";
 import { prisma } from "../server";
-import { CustomRequest } from "../type/job";
+import { CustomRequest, GetIdentityVerificationType, VerifyEmailAddressType } from "../type/job";
 const aws = require("aws-sdk");
 
 const SESConfig = {
@@ -57,12 +58,12 @@ const sendEmailVerification = async (req: CustomRequest, res: Response) => {
   };
 
   const run = async () => {
-    return ses.getIdentityVerificationAttributes(getIdentityParams, function(err: any, data: any) {
+    return ses.getIdentityVerificationAttributes(getIdentityParams, function(err: AWSError, identityInfo: GetIdentityVerificationType) {
       if (err) {
         console.log(err, err.stack);
       } else {
-        if (data?.VerificationAttributes[req.user.email || '']?.VerificationStatus !== 'Success') {
-          ses.verifyEmailAddress(emailVerificationParams, function(err: any, data: any) {
+        if (identityInfo?.VerificationAttributes[req.user.email || '']?.VerificationStatus !== 'Success') {
+          ses.verifyEmailAddress(emailVerificationParams, function(err: AWSError, data: VerifyEmailAddressType) {
             if (err) console.log(err, err.stack);
           });
         }

@@ -11,6 +11,7 @@ import {
   Checklist,
   UserJobs,
   InterviewDatesType,
+  NoteOrderByObjType,
 } from "../type/job";
 
 const { requestToOpenAI } = require("./auto");
@@ -239,7 +240,8 @@ const queryUserJobsWithFilter = async (
   userId: number,
   filteredCategory: string[],
   filteredLanguage: string[],
-  columnFilter: string[]
+  columnFilter: string[],
+  status: string[]
 ) => {
   let orderParams = {};
   if (columnFilter[0] === "isFavorite") {
@@ -262,6 +264,19 @@ const queryUserJobsWithFilter = async (
       [columnFilter[0]]: columnFilter[1],
     };
   }
+
+  type StatusObj = {
+    isActive: boolean;
+  } | {};
+
+  const statusObj: StatusObj = {};
+  if (status.length === 1 && status[0] === "active") {
+    Object.assign(statusObj, { isActive: true });
+  } else if (status.length === 1 && status[0] === "inactive") {
+    Object.assign(statusObj, { isActive: false });
+  }
+
+  console.log(statusObj);
 
   return prisma.usersOnJobs.findMany({
     where: {
@@ -287,6 +302,8 @@ const queryUserJobsWithFilter = async (
         },
       ],
       isDeleted: false,
+      ...statusObj
+
     },
     select: {
       isActive: true,
@@ -322,7 +339,7 @@ const updateAllRearrangedJobs = async (
 ) => {
   try {
     for (let update of updateInformation) {
-      const updatedData: any = {
+      const updatedData = {
         category: {
           connect: {
             id: update.isDeleted ? 1 : update.newCategoryId,
@@ -334,7 +351,8 @@ const updateAllRearrangedJobs = async (
       };
 
       if (update.isChanged) {
-        updatedData.updatedByUserAt = new Date();
+        // updatedData.updatedByUserAt = new Date();
+        Object.assign(updatedData, { updatedByUserAt: new Date() });
       }
 
       await prisma.usersOnJobs.update({
@@ -673,14 +691,12 @@ const queryAllNotes = (
   userId: number
 ) => {
   const { column, order } = orderBy;
-  const orderByObj: any = {};
+  const orderByObj: NoteOrderByObjType = {};
 
   if (column === "title" || column === "company") {
-    orderByObj.job = {
-      [column]: order,
-    };
+    Object.assign(orderByObj, { job: { [column]: order } });
   } else {
-    orderByObj[column] = order;
+    Object.assign(orderByObj, { [column]: order });
   }
 
   return prisma.usersOnJobs.findMany({
