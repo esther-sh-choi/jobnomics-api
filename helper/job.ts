@@ -239,7 +239,8 @@ const queryUserJobsWithFilter = async (
   userId: number,
   filteredCategory: string[],
   filteredLanguage: string[],
-  columnFilter: string[]
+  columnFilter: string[],
+  status: string[]
 ) => {
   let orderParams = {};
   if (columnFilter[0] === "isFavorite") {
@@ -261,6 +262,13 @@ const queryUserJobsWithFilter = async (
     orderParams = {
       [columnFilter[0]]: columnFilter[1],
     };
+  }
+
+  const statusObj: any = {};
+  if (status.length === 1 && status[0] === "active") {
+    statusObj["isActive"] = true;
+  } else if (status.length === 1 && status[0] === "inactive") {
+    statusObj["isActive"] = false;
   }
 
   return prisma.usersOnJobs.findMany({
@@ -287,6 +295,8 @@ const queryUserJobsWithFilter = async (
         },
       ],
       isDeleted: false,
+      ...statusObj
+
     },
     select: {
       isActive: true,

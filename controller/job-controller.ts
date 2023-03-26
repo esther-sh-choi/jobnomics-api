@@ -69,6 +69,7 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
   const categoryList = (query?.category as string)?.split(",");
   const skillsList = (query?.skills as string)?.split(",");
   const columnFilterList = (query?.columnFilter as string)?.split(",");
+  const status = (query?.status as string)?.split(",");
 
   if (
     categoryList.length === 1 &&
@@ -92,7 +93,8 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
     req.user.id,
     categoryList,
     skillsList,
-    columnFilterList
+    columnFilterList,
+    status
   );
 
   const formatUserJobs = processFilterJobs(userJobs);
