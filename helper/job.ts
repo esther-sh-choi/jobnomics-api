@@ -699,9 +699,6 @@ const queryAllNotes = (
     Object.assign(orderByObj, { [column]: order });
   }
 
-  console.log("column", column);
-  console.log("orderByObj", orderByObj);
-
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
