@@ -46,22 +46,31 @@ const logInAndSignIn = async (req: CustomRequest, res: Response) => {
 };
 const sendEmailVerification = async (req: CustomRequest, res: Response) => {
 
-  const params = {
-    // EmailAddress: req.user.email
-    EmailAddress: "a9tran4@gmail.com"
+  const emailVerificationParams = {
+    EmailAddress: req.user.email
+  };
+
+  const getIdentityParams = {
+    Identities: [
+      req.user.email
+    ]
   };
 
   const run = async () => {
-    return ses.verifyEmailAddress(params, function(err: any, data: any) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else console.log(data);           // successful response
-      /*
-      data = {
+    return ses.getIdentityVerificationAttributes(getIdentityParams, function(err: any, data: any) {
+      if (err) {
+        console.log(err, err.stack);
+      } else {
+        if (data?.VerificationAttributes[req.user.email || '']?.VerificationStatus !== 'Success') {
+          ses.verifyEmailAddress(emailVerificationParams, function(err: any, data: any) {
+            if (err) console.log(err, err.stack);
+          });
+        }
       }
-      */
     });
   };
   await run();
+
   return res.json({ message: "Sent verification" });
 };
 
