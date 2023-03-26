@@ -156,7 +156,6 @@ const extractIndeed = async (link: string, label: string = "") => {
     waitUntil: "networkidle0",
   });
 
-  console.log(newLink);
   await page.setViewport({
     width: 1920,
     height: 1080,
@@ -165,7 +164,7 @@ const extractIndeed = async (link: string, label: string = "") => {
 
   let jobData: JobDataType = {
     platformJobId,
-    link,
+    link: newLink,
     platform: "indeed",
     title: "",
     company: "",
