@@ -25,4 +25,5 @@ export type JobDataType = {
   platform: string;
   summary: string;
   skills: [];
+  avatarColor: string;
 };

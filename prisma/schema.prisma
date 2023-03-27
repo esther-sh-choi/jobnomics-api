@@ -40,6 +40,7 @@ model Job {
   interviewExamples String?
   link              String
   skills            Skill[]
+  avatarColor       String
   platform          String?             @default("unknown")
   platformJobId     String?             @unique
   users             UsersOnJobs[]
@@ -54,6 +55,7 @@ model UsersOnJobs {
   position        Int?
   interviewDate   DateTime?
   note            String?
+  generalNote     String?
   isDeleted       Boolean   @default(false)
   isActive        Boolean   @default(true)
   rejectReason    String?
