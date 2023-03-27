@@ -1002,7 +1002,6 @@ const runEmailVerificationUpdate = async () => {
       if (err) {
         console.log(err);
       } else {
-        console.log(data);
         const verifiedEmails = data.Identities;
         for (const email of verifiedEmails) {
           try {

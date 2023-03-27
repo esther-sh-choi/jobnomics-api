@@ -216,6 +216,7 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
           interviewDate: true,
           rejectReason: true,
           isDeleted: false,
+          isActive: true,
           job: {
             select: {
               id: true,
@@ -283,8 +284,6 @@ const queryUserJobsWithFilter = async (
   } else if (status.length === 1 && status[0] === "inactive") {
     Object.assign(statusObj, { isActive: false });
   }
-
-  // console.log(statusObj);
 
   return prisma.usersOnJobs.findMany({
     where: {
