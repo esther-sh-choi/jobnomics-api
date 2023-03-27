@@ -273,8 +273,8 @@ const queryUserJobsWithFilter = async (
 
   type StatusObj =
     | {
-        isActive: boolean;
-      }
+      isActive: boolean;
+    }
     | {};
 
   const statusObj: StatusObj = {};
@@ -284,7 +284,7 @@ const queryUserJobsWithFilter = async (
     Object.assign(statusObj, { isActive: false });
   }
 
-  console.log(statusObj);
+  // console.log(statusObj);
 
   return prisma.usersOnJobs.findMany({
     where: {
@@ -696,7 +696,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string },
+  orderBy: { column: string; order: string; },
   userId: number
 ) => {
   const { column, order } = orderBy;
