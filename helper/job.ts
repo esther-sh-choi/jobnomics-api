@@ -723,7 +723,7 @@ const queryAllNotes = (
           },
         },
       ],
-      OR: [{ generalNote: { not: null } }, { generalNote: { not: "" } }],
+      // OR: [{ generalNote: { not: null } }, { generalNote: { not: "" } }],
     },
     select: {
       userId: true,

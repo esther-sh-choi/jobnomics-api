@@ -2,21 +2,26 @@ import { AWSError } from "aws-sdk";
 import { prisma } from "../server";
 import { ListIdentitiesType } from "../type/job";
 
-const cron = require('cron');
+const cron = require("cron");
 const aws = require("aws-sdk");
 
-const timezone = 'America/Toronto';
+const timezone = "America/Toronto";
 
 const SESConfig = {
-  apiVersion: '2010-12-01',
+  apiVersion: "2010-12-01",
   accessKeyId: process.env.AWS_SES_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SES_SECRET_KEY,
-  region: "us-east-2"
+  region: "us-east-2",
 };
 
 const ses = new aws.SES(SESConfig);
 
-const customizeHTMLJobInterview = (name: string, interviewDate: string, company: string, title: string) => {
+const customizeHTMLJobInterview = (
+  name: string,
+  interviewDate: string,
+  company: string,
+  title: string
+) => {
   return `
   <!doctype html>
 <html>
@@ -428,7 +433,11 @@ const customizeHTMLJobInterview = (name: string, interviewDate: string, company:
   `;
 };
 
-const customizeHTMLNoteReminder = (name: string, company: string, title: string) => {
+const customizeHTMLNoteReminder = (
+  name: string,
+  company: string,
+  title: string
+) => {
   return `
   <!doctype html>
 <html>
@@ -841,23 +850,30 @@ const customizeHTMLNoteReminder = (name: string, company: string, title: string)
   `;
 };
 
-const sesEmailInterview = (emailTo: string, emailFrom: string, name: string, interviewDate: string, company: string, title: string) => {
+const sesEmailInterview = (
+  emailTo: string,
+  emailFrom: string,
+  name: string,
+  interviewDate: string,
+  company: string,
+  title: string
+) => {
   const params = {
     Destination: {
-      ToAddresses: [emailTo]
+      ToAddresses: [emailTo],
     },
     Message: {
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: customizeHTMLJobInterview(name, interviewDate, company, title)
+          Data: customizeHTMLJobInterview(name, interviewDate, company, title),
         },
       },
       Subject: {
-        Data: "Hooray! Your interview is Coming Up!"
-      }
+        Data: "Hooray! Your interview is Coming Up!",
+      },
     },
-    Source: emailFrom
+    Source: emailFrom,
   };
   return ses.sendEmail(params).promise();
 };
@@ -872,11 +888,11 @@ const sentInterviewReminder = async () => {
     where: {
       interviewDate: {
         gte: threeMoreDays,
-        lte: fourMoreDays
+        lte: fourMoreDays,
       },
       user: {
-        emailVerified: true
-      }
+        emailVerified: true,
+      },
     },
     select: {
       interviewDate: true,
@@ -886,39 +902,52 @@ const sentInterviewReminder = async () => {
           company: true,
           // TODO: Add Interview Sample Questions
           // interviewExamples: true
-        }
+        },
       },
       user: {
         select: {
           email: true,
-          name: true
-        }
-      }
-    }
+          name: true,
+        },
+      },
+    },
   });
 
   for (const user of users) {
-    sesEmailInterview(user?.user?.email, "viettran101294@gmail.com", user?.user?.name, (user?.interviewDate as Date)?.toString(), user?.job?.company, user?.job?.title);
+    sesEmailInterview(
+      user?.user?.email,
+      "viettran101294@gmail.com",
+      user?.user?.name,
+      (user?.interviewDate as Date)?.toString(),
+      user?.job?.company,
+      user?.job?.title
+    );
   }
 };
 
-const sesEmailNoteReminder = (emailTo: string, emailFrom: string, name: string, company: string, title: string) => {
+const sesEmailNoteReminder = (
+  emailTo: string,
+  emailFrom: string,
+  name: string,
+  company: string,
+  title: string
+) => {
   const params = {
     Destination: {
-      ToAddresses: [emailTo]
+      ToAddresses: [emailTo],
     },
     Message: {
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: customizeHTMLNoteReminder(name, company, title)
+          Data: customizeHTMLNoteReminder(name, company, title),
         },
       },
       Subject: {
-        Data: "First step to success! Take Notes After Your Interview"
-      }
+        Data: "First step to success! Take Notes After Your Interview",
+      },
     },
-    Source: emailFrom
+    Source: emailFrom,
   };
   return ses.sendEmail(params).promise();
 };
@@ -932,72 +961,85 @@ const sentNoteReminder = async () => {
     where: {
       interviewDate: {
         gte: oneDayAgo,
-        lte: today
+        lte: today,
       },
       user: {
-        emailVerified: true
-      }
+        emailVerified: true,
+      },
     },
     select: {
       interviewDate: true,
       job: {
         select: {
           title: true,
-          company: true
-        }
+          company: true,
+        },
       },
       user: {
         select: {
           email: true,
-          name: true
-        }
-      }
-    }
+          name: true,
+        },
+      },
+    },
   });
 
   for (const user of users) {
-    sesEmailNoteReminder(user?.user?.email, "viettran101294@gmail.com", user?.user?.name, user?.job?.company, user?.job?.title);
+    sesEmailNoteReminder(
+      user?.user?.email,
+      "viettran101294@gmail.com",
+      user?.user?.name,
+      user?.job?.company,
+      user?.job?.title
+    );
   }
-
 };
 
 const runEmailVerificationUpdate = async () => {
-  ses.listIdentities({ IdentityType: 'EmailAddress' }, async (err: AWSError, data: ListIdentitiesType) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(data);
-      const verifiedEmails = data.Identities;
-      for (const email of verifiedEmails) {
-        try {
-          await prisma.user.updateMany({
-            where: {
-              email
-            },
-            data: {
-              emailVerified: true
-            }
-          });
-        } catch (e) {
-          console.log(e);
+  ses.listIdentities(
+    { IdentityType: "EmailAddress" },
+    async (err: AWSError, data: ListIdentitiesType) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(data);
+        const verifiedEmails = data.Identities;
+        for (const email of verifiedEmails) {
+          try {
+            await prisma.user.updateMany({
+              where: {
+                email,
+              },
+              data: {
+                emailVerified: true,
+              },
+            });
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
-  });
+  );
 };
 
 const initScheduledJobs = async () => {
-  const scheduledJobFunction = new cron.CronJob('0 3 * * *', async () => {
-    sentInterviewReminder();
-    sentNoteReminder();
-    runEmailVerificationUpdate();
-    console.log("hello 3 am");
-  }, null, true, timezone);
+  const scheduledJobFunction = new cron.CronJob(
+    "0 3 * * *",
+    async () => {
+      sentInterviewReminder();
+      sentNoteReminder();
+      runEmailVerificationUpdate();
+      console.log("hello 3 am");
+    },
+    null,
+    true,
+    timezone
+  );
 
   scheduledJobFunction.start();
 };
 
-
 module.exports = {
-  initScheduledJobs
+  initScheduledJobs,
 };
