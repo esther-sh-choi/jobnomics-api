@@ -9,7 +9,7 @@ const {
   getPlatformJobIdFromURL,
   getPlatformJobIdDetailView,
   compileManualData,
-  getPlatformJobIdFromURLIndeed
+  getPlatformJobIdFromURLIndeed,
 } = require("../helper/auto");
 
 const createNewJob = async (req: CustomRequest, res: Response) => {
@@ -69,7 +69,12 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
       }
 
       const bookmarkedJobs = await prisma.usersOnJobs.findMany({
-        where: { userId: req.user.id, categoryId: 1, isDeleted: false, isActive: true },
+        where: {
+          userId: req.user.id,
+          categoryId: 1,
+          isDeleted: false,
+          isActive: true,
+        },
       });
 
       const createUserOnJob = await prisma.usersOnJobs.upsert({
@@ -93,16 +98,11 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
           interviewDate: null,
           isDeleted: false,
           note: "",
+          generalNote: "",
           isFavorite: false,
           rejectReason: "",
         },
       });
-
-      // const allJobs = await queryUserAndJobsEntities(req.user.id);
-      // const formatUserJobs = processUserJobs(allJobs);
-      // io.on("connection", (socket) => {
-      //   socket.emit("add-job", { formatUserJobs });
-      // });
 
       return res.json(createUserOnJob);
     } catch (e) {

@@ -77,7 +77,9 @@ export interface UserJobs {
   job: CustomJob;
   description: string;
   note?: string;
+  generalNote?: string;
   rejectReason?: string;
+  avatarColor: string;
 }
 
 export type UserJobsType = UserJobs[];
@@ -91,6 +93,7 @@ interface JobUpdateEntity {
   isDeleted?: boolean;
   isActive?: boolean;
   isChanged?: boolean;
+  avatarColor: string;
 }
 
 export type UpdateInformationType = JobUpdateEntity[];
@@ -103,12 +106,12 @@ export interface CustomRequest extends Request {
 }
 
 export type UpdateChecklistType = {
-  checklists?: { id: number; description: string; isComplete: boolean; }[];
+  checklists?: { id: number; description: string; isComplete: boolean }[];
 };
 
 export type Checklist = {
   isComplete: boolean;
-  checklist: { id: number; description: string; };
+  checklist: { id: number; description: string };
 };
 
 export type selectedCheckboxType = {
@@ -119,23 +122,25 @@ export type selectedCheckboxType = {
 
 export type InterviewDatesType = {
   interviewDate: Date;
-  job: { title: string; company: string; };
+  job: { title: string; company: string };
 }[];
 
 export type ListIdentitiesType = {
-  ResponseMetadata: { RequestId: string; },
+  ResponseMetadata: { RequestId: string };
   Identities: string[];
 };
 
 export type GetIdentityVerificationType = {
-  ResponseMetadata: { RequestId: string; },
-  VerificationAttributes: { [key: string]: { VerificationStatus: string; }; };
+  ResponseMetadata: { RequestId: string };
+  VerificationAttributes: { [key: string]: { VerificationStatus: string } };
 };
 
 export type VerifyEmailAddressType = {
-  ResponseMetadata: { RequestId: string; };
+  ResponseMetadata: { RequestId: string };
 };
 
-export type NoteOrderByObjType = {
-  [key: string]: { [key: string]: string; } | string;
-} | {};
+export type NoteOrderByObjType =
+  | {
+      [key: string]: { [key: string]: string } | string;
+    }
+  | {};

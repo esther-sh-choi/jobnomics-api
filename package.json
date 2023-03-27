@@ -36,6 +36,7 @@
     "morgan": "^1.9.1",
     "openai": "^3.2.1",
     "puppeteer": "^19.7.4",
+    "randomcolor": "^0.6.2",
     "socket.io": "^4.6.1",
     "ts-node-dev": "^2.0.0"
   }

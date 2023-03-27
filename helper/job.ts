@@ -42,6 +42,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
           title: true,
           company: true,
           logo: true,
+          avatarColor: true,
         },
       },
     },
@@ -74,6 +75,7 @@ const queryStaleJobs = async (userId: number) => {
       isFavorite: true,
       position: true,
       note: true,
+      generalNote: true,
       interviewDate: true,
       rejectReason: true,
       isDeleted: false,
@@ -89,6 +91,7 @@ const queryStaleJobs = async (userId: number) => {
           skills: true,
           interviewExamples: true,
           platform: true,
+          avatarColor: true,
         },
       },
     },
@@ -178,6 +181,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       updatedByUserAt: eachJob?.updatedByUserAt,
       description: eachJob?.job?.description,
       isActive: eachJob?.isActive,
+      avatarColor: eachJob?.avatarColor,
     };
     result.push(job);
   }
@@ -207,6 +211,7 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
           updatedByUserAt: true,
           isFavorite: true,
           position: true,
+          generalNote: true,
           note: true,
           interviewDate: true,
           rejectReason: true,
@@ -223,6 +228,7 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
               skills: true,
               interviewExamples: true,
               platform: true,
+              avatarColor: true,
             },
           },
         },
@@ -265,9 +271,11 @@ const queryUserJobsWithFilter = async (
     };
   }
 
-  type StatusObj = {
-    isActive: boolean;
-  } | {};
+  type StatusObj =
+    | {
+        isActive: boolean;
+      }
+    | {};
 
   const statusObj: StatusObj = {};
   if (status.length === 1 && status[0] === "active") {
@@ -302,8 +310,7 @@ const queryUserJobsWithFilter = async (
         },
       ],
       isDeleted: false,
-      ...statusObj
-
+      ...statusObj,
     },
     select: {
       isActive: true,
@@ -315,6 +322,7 @@ const queryUserJobsWithFilter = async (
           name: true,
         },
       },
+      generalNote: true,
       note: true,
       position: true,
       isFavorite: true,
@@ -326,6 +334,7 @@ const queryUserJobsWithFilter = async (
           company: true,
           logo: true,
           description: true,
+          avatarColor: true,
         },
       },
     },
@@ -687,7 +696,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string; },
+  orderBy: { column: string; order: string },
   userId: number
 ) => {
   const { column, order } = orderBy;
@@ -715,6 +724,7 @@ const queryAllNotes = (
           },
         },
       ],
+      // OR: [{ generalNote: { not: null } }, { generalNote: { not: "" } }],
     },
     select: {
       userId: true,
@@ -733,9 +743,11 @@ const queryAllNotes = (
           title: true,
           company: true,
           logo: true,
+          avatarColor: true,
         },
       },
       note: true,
+      generalNote: true,
     },
     orderBy: orderByObj,
   });
