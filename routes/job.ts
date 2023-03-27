@@ -16,6 +16,7 @@ const {
   getInterviewDate,
   getInterviews,
   getAllNotes,
+  recoverJob
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -26,7 +27,7 @@ router.get("/filter", getUserInfo, filterJobs);
 
 router.get("/interviewDates", getUserInfo, getInterviews);
 
-router.get("/interviewDate/:jobId/", getUserInfo, getInterviewDate);
+router.get("/interviewDate/:jobId", getUserInfo, getInterviewDate);
 
 router.get("/notes/:column/:order", getUserInfo, getAllNotes);
 
@@ -45,6 +46,8 @@ router.patch("/checklist", getUserInfo, updateChecklist);
 router.patch("/note", getUserInfo, updateNote);
 
 router.patch("/rejected-reason", getUserInfo, rejectedJob);
+
+router.patch("/recover", getUserInfo, recoverJob);
 
 // router.put("/:id", deleteJobById);
 

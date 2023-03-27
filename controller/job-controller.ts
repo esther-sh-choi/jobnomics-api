@@ -24,6 +24,7 @@ const {
   queryInterviewDates,
   processGetInterviews,
   queryAllNotes,
+  recoverJobById
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -200,6 +201,17 @@ const getInterviews = async (req: CustomRequest, res: Response) => {
   res.json(formattedInterviews);
 };
 
+const recoverJob = async (req: CustomRequest, res: Response) => {
+
+  try {
+    await recoverJobById(req.user.id, Number(req.body.jobId));
+
+    return res.json({ message: "Job recovered" });
+  } catch (e) {
+    res.json({ message: "Failed to recover the job" });
+  }
+};
+
 module.exports = {
   getAllJobs,
   getJobById,
@@ -214,4 +226,5 @@ module.exports = {
   getInterviewDate,
   getInterviews,
   getAllNotes,
+  recoverJob
 };
