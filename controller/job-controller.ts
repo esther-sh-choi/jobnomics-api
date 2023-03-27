@@ -97,6 +97,8 @@ const filterJobs = async (req: CustomRequest, res: Response) => {
     status
   );
 
+  console.log(userJobs);
+
   const formatUserJobs = processFilterJobs(userJobs);
 
   res.json(formatUserJobs);
