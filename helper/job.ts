@@ -181,6 +181,7 @@ const processFilterJobs = (userJobs: UserJobsType) => {
       updatedByUserAt: eachJob?.updatedByUserAt,
       description: eachJob?.job?.description,
       isActive: eachJob?.isActive,
+      avatarColor: eachJob?.avatarColor,
     };
     result.push(job);
   }

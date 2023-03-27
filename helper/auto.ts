@@ -341,9 +341,8 @@ const compileManualData = async (data: FormDataType) => {
     description,
     summary,
     skills,
-    avatarColor: "",
+    avatarColor: randomColor({ luminosity: "dark" }),
   };
-  jobData.avatarColor = generateHSL(jobData.title);
 
   return jobData;
 };

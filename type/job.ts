@@ -79,6 +79,7 @@ export interface UserJobs {
   note?: string;
   generalNote?: string;
   rejectReason?: string;
+  avatarColor: string;
 }
 
 export type UserJobsType = UserJobs[];
@@ -92,6 +93,7 @@ interface JobUpdateEntity {
   isDeleted?: boolean;
   isActive?: boolean;
   isChanged?: boolean;
+  avatarColor: string;
 }
 
 export type UpdateInformationType = JobUpdateEntity[];
