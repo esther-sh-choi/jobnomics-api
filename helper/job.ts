@@ -752,6 +752,52 @@ const queryAllNotes = (
   });
 };
 
+const recoverJobById = async (
+  userId: number,
+  jobId: number
+) => {
+  console.log("jobId", jobId);
+  try {
+    const cateId = await prisma.usersOnJobs.findFirst({
+      where: {
+        userId,
+        jobId
+      },
+      select: {
+        categoryId: true
+      }
+    });
+
+    const jobCategory: number = cateId?.categoryId || 0;
+
+    const numberInCategory = await prisma.usersOnJobs.count({
+      where: {
+        userId,
+        categoryId: cateId?.categoryId
+      }
+    });
+
+    console.log("numberInCategory", numberInCategory);
+    return prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId,
+          jobId,
+          categoryId: jobCategory
+        }
+      },
+      data: {
+        isActive: true,
+        position: numberInCategory
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    return;
+  }
+
+};
+
 module.exports = {
   queryUserAndJobsEntities,
   processUserJobs,
@@ -776,4 +822,5 @@ module.exports = {
   queryInterviewDates,
   processGetInterviews,
   queryAllNotes,
+  recoverJobById
 };
