@@ -20,6 +20,7 @@ interface CustomJob {
   };
   interviewExamples?: string;
   platform?: string;
+  avatarColor: string;
 }
 
 interface Category {
