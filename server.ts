@@ -1,28 +1,20 @@
 require("dotenv").config();
 
 const express = require("express");
-import { createServer } from "http";
 import { Request, Response } from "express";
 const morgan = require("morgan");
 const cors = require("cors");
 import { PrismaClient } from "@prisma/client";
-import { Server } from "socket.io";
-const cron = require('cron');
 const { validateAccessToken } = require("./helper/auth");
 const { initScheduledJobs } = require('./helper/scheduledFunctions');
 const PORT = process.env.PORT || 8080;
 const app = express();
-const httpServer = createServer(app);
 
 export const prisma = new PrismaClient();
-export const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:3000",
-    credentials: true,
-  },
-});
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://dev--dynamic-mooncake-090d58.netlify.app', 'https://dynamic-mooncake-090d58.netlify.app']
+}));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -42,6 +34,6 @@ app.get("*", (req: Request, res: Response) => {
 
 initScheduledJobs();
 
-httpServer.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
