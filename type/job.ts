@@ -144,3 +144,9 @@ export type NoteOrderByObjType =
     [key: string]: { [key: string]: string; } | string;
   }
   | {};
+
+export type StatusObj =
+  | {
+    isActive: boolean;
+  }
+  | {};

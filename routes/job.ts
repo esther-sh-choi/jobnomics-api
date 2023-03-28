@@ -16,7 +16,8 @@ const {
   getInterviewDate,
   getInterviews,
   getAllNotes,
-  recoverJob
+  recoverJob,
+  toggleFavoriteOnly
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
@@ -48,6 +49,8 @@ router.patch("/note", getUserInfo, updateNote);
 router.patch("/rejected-reason", getUserInfo, rejectedJob);
 
 router.patch("/recover", getUserInfo, recoverJob);
+
+router.patch("/favorite-only", getUserInfo, toggleFavoriteOnly);
 
 // router.put("/:id", deleteJobById);
 

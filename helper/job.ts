@@ -12,6 +12,7 @@ import {
   UserJobs,
   InterviewDatesType,
   NoteOrderByObjType,
+  StatusObj,
 } from "../type/job";
 
 const { requestToOpenAI } = require("./auto");
@@ -271,13 +272,7 @@ const queryUserJobsWithFilter = async (
       [columnFilter[0]]: columnFilter[1],
     };
   }
-
-  type StatusObj =
-    | {
-      isActive: boolean;
-    }
-    | {};
-
+  console.log(orderParams);
   const statusObj: StatusObj = {};
   if (status.length === 1 && status[0] === "active") {
     Object.assign(statusObj, { isActive: true });
@@ -756,7 +751,7 @@ const recoverJobById = async (
   userId: number,
   jobId: number
 ) => {
-  console.log("jobId", jobId);
+
   try {
     const cateId = await prisma.usersOnJobs.findFirst({
       where: {
@@ -777,7 +772,6 @@ const recoverJobById = async (
       }
     });
 
-    console.log("numberInCategory", numberInCategory);
     return prisma.usersOnJobs.update({
       where: {
         userId_jobId_categoryId: {
@@ -796,6 +790,26 @@ const recoverJobById = async (
     return;
   }
 
+};
+
+const updateFavoriteOnly = async (
+  updateItem: any,
+  userId: number
+) => {
+  try {
+    return await prisma.usersOnJobs.update({
+      where: {
+        userId_jobId_categoryId: {
+          userId: userId,
+          jobId: updateItem.jobId,
+          categoryId: updateItem.categoryId,
+        },
+      },
+      data: { isFavorite: updateItem?.favorite },
+    });
+  } catch (e) {
+    return e;
+  }
 };
 
 module.exports = {
@@ -822,5 +836,6 @@ module.exports = {
   queryInterviewDates,
   processGetInterviews,
   queryAllNotes,
-  recoverJobById
+  recoverJobById,
+  updateFavoriteOnly
 };

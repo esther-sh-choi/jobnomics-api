@@ -24,7 +24,8 @@ const {
   queryInterviewDates,
   processGetInterviews,
   queryAllNotes,
-  recoverJobById
+  recoverJobById,
+  updateFavoriteOnly
 } = require("../helper/job");
 
 const getAllJobs = async (req: CustomRequest, res: Response) => {
@@ -202,13 +203,25 @@ const getInterviews = async (req: CustomRequest, res: Response) => {
 };
 
 const recoverJob = async (req: CustomRequest, res: Response) => {
-
   try {
     await recoverJobById(req.user.id, Number(req.body.jobId));
 
     return res.json({ message: "Job recovered" });
   } catch (e) {
     res.json({ message: "Failed to recover the job" });
+  }
+};
+
+const toggleFavoriteOnly = async (req: CustomRequest, res: Response) => {
+  try {
+    await updateFavoriteOnly(
+      req.body,
+      req.user.id
+    );
+
+    return res.json({ message: "Successfully toggle favorite!" });
+  } catch (e) {
+    res.json({ message: "Failed to toggle favorite" });
   }
 };
 
@@ -226,5 +239,6 @@ module.exports = {
   getInterviewDate,
   getInterviews,
   getAllNotes,
-  recoverJob
+  recoverJob,
+  toggleFavoriteOnly
 };
