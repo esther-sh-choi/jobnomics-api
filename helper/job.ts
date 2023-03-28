@@ -605,10 +605,23 @@ const updateNoteInUserJob = async (
     note: string;
     jobId: number;
     categoryId: number;
+    type: string;
   },
   userId: number
 ) => {
-  const { note, jobId, categoryId } = noteObj;
+  const { note, jobId, categoryId, type } = noteObj;
+
+  const updateData: {
+    note?: string;
+    generalNote?: string;
+    updatedByUserAt: Date;
+  } = { updatedByUserAt: new Date() };
+
+  if (type === "interview") {
+    updateData.note = note;
+  } else if (type === "general") {
+    updateData.generalNote = note;
+  }
   try {
     return await prisma.usersOnJobs.update({
       where: {
@@ -618,10 +631,7 @@ const updateNoteInUserJob = async (
           categoryId,
         },
       },
-      data: {
-        note,
-        updatedByUserAt: new Date(),
-      },
+      data: updateData,
     });
   } catch (e) {
     return e;
@@ -711,19 +721,23 @@ const queryAllNotes = (
     where: {
       userId,
       isDeleted: false,
-      AND: [
+      OR: [
+        { AND: [{ generalNote: { not: null } }, { generalNote: { not: "" } }] },
         {
-          note: {
-            not: null,
-          },
-        },
-        {
-          note: {
-            not: "",
-          },
+          AND: [
+            {
+              note: {
+                not: null,
+              },
+            },
+            {
+              note: {
+                not: "",
+              },
+            },
+          ],
         },
       ],
-      // OR: [{ generalNote: { not: null } }, { generalNote: { not: "" } }],
     },
     select: {
       userId: true,
