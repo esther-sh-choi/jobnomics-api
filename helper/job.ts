@@ -44,6 +44,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
           company: true,
           logo: true,
           avatarColor: true,
+          link: true,
         },
       },
     },
@@ -93,6 +94,7 @@ const queryStaleJobs = async (userId: number) => {
           interviewExamples: true,
           platform: true,
           avatarColor: true,
+          link: true,
         },
       },
     },
@@ -231,6 +233,7 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
               interviewExamples: true,
               platform: true,
               avatarColor: true,
+              link: true,
             },
           },
         },
@@ -329,6 +332,7 @@ const queryUserJobsWithFilter = async (
           logo: true,
           description: true,
           avatarColor: true,
+          link: true,
         },
       },
     },
@@ -670,6 +674,7 @@ const queryInterviewDates = (userId: number) => {
           id: true,
           title: true,
           company: true,
+          link: true,
         },
       },
     },
@@ -690,7 +695,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string; },
+  orderBy: { column: string; order: string },
   userId: number
 ) => {
   const { column, order } = orderBy;
@@ -738,6 +743,7 @@ const queryAllNotes = (
           company: true,
           logo: true,
           avatarColor: true,
+          link: true,
         },
       },
       note: true,
@@ -747,20 +753,16 @@ const queryAllNotes = (
   });
 };
 
-const recoverJobById = async (
-  userId: number,
-  jobId: number
-) => {
-
+const recoverJobById = async (userId: number, jobId: number) => {
   try {
     const cateId = await prisma.usersOnJobs.findFirst({
       where: {
         userId,
-        jobId
+        jobId,
       },
       select: {
-        categoryId: true
-      }
+        categoryId: true,
+      },
     });
 
     const jobCategory: number = cateId?.categoryId || 0;
@@ -768,8 +770,8 @@ const recoverJobById = async (
     const numberInCategory = await prisma.usersOnJobs.count({
       where: {
         userId,
-        categoryId: cateId?.categoryId
-      }
+        categoryId: cateId?.categoryId,
+      },
     });
 
     return prisma.usersOnJobs.update({
@@ -777,25 +779,21 @@ const recoverJobById = async (
         userId_jobId_categoryId: {
           userId,
           jobId,
-          categoryId: jobCategory
-        }
+          categoryId: jobCategory,
+        },
       },
       data: {
         isActive: true,
-        position: numberInCategory
-      }
+        position: numberInCategory,
+      },
     });
   } catch (e) {
     console.log(e);
     return;
   }
-
 };
 
-const updateFavoriteOnly = async (
-  updateItem: any,
-  userId: number
-) => {
+const updateFavoriteOnly = async (updateItem: any, userId: number) => {
   try {
     return await prisma.usersOnJobs.update({
       where: {
@@ -837,5 +835,5 @@ module.exports = {
   processGetInterviews,
   queryAllNotes,
   recoverJobById,
-  updateFavoriteOnly
+  updateFavoriteOnly,
 };
