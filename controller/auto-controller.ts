@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { prisma, io } from "../server";
+import { prisma } from "../server";
 import type { CreateNewJobType } from "../type/auto";
 import { CustomRequest } from "../type/job";
-const { processUserJobs, queryUserAndJobsEntities } = require("../helper/job");
 
 const {
   runPuppeteer,
