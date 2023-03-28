@@ -272,7 +272,7 @@ const queryUserJobsWithFilter = async (
       [columnFilter[0]]: columnFilter[1],
     };
   }
-  console.log(orderParams);
+
   const statusObj: StatusObj = {};
   if (status.length === 1 && status[0] === "active") {
     Object.assign(statusObj, { isActive: true });
