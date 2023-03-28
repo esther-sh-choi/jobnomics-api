@@ -13,7 +13,7 @@ const app = express();
 export const prisma = new PrismaClient();
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://dev--dynamic-mooncake-090d58.netlify.app', 'https://dynamic-mooncake-090d58.netlify.app']
+  origin: ['http://localhost:3000', 'https://dev--dynamic-mooncake-090d58.netlify.app', 'https://dynamic-mooncake-090d58.netlify.app', 'https://jobnomics.net']
 }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
