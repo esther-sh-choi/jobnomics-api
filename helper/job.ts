@@ -55,8 +55,8 @@ const queryUserAndJobsEntities = async (userId: number) => {
 };
 
 const queryStaleJobs = async (userId: number) => {
-  // const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
-  const sixtyDaysAgo = new Date(Date.now() - 0.5 * 60 * 1000); // 60 days in milliseconds
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 days in milliseconds
+  // const sixtyDaysAgo = new Date(Date.now() - 0.5 * 60 * 1000); // 60 days in milliseconds
   return await prisma.usersOnJobs.findMany({
     where: {
       userId,
@@ -705,7 +705,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string },
+  orderBy: { column: string; order: string; },
   userId: number
 ) => {
   const { column, order } = orderBy;
