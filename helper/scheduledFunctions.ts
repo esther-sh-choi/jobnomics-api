@@ -916,7 +916,7 @@ const sentInterviewReminder = async () => {
   for (const user of users) {
     sesEmailInterview(
       user?.user?.email,
-      "viettran101294@gmail.com",
+      "jobnomics@outlook.com",
       user?.user?.name,
       (user?.interviewDate as Date)?.toString(),
       user?.job?.company,
@@ -987,7 +987,7 @@ const sentNoteReminder = async () => {
   for (const user of users) {
     sesEmailNoteReminder(
       user?.user?.email,
-      "viettran101294@gmail.com",
+      "jobnomics@outlook.com",
       user?.user?.name,
       user?.job?.company,
       user?.job?.title
