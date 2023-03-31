@@ -71,19 +71,19 @@ The PostgreSQL schema ERD:
 2. Create a folder and clone this repository
 
 ```sh
-$ git clone https://github.com/esther-sh-choi/jobnomics-api.git
+git clone https://github.com/esther-sh-choi/jobnomics-api.git
 ```
 
 3. Move to the correct directory
 
 ```sh
-$ cd jobnomics-api
+cd jobnomics-api
 ```
 
 4. Install dependencies
 
 ```sh
-$ npm install
+npm install
 ```
 
 5. Sign up with Auth0. Add localhost link to Allowed Callback URLs, Allowed Logout URLs, and Allowed Web Origins. Additionally, turn on Refresh Token Rotaion. Finally, create a rule to add email field in the token. + Create an API in Application and ensure to allow Allow Offline Access.
@@ -106,13 +106,13 @@ AWS_SES_SECRET_KEY=
 8. Initlize a migration
 
 ```sh
-$ npx prisma migrate dev --name init
+npx prisma migrate dev --name init
 ```
 
 9. Run the development web server
 
 ```sh
-$ npm start
+npm start
 ```
 
 
