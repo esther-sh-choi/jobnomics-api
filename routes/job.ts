@@ -17,7 +17,7 @@ const {
   getInterviews,
   getAllNotes,
   recoverJob,
-  toggleFavoriteOnly
+  toggleFavoriteOnly,
 } = require("../controller/job-controller");
 
 const { getUserInfo } = require("../helper/auth");
