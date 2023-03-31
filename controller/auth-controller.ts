@@ -45,6 +45,7 @@ const logInAndSignIn = async (req: CustomRequest, res: Response) => {
     return res.json({ message: "Register Successful" });
   }
 };
+
 const sendEmailVerification = async (req: CustomRequest, res: Response) => {
 
   const emailVerificationParams = {
@@ -75,4 +76,36 @@ const sendEmailVerification = async (req: CustomRequest, res: Response) => {
   return res.json({ message: "Sent verification" });
 };
 
-module.exports = { logInAndSignIn, sendEmailVerification };
+const unsubscribe = async (req: CustomRequest, res: Response) => {
+
+  const getIdentityParams = {
+    Identity: req.user.email
+  };
+
+  try {
+    await ses.deleteIdentity(getIdentityParams, function(err: AWSError, identityInfo: GetIdentityVerificationType) {
+      if (err) {
+        console.log(err, err.stack);
+      } else {
+        console.log(identityInfo);
+      }
+    });
+
+    await prisma.user.update({
+      where: {
+        id: req.user.id
+      },
+      data: {
+        emailVerified: false
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    return res.json({ message: "Failed to unsubscribe!" });
+  }
+
+
+  return res.json({ message: "Unsubscribe successfully!" });
+};
+
+module.exports = { logInAndSignIn, sendEmailVerification, unsubscribe };

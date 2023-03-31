@@ -1026,9 +1026,9 @@ const initScheduledJobs = async () => {
   const scheduledJobFunction = new cron.CronJob(
     "0 3 * * *",
     async () => {
+      runEmailVerificationUpdate();
       sentInterviewReminder();
       sentNoteReminder();
-      runEmailVerificationUpdate();
       console.log("hello 3 am");
     },
     null,
