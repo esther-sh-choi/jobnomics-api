@@ -437,12 +437,6 @@ const updateAllRearrangedJobs = async (
 
 const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
   try {
-    console.log("deletedJob", {
-      userId: userId,
-      jobId: deleteItem.jobId,
-      categoryId: deleteItem.categoryId,
-    });
-
     // Save initial deleted position
     const deletedJobPosition = await prisma.usersOnJobs.findFirst({
       where: {
