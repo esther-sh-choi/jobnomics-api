@@ -61,7 +61,7 @@ const sendEmailVerification = async (req: CustomRequest, res: Response) => {
   const run = async () => {
     return ses.getIdentityVerificationAttributes(
       getIdentityParams,
-      function (err: AWSError, identityInfo: GetIdentityVerificationType) {
+      function(err: AWSError, identityInfo: GetIdentityVerificationType) {
         if (err) {
           console.log(err, err.stack);
         } else {
@@ -71,7 +71,7 @@ const sendEmailVerification = async (req: CustomRequest, res: Response) => {
           ) {
             ses.verifyEmailAddress(
               emailVerificationParams,
-              function (err: AWSError, data: VerifyEmailAddressType) {
+              function(err: AWSError, data: VerifyEmailAddressType) {
                 if (err) console.log(err, err.stack);
               }
             );
@@ -111,11 +111,9 @@ const unsubscribe = async (req: CustomRequest, res: Response) => {
   try {
     await ses.deleteIdentity(
       getIdentityParams,
-      function (err: AWSError, identityInfo: GetIdentityVerificationType) {
+      function(err: AWSError, identityInfo: GetIdentityVerificationType) {
         if (err) {
           console.log(err, err.stack);
-        } else {
-          console.log(identityInfo);
         }
       }
     );

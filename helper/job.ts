@@ -283,29 +283,56 @@ const queryUserJobsWithFilter = async (
     Object.assign(statusObj, { isActive: false });
   }
 
+  const filterByCategory: any = {};
+  if ((filteredCategory.length === 1 && filteredCategory[0] !== "") || filteredCategory.length > 1) {
+    filterByCategory["category"] = {
+      name: {
+        in: filteredCategory,
+      },
+    };
+  }
+
+  const filterByLanguages: any = {};
+  if ((filteredLanguage.length === 1 && filteredLanguage[0] !== "") || filteredLanguage.length > 1) {
+    let computedCategory: string[] = [];
+
+    for (const cate of filteredLanguage) {
+      if (cate === "express") {
+        computedCategory = computedCategory.concat(["express.js", "expressjs", "express js"]);
+      } else if (cate === "node") {
+        computedCategory = computedCategory.concat(["node.js", "nodejs", "node js"]);
+      } else if (cate === "react") {
+        computedCategory = computedCategory.concat(["react.js", "reactjs", "react js"]);
+      } else if (cate === "rails" || cate === "ruby") {
+        computedCategory = computedCategory.concat(["ruby on rails"]);
+      } else if (cate === "javascript") {
+        computedCategory = computedCategory.concat(["js"]);
+      } else if (cate === "java") {
+        computedCategory = computedCategory.concat(["springboot", "spring boot", "spring"]);
+      } else if (cate === "C#") {
+        computedCategory = computedCategory.concat([".NET", ".NET Web APIs", "ASP.NET"]);
+      }
+      computedCategory.push(cate);
+    }
+
+    filterByLanguages["job"] = {
+      skills: {
+        some: {
+          name: {
+            in: computedCategory,
+            mode: 'insensitive'
+          },
+        },
+      },
+    };
+  }
+
+
   return prisma.usersOnJobs.findMany({
     where: {
       userId,
-      OR: [
-        {
-          job: {
-            skills: {
-              some: {
-                name: {
-                  in: filteredLanguage,
-                },
-              },
-            },
-          },
-        },
-        {
-          category: {
-            name: {
-              in: filteredCategory,
-            },
-          },
-        },
-      ],
+      ...filterByLanguages,
+      ...filterByCategory,
       isDeleted: false,
       ...statusObj,
     },
