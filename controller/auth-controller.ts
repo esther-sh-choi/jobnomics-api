@@ -92,12 +92,13 @@ const sendSubscribeStatus = async (req: CustomRequest, res: Response) => {
         id: req.user.id,
       },
       select: {
-        nickname: true,
+        givenName: true,
         emailVerified: true,
       },
     });
 
-    return res.json({ userInfo });
+    const { givenName, emailVerified } = userInfo;
+    return res.json({ givenName, emailVerified });
   } catch (e) {
     return res.json({ error: "Cannot get user info." });
   }
