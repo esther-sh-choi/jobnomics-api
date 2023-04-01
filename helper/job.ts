@@ -65,6 +65,7 @@ const queryStaleJobs = async (userId: number) => {
         lte: sixtyDaysAgo,
       },
       isActive: true,
+      isDeleted: false
     },
     select: {
       category: {
@@ -436,7 +437,26 @@ const updateAllRearrangedJobs = async (
 
 const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
   try {
-    const deletedJob = await prisma.usersOnJobs.update({
+    console.log("deletedJob", {
+      userId: userId,
+      jobId: deleteItem.jobId,
+      categoryId: deleteItem.categoryId,
+    });
+
+    // Save initial deleted position
+    const deletedJobPosition = await prisma.usersOnJobs.findFirst({
+      where: {
+        userId: userId,
+        jobId: deleteItem.jobId,
+        categoryId: deleteItem.categoryId,
+      },
+      select: {
+        position: true
+      }
+    });
+
+    // update the record that is being deleted
+    await prisma.usersOnJobs.update({
       where: {
         userId_jobId_categoryId: {
           userId: userId,
@@ -446,6 +466,7 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
       },
       data: {
         isDeleted: true,
+        position: -1,
         category: {
           connect: {
             id: 1,
@@ -454,36 +475,40 @@ const deleteUserJob = async (deleteItem: DeleteItemType, userId: number) => {
       },
     });
 
+    // Query the active records
     const jobsInTheCategory = await prisma.usersOnJobs.findMany({
       where: {
-        userId: userId,
+        userId,
         categoryId: deleteItem.categoryId,
         isDeleted: false,
+        isActive: true,
+        position: {
+          gt: deletedJobPosition?.position as number
+        }
       },
       orderBy: {
         position: "asc",
       },
     });
 
+    // Update necessary records
     for (let i = 0; i < jobsInTheCategory.length; i++) {
       const userOnJob = jobsInTheCategory[i];
-      const currentPosition = userOnJob.position || 0;
+      const currentPosition = userOnJob.position as number;
       const newPosition = currentPosition - 1;
 
-      if (deleteItem.jobId && i >= (deletedJob.position || 0)) {
-        await prisma.usersOnJobs.update({
-          where: {
-            userId_jobId_categoryId: {
-              userId: userId,
-              jobId: jobsInTheCategory[i].jobId,
-              categoryId: deleteItem.categoryId,
-            },
+      await prisma.usersOnJobs.update({
+        where: {
+          userId_jobId_categoryId: {
+            userId: userId,
+            jobId: jobsInTheCategory[i].jobId,
+            categoryId: deleteItem.categoryId,
           },
-          data: {
-            position: newPosition,
-          },
-        });
-      }
+        },
+        data: {
+          position: newPosition,
+        },
+      });
     }
   } catch (e) {
     return e;
@@ -761,7 +786,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string },
+  orderBy: { column: string; order: string; },
   userId: number
 ) => {
   const { column, order } = orderBy;
