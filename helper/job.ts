@@ -29,6 +29,7 @@ const queryUserAndJobsEntities = async (userId: number) => {
       isFavorite: true,
       interviewDate: true,
       updatedByUserAt: true,
+      createdAt: true,
       category: {
         select: {
           id: true,
@@ -74,6 +75,7 @@ const queryStaleJobs = async (userId: number) => {
       },
       userId: true,
       updatedByUserAt: true,
+      createdAt: true,
       isFavorite: true,
       position: true,
       note: true,
@@ -215,6 +217,7 @@ const queryJobById = async (selectedItem: SelectedItemType, userId: number) => {
           isFavorite: true,
           position: true,
           generalNote: true,
+          createdAt: true,
           note: true,
           interviewDate: true,
           rejectReason: true,
@@ -284,7 +287,10 @@ const queryUserJobsWithFilter = async (
   }
 
   const filterByCategory: any = {};
-  if ((filteredCategory.length === 1 && filteredCategory[0] !== "") || filteredCategory.length > 1) {
+  if (
+    (filteredCategory.length === 1 && filteredCategory[0] !== "") ||
+    filteredCategory.length > 1
+  ) {
     filterByCategory["category"] = {
       name: {
         in: filteredCategory,
@@ -293,24 +299,47 @@ const queryUserJobsWithFilter = async (
   }
 
   const filterByLanguages: any = {};
-  if ((filteredLanguage.length === 1 && filteredLanguage[0] !== "") || filteredLanguage.length > 1) {
+  if (
+    (filteredLanguage.length === 1 && filteredLanguage[0] !== "") ||
+    filteredLanguage.length > 1
+  ) {
     let computedCategory: string[] = [];
 
     for (const cate of filteredLanguage) {
       if (cate === "express") {
-        computedCategory = computedCategory.concat(["express.js", "expressjs", "express js"]);
+        computedCategory = computedCategory.concat([
+          "express.js",
+          "expressjs",
+          "express js",
+        ]);
       } else if (cate === "node") {
-        computedCategory = computedCategory.concat(["node.js", "nodejs", "node js"]);
+        computedCategory = computedCategory.concat([
+          "node.js",
+          "nodejs",
+          "node js",
+        ]);
       } else if (cate === "react") {
-        computedCategory = computedCategory.concat(["react.js", "reactjs", "react js"]);
+        computedCategory = computedCategory.concat([
+          "react.js",
+          "reactjs",
+          "react js",
+        ]);
       } else if (cate === "rails" || cate === "ruby") {
         computedCategory = computedCategory.concat(["ruby on rails"]);
       } else if (cate === "javascript") {
         computedCategory = computedCategory.concat(["js"]);
       } else if (cate === "java") {
-        computedCategory = computedCategory.concat(["springboot", "spring boot", "spring"]);
+        computedCategory = computedCategory.concat([
+          "springboot",
+          "spring boot",
+          "spring",
+        ]);
       } else if (cate === "C#") {
-        computedCategory = computedCategory.concat([".NET", ".NET Web APIs", "ASP.NET"]);
+        computedCategory = computedCategory.concat([
+          ".NET",
+          ".NET Web APIs",
+          "ASP.NET",
+        ]);
       }
       computedCategory.push(cate);
     }
@@ -320,13 +349,12 @@ const queryUserJobsWithFilter = async (
         some: {
           name: {
             in: computedCategory,
-            mode: 'insensitive'
+            mode: "insensitive",
           },
         },
       },
     };
   }
-
 
   return prisma.usersOnJobs.findMany({
     where: {
@@ -351,6 +379,7 @@ const queryUserJobsWithFilter = async (
       position: true,
       isFavorite: true,
       interviewDate: true,
+      createdAt: true,
       job: {
         select: {
           id: true,
@@ -732,7 +761,7 @@ const processGetInterviews = (interviews: InterviewDatesType) => {
 };
 
 const queryAllNotes = (
-  orderBy: { column: string; order: string; },
+  orderBy: { column: string; order: string },
   userId: number
 ) => {
   const { column, order } = orderBy;
@@ -771,6 +800,7 @@ const queryAllNotes = (
       isFavorite: true,
       interviewDate: true,
       updatedByUserAt: true,
+      createdAt: true,
       category: {
         select: {
           id: true,
