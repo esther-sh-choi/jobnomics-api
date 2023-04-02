@@ -33,10 +33,10 @@ const logInAndSignIn = async (req: CustomRequest, res: Response) => {
 
       await prisma.user.create({
         data: {
-          givenName: response.data?.given_name,
-          familyName: response.data?.family_name,
-          nickname: response.data?.nickname,
-          name: response.data?.name,
+          givenName: response.data?.given_name || '',
+          familyName: response.data?.family_name || '',
+          nickname: response.data?.nickname || '',
+          name: response.data?.name || '',
           picture: response.data?.picture,
           email: response.data?.email,
         },
