@@ -6,21 +6,20 @@
   <br>
   JOBNOMICS
   <br>
+    <div align="center">
+    <a href="https://github.com/esther-sh-choi/jobnomics-api/actions/workflows/emergency-deployment.yml"><img src="https://github.com/esther-sh-choi/jobnomics-api/actions/workflows/emergency-deployment.yml/badge.svg" alt="Emergency Deployment Badge" ></a>
+  </div>  
 </h1>
 
 
 <h4 align="center">This backend application is written in Node.js (<a href="https://expressjs.com/">Express.js</a>) and deployed automatically to <a href="https://railway.app/">Railway.app</a> on merges to main. The frontend made in React.js can be accessed at <a href="https://github.com/tienviet10/jobnomics">Jobnomics Frontend.</a></h4>
 
 <p align="center">
-  <a href="#final-product">Final Product</a> •
   <a href="#dependencies">Dependencies</a> •
   <a href="#getting-started">Getting Started</a> •
   <a href="#deployment">Deployment</a> •
   <a href="#authors">Authors</a> 
 </p>
-
-
-## Final Product
 
 
 ## Dependencies
