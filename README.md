@@ -8,6 +8,7 @@
   <br>
     <div align="center">
     <a href="https://github.com/esther-sh-choi/jobnomics-api/actions/workflows/emergency-deployment.yml"><img src="https://github.com/esther-sh-choi/jobnomics-api/actions/workflows/emergency-deployment.yml/badge.svg" alt="Emergency Deployment Badge" ></a>
+    <a href="https://github.com/esther-sh-choi/jobnomics-api/actions/workflows/production-schedule.yml"><img src="https://github.com/esther-sh-choi/jobnomics-api/actions/workflows/production-schedule.yml/badge.svg" alt="Production Deployment Badge" ></a>
   </div>  
 </h1>
 
