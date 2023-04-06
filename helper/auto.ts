@@ -1,6 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const puppeteer = require("puppeteer");
 const randomColor = require("randomcolor");
+const { v4: uuidv4 } = require('uuid');
 
 import type { JobDataType, FormDataType } from "../type/auto";
 
@@ -350,7 +351,7 @@ const compileManualData = async (data: FormDataType) => {
   const jobData: JobDataType = {
     logo: "N/A",
     link,
-    platformJobId: "",
+    platformJobId: uuidv4(),
     platform: platform ? platform : "unknown",
     title,
     company,
