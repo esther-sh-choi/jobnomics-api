@@ -17,7 +17,7 @@ const createNewJob = async (req: CustomRequest, res: Response) => {
 
   const linkedInJobId = () => {
     if (jobLink.includes("linkedin") && jobLink.includes("currentJobId")) {
-      getPlatformJobIdFromURL(jobLink, "curentJobId");
+      getPlatformJobIdFromURL(jobLink, "currentJobId");
     } else if (
       jobLink.includes("linkedin") &&
       !jobLink.includes("currentJobId")
