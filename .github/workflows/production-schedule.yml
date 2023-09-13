@@ -2,7 +2,7 @@ name: Deploy from Main
 
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 6 * * *'
 
 jobs:
   copy-to-production:
